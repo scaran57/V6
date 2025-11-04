@@ -101,3 +101,102 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+
+user_problem_statement: |
+  Score prediction application capable of processing images from bookmakers. 
+  The core problem is to extract match scores and corresponding odds from screenshots, 
+  then use a prediction algorithm to predict the most probable score.
+  Latest update: Integration of new score_predictor.py with improved calculation algorithm.
+
+backend:
+  - task: "Integrate new score_predictor.py algorithm"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py, /app/backend/score_predictor.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: |
+          Successfully integrated calculate_probabilities function from score_predictor.py.
+          Changes:
+          - Replaced predictor.py import with score_predictor.py in server.py
+          - Modified /analyze endpoint to use calculate_probabilities with diff_expected
+          - Unit test passed with sample data
+          - Backend restarted successfully without errors
+          Algorithm improvements:
+          - Poisson weighting with simplified approach
+          - Adaptive draw correction (75% reduction for 3-3+, 95% for 2-2)
+          - Better logging throughout calculation pipeline
+          
+  - task: "OCR extraction from bookmaker images"
+    implemented: true
+    working: true
+    file: "/app/backend/ocr_engine.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "OCR engine using PyTesseract with image preprocessing for various bookmaker formats"
+
+  - task: "Learning mechanism for diffExpected"
+    implemented: true
+    working: true
+    file: "/app/backend/learning.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Adaptive learning updates diffExpected based on predicted vs real scores"
+
+frontend:
+  - task: "Image upload and analysis display"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Frontend UI for uploading images and displaying prediction results"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Integrate new score_predictor.py algorithm"
+    - "Test /api/analyze endpoint with new algorithm"
+    - "Verify OCR + prediction pipeline end-to-end"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: |
+      Successfully integrated new score_predictor.py file provided by user.
+      The new algorithm uses:
+      1. Poisson weighting approach (exp(-0.4 * (diff - adjusted_diff)^2))
+      2. Adaptive draw penalty (75% for high draws like 3-3, 95% for 2-2)
+      3. Better normalization and logging
+      
+      Changes made:
+      - Updated server.py imports to use calculate_probabilities from score_predictor
+      - Modified /analyze endpoint to pass diff_expected to new function
+      - Tested locally with sample data - working correctly
+      
+      Ready for comprehensive backend testing with real bookmaker images.
+      Backend service restarted successfully, no errors in logs.
