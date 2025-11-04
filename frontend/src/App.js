@@ -61,12 +61,17 @@ function App() {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 60000, // 60 secondes timeout
       });
 
       setResult(response.data);
       setPredictedScore(response.data.mostProbableScore);
     } catch (err) {
-      setError(err.response?.data?.error || "Erreur lors de l'analyse de l'image");
+      if (err.code === 'ECONNABORTED') {
+        setError("L'analyse prend trop de temps. Veuillez réessayer avec une image plus claire.");
+      } else {
+        setError(err.response?.data?.error || "Erreur lors de l'analyse de l'image");
+      }
       console.error(err);
     } finally {
       setLoading(false);
