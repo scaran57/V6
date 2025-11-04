@@ -57,7 +57,7 @@ def update_model(predicted, real):
         diff_real = fabs(r_away - r_home)
         
         # Mise à jour progressive (moyenne pondérée: 80% ancien, 20% nouveau)
-        new_diff = int((current * 4 + diff_real) / 5)
+        new_diff = round((current * 4 + diff_real) / 5)
         
         logger.info(f"✅ Apprentissage: prédit={predicted}, réel={real}")
         logger.info(f"📊 Différence attendue mise à jour: {current} → {new_diff}")
