@@ -117,6 +117,7 @@ def extract_odds(image_path: str):
         
         for source_name, text in all_texts:
             # Pattern 1: Score directement suivi de cote - ex: "1-0 15.20" ou "1-015.20"
+            # Ignorer les % qui peuvent suivre
             pattern1 = re.compile(r"(\d+[-:]\d+)\s*([0-9]+[.,][0-9]+)")
             for match in pattern1.finditer(text):
                 score = match.group(1).replace(":", "-")
@@ -133,7 +134,11 @@ def extract_odds(image_path: str):
                     odds_str = match.group(2).replace(",", ".")
                     try:
                         odds = float(odds_str)
-                        if 1.01 <= odds <= 1000:
+                        # Ignorer si c'est un pourcentage (< 100 est suspect, mais > 1.01)
+                        if odds > 100:  # Probablement un pourcentage mal détecté
+                            logger.warning(f"⚠️ Cote ignorée (>100, probablement %): {odds}")
+                            continue
+                        if 1.01 <= odds <= 100:
                             score_key = f"{score}_{odds}"
                             if score_key not in seen_scores:
                                 scores.append({"score": score, "odds": odds})
