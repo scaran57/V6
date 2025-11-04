@@ -182,7 +182,7 @@ def extract_odds(image_path: str):
                 if re.match(r'^\d{1,2}-\d{1,2}$', score):
                     all_scores_in_text.append(score)
             
-            # Cotes
+            # Cotes (nombres décimaux entre 1.01 et 100)
             odds_matches = re.findall(r"([0-9]+\.[0-9]+)", text_normalized)
             for o in odds_matches:
                 try:
@@ -191,6 +191,19 @@ def extract_odds(image_path: str):
                         all_odds_in_text.append(odds_val)
                 except:
                     continue
+            
+            # NOUVEAU: Aussi chercher nombres ENTIERS comme cotes (ex: "13", "24")
+            # Format Unibet avec gros chiffres
+            integer_odds = re.findall(r"\b([1-9][0-9]?)\b", text_normalized)
+            for o in integer_odds:
+                try:
+                    odds_val = float(o)
+                    if 2 <= odds_val <= 100:  # Cotes entières raisonnables
+                        all_odds_in_text.append(odds_val)
+                except:
+                    continue
+            
+            logger.info(f"[{source_name}] Scores: {len(all_scores_in_text)}, Cotes: {len(all_odds_in_text)}")
             
             # Associer dans l'ordre
             min_len = min(len(all_scores_in_text), len(all_odds_in_text))
