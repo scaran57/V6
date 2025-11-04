@@ -202,8 +202,8 @@ def extract_odds(image_path: str):
                         if home > 9 or away > 9:
                             logger.warning(f"⚠️ Score rejeté (>9 buts): {score}")
                             continue
-                        if abs(home - away) > 5:
-                            logger.warning(f"⚠️ Score rejeté (différence >5): {score}")
+                        if abs(home - away) > 4:
+                            logger.warning(f"⚠️ Score rejeté (différence >4): {score}")
                             continue
                     except:
                         logger.warning(f"⚠️ Score rejeté (format invalide): {score}")
