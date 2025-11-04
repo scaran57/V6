@@ -79,12 +79,6 @@ def extract_odds(image_path: str):
         # Charger aussi l'image PIL originale
         pil_img = Image.open(image_path)
         
-        # Configurations OCR à tester (réduit pour performance)
-        configs = [
-            "--psm 6",   # Single uniform block
-            "--psm 11",  # Sparse text
-        ]
-        
         all_texts = []
         
         # OCR sur l'image PIL originale (1 seule config)
