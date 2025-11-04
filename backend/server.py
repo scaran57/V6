@@ -15,7 +15,7 @@ import subprocess
 
 # Import des modules de prédiction de score
 from ocr_engine import extract_odds
-from predictor import predict_score
+from score_predictor import calculate_probabilities
 from learning import update_model, get_diff_expected
 
 
