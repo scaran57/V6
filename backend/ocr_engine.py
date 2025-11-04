@@ -193,17 +193,17 @@ def extract_odds(image_path: str):
                         away = int(parts[1])
                         
                         # Rejeter les scores impossibles:
-                        # - Plus de 10 buts pour une équipe (très rare)
-                        # - Différence de plus de 7 buts (match truqué)
+                        # - Plus de 9 buts pour une équipe (très rare)
+                        # - Différence de plus de 5 buts (peu probable)
                         # - Scores négatifs
                         if home < 0 or away < 0:
                             logger.warning(f"⚠️ Score rejeté (négatif): {score}")
                             continue
-                        if home > 10 or away > 10:
-                            logger.warning(f"⚠️ Score rejeté (>10 buts): {score}")
+                        if home > 9 or away > 9:
+                            logger.warning(f"⚠️ Score rejeté (>9 buts): {score}")
                             continue
-                        if abs(home - away) > 7:
-                            logger.warning(f"⚠️ Score rejeté (différence >7): {score}")
+                        if abs(home - away) > 5:
+                            logger.warning(f"⚠️ Score rejeté (différence >5): {score}")
                             continue
                     except:
                         logger.warning(f"⚠️ Score rejeté (format invalide): {score}")
