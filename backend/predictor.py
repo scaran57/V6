@@ -72,6 +72,9 @@ def predict_score(scores):
         drawPenalty = 0.5  # jamais moins que 50% de leur poids initial
     
     logger.info(f"🎯 Draw Penalty: {drawPenalty:.3f} (réduction: {(1-drawPenalty)*100:.1f}%)")
+    
+    # DEBUG: Log analyse d'équilibre
+    log_balance_analysis(win_sum, lose_sum, draw_sum, balanceFactor, drawPenalty)
 
     # --- Pondération selon diffExpected (système amélioré) ---
     weighted = {}
