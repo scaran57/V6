@@ -1,7 +1,8 @@
 import pytesseract
-from PIL import Image
+from PIL import Image, ImageEnhance, ImageFilter
 import re
 import logging
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
