@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 def preprocess_for_green_buttons(image_path: str):
     """
     Preprocessing optimisé pour détecter texte sur fonds colorés.
-    Version allégée pour meilleure performance.
+    Version équilibrée performance/qualité.
     """
     img = cv2.imread(image_path)
     processed_images = []
@@ -28,6 +28,10 @@ def preprocess_for_green_buttons(image_path: str):
     thresh = cv2.adaptiveThreshold(enhanced, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
                                     cv2.THRESH_BINARY, 11, 2)
     processed_images.append(("thresh", thresh))
+    
+    # 4. Inversion pour texte blanc sur fond foncé
+    inverted = cv2.bitwise_not(enhanced)
+    processed_images.append(("inverted", inverted))
     
     return processed_images
 
