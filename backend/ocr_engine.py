@@ -18,12 +18,20 @@ def preprocess_image(image_path: str) -> list:
     """
     Transforme une image en plusieurs variantes prétraitées pour maximiser la lecture OCR.
     Amélioration spéciale: détection texte BLANC sur VERT (boutons Unibet/Winamax)
+    + CROP automatique du haut (interface/heure) pour éviter faux positifs
     """
     # Charger l'image
     image = Image.open(image_path).convert("RGB")
     img = np.array(image)
+    
+    # NOUVEAU: Couper le haut de l'image (20% supérieur = interface/heure/icônes)
+    height, width = img.shape[:2]
+    crop_top = int(height * 0.20)  # Enlever 20% du haut
+    img_cropped = img[crop_top:, :]  # Garder de 20% à 100%
+    
+    logger.info(f"✂️ Image cropée: {height}px → {img_cropped.shape[0]}px (enlevé {crop_top}px du haut)")
 
-    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    gray = cv2.cvtColor(img_cropped, cv2.COLOR_RGB2GRAY)
     blur = cv2.GaussianBlur(gray, (3, 3), 0)
 
     # Détection automatique du thème
@@ -34,7 +42,7 @@ def preprocess_image(image_path: str) -> list:
 
     versions = []
 
-    # 1. Original
+    # 1. Original (cropé)
     versions.append(("original", gray))
 
     # 2. Inversée (utile pour thème sombre)
@@ -58,29 +66,24 @@ def preprocess_image(image_path: str) -> list:
     _, thr2 = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     versions.append(("otsu", thr2))
     
-    # 7. NOUVEAU: Isolation du canal ROUGE (texte blanc sur vert apparaît bien)
-    # Le vert a peu de rouge, donc texte blanc ressort
-    if len(img.shape) == 3:
-        b, g, r = cv2.split(img)
+    # 7. Isolation du canal ROUGE (texte blanc sur vert apparaît bien)
+    if len(img_cropped.shape) == 3:
+        b, g, r = cv2.split(img_cropped)
         # Inverser le rouge pour que texte blanc devienne noir
         red_inverted = cv2.bitwise_not(r)
         versions.append(("red_channel_inv", red_inverted))
         
-        # 8. NOUVEAU: Seuillage sur canal vert inversé
+        # 8. Seuillage sur canal vert inversé
         green_inv = cv2.bitwise_not(g)
         _, green_thresh = cv2.threshold(green_inv, 150, 255, cv2.THRESH_BINARY)
         versions.append(("green_thresh", green_thresh))
         
-        # 9. NOUVEAU: Masque spécifique pour boutons verts
-        # Détecter zones vertes (boutons) et extraire le texte
-        hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
-        # Plage de vert plus large
+        # 9. Masque spécifique pour boutons verts
+        hsv = cv2.cvtColor(img_cropped, cv2.COLOR_RGB2HSV)
         lower_green = np.array([25, 40, 40])
         upper_green = np.array([95, 255, 255])
         mask = cv2.inRange(hsv, lower_green, upper_green)
-        # Inverser: zones vertes deviennent blanches, texte reste
         mask_inv = cv2.bitwise_not(mask)
-        # Appliquer sur image grise
         green_buttons = cv2.bitwise_and(gray, gray, mask=mask_inv)
         versions.append(("green_buttons", green_buttons))
 
