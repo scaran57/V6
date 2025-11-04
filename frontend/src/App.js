@@ -84,17 +84,32 @@ function App() {
       return;
     }
 
+    // Validation du format
+    const scorePattern = /^\d{1,2}-\d{1,2}$/;
+    if (!scorePattern.test(predictedScore) && predictedScore.toLowerCase() !== "autre") {
+      alert("Format du score prédit invalide. Utilisez le format X-Y (ex: 2-1)");
+      return;
+    }
+    if (!scorePattern.test(realScore)) {
+      alert("Format du score réel invalide. Utilisez le format X-Y (ex: 2-1)");
+      return;
+    }
+
     const formData = new FormData();
     formData.append('predicted', predictedScore);
     formData.append('real', realScore);
 
     try {
       const response = await axios.post(`${API}/learn`, formData);
-      alert(response.data.message);
-      setShowLearning(false);
-      setRealScore("");
+      if (response.data.success) {
+        alert(`✅ ${response.data.message}\nNouvelle différence attendue: ${response.data.newDiffExpected || 'N/A'}`);
+        setShowLearning(false);
+        setRealScore("");
+      } else {
+        alert("❌ Erreur lors de l'apprentissage");
+      }
     } catch (err) {
-      alert("Erreur lors de l'apprentissage");
+      alert("❌ Erreur lors de l'apprentissage: " + (err.response?.data?.error || err.message));
       console.error(err);
     }
   };
