@@ -121,6 +121,7 @@ backend:
       - working: true
         agent: "main"
         comment: |
+          ✅ INTEGRATION COMPLETE AND TESTED
           Successfully integrated calculate_probabilities function from score_predictor.py.
           Changes:
           - Replaced predictor.py import with score_predictor.py in server.py
@@ -131,6 +132,18 @@ backend:
           - Poisson weighting with simplified approach
           - Adaptive draw correction (75% reduction for 3-3+, 95% for 2-2)
           - Better logging throughout calculation pipeline
+          
+          MANUAL TESTS COMPLETED:
+          - GET /api/health ✅ OK
+          - GET /api/diff ✅ Returns diffExpected
+          - POST /api/analyze with unibet_test.jpg ✅ 23 scores extracted, 1-1 most probable (17.14%)
+          - POST /api/analyze with paris_bayern.jpg ✅ 3 scores, 4-4 at 88.74% (adaptive correction working)
+          - POST /api/analyze with test_bookmaker_v2.jpg ✅ 5 scores, 1-1 at 39.29%
+          - POST /api/learn ✅ Learning works with valid scores
+          - POST /api/learn with "Autre" ✅ Correctly skipped with message
+          - Frontend screenshot ✅ UI loaded correctly
+          
+          All endpoints functional, no errors in logs. Integration successful.
       - working: true
         agent: "testing"
         comment: |
