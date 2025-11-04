@@ -69,6 +69,27 @@ db = client[os.environ['DB_NAME']]
 # Create the main app without a prefix
 app = FastAPI(title="Score Predictor API")
 
+# Installer Tesseract au démarrage de l'app
+@app.on_event("startup")
+async def startup_event():
+    """Installation automatique de Tesseract au démarrage"""
+    try:
+        result = subprocess.run(['which', 'tesseract'], 
+                              capture_output=True, text=True, timeout=5)
+        if result.returncode == 0:
+            logger.info("✅ Tesseract déjà installé")
+        else:
+            logger.warning("⚠️ Installation automatique de Tesseract...")
+            subprocess.run(['apt-get', 'update', '-qq'], 
+                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=60)
+            subprocess.run(['apt-get', 'install', '-y', '-qq', 
+                           'tesseract-ocr', 'tesseract-ocr-fra', 
+                           'tesseract-ocr-eng', 'tesseract-ocr-spa'],
+                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=120)
+            logger.info("✅ Tesseract installé automatiquement")
+    except Exception as e:
+        logger.error(f"❌ Erreur installation Tesseract: {e}")
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
