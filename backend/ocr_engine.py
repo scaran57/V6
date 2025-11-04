@@ -10,26 +10,34 @@ logger = logging.getLogger(__name__)
 def preprocess_for_green_buttons(image_path: str):
     """
     Preprocessing optimisé pour détecter texte sur fonds colorés.
-    Version équilibrée performance/qualité.
+    Version améliorée avec plus de techniques.
     """
     img = cv2.imread(image_path)
     processed_images = []
     
-    # 1. Image originale en niveaux de gris
+    # 1. Image originale
+    processed_images.append(("original", img))
+    
+    # 2. Niveaux de gris
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     processed_images.append(("gray", gray))
     
-    # 2. Amélioration du contraste (CLAHE)
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    # 3. Amélioration contraste CLAHE
+    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
     enhanced = clahe.apply(gray)
     processed_images.append(("enhanced", enhanced))
     
-    # 3. Seuillage adaptatif
-    thresh = cv2.adaptiveThreshold(enhanced, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                    cv2.THRESH_BINARY, 11, 2)
-    processed_images.append(("thresh", thresh))
+    # 4. Augmenter la luminosité et le contraste
+    alpha = 1.5  # Contraste
+    beta = 30   # Luminosité
+    bright = cv2.convertScaleAbs(gray, alpha=alpha, beta=beta)
+    processed_images.append(("bright", bright))
     
-    # 4. Inversion pour texte blanc sur fond foncé
+    # 5. Seuillage Otsu (bon pour boutons verts)
+    _, otsu = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    processed_images.append(("otsu", otsu))
+    
+    # 6. Inversion (blanc sur fond sombre → noir sur fond clair)
     inverted = cv2.bitwise_not(enhanced)
     processed_images.append(("inverted", inverted))
     
