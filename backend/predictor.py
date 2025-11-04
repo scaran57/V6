@@ -2,6 +2,7 @@ from math import exp
 import math
 from learning import get_diff_expected
 import logging
+from debug_logger import log_debug, log_prediction_step, log_balance_analysis, log_final_prediction
 
 logger = logging.getLogger(__name__)
 
