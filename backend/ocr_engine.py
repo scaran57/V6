@@ -283,6 +283,9 @@ def extract_odds(image_path: str):
         
         logger.info(f"📊 TOTAL FINAL: {len(final_scores)} scores uniques extraits")
         
+        # DEBUG: Log scores finaux extraits
+        log_ocr_step("Scores validés et filtrés", len(final_scores), final_scores)
+        
         return final_scores
         
     except Exception as e:
