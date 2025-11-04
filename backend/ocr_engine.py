@@ -162,7 +162,12 @@ def extract_odds(image_path: str):
             for s in score_matches:
                 score = s.replace(":", "-")
                 # Nettoyer les scores mal reconnus
-                score = re.sub(r'-0+(\d)$', r'-\1', score)
+                parts = score.split('-')
+                if len(parts) == 2:
+                    try:
+                        score = f"{int(parts[0])}-{int(parts[1])}"
+                    except:
+                        pass
                 if re.match(r'^\d{1,2}-\d{1,2}$', score):
                     all_scores_in_text.append(score)
             
