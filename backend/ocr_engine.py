@@ -5,6 +5,7 @@ from PIL import Image
 import re
 import io
 import logging
+from debug_logger import log_debug, log_ocr_step
 
 logger = logging.getLogger(__name__)
 
