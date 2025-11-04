@@ -31,9 +31,26 @@ def update_model(predicted, real):
     current = get_diff_expected()
     
     try:
+        # Validation: ignorer si "Autre" ou format invalide
+        if "autre" in predicted.lower() or "autre" in real.lower():
+            logger.info(f"Apprentissage ignoré: 'Autre' détecté dans {predicted} ou {real}")
+            return True  # Retourne succès mais sans mise à jour
+        
+        # Valider le format des scores (X-Y)
+        if "-" not in predicted or "-" not in real:
+            logger.warning(f"Format invalide: prédit={predicted}, réel={real}")
+            return False
+        
         # Parse les scores
-        p_home, p_away = map(int, predicted.split("-"))
-        r_home, r_away = map(int, real.split("-"))
+        p_parts = predicted.split("-")
+        r_parts = real.split("-")
+        
+        if len(p_parts) != 2 or len(r_parts) != 2:
+            logger.warning(f"Format invalide: prédit={predicted}, réel={real}")
+            return False
+        
+        p_home, p_away = int(p_parts[0]), int(p_parts[1])
+        r_home, r_away = int(r_parts[0]), int(r_parts[1])
         
         # Calcul des différences
         diff_pred = fabs(p_away - p_home)
@@ -42,8 +59,8 @@ def update_model(predicted, real):
         # Mise à jour progressive (moyenne pondérée: 80% ancien, 20% nouveau)
         new_diff = int((current * 4 + diff_real) / 5)
         
-        logger.info(f"Apprentissage: prédit={predicted}, réel={real}")
-        logger.info(f"Différence attendue mise à jour: {current} → {new_diff}")
+        logger.info(f"✅ Apprentissage: prédit={predicted}, réel={real}")
+        logger.info(f"📊 Différence attendue mise à jour: {current} → {new_diff}")
         
         # Sauvegarde
         with open(DATA_FILE, "w") as f:
@@ -51,6 +68,9 @@ def update_model(predicted, real):
         
         return True
         
+    except ValueError as e:
+        logger.error(f"❌ Erreur de conversion en nombre: {str(e)}")
+        return False
     except Exception as e:
-        logger.error(f"Erreur lors de la mise à jour du modèle: {str(e)}")
+        logger.error(f"❌ Erreur lors de la mise à jour du modèle: {str(e)}")
         return False
