@@ -27,10 +27,14 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # Create the main app without a prefix
-app = FastAPI()
+app = FastAPI(title="Score Predictor API")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
+
+# Dossier pour les uploads temporaires
+UPLOAD_DIR = "/app/backend/uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 # Define Models
