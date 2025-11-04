@@ -107,10 +107,16 @@ def predict_score(scores):
     total_weighted = sum(weighted.values()) or 1e-9
     final_probs = {k: (v / total_weighted) * 100.0 for k, v in weighted.items()}
     
+    # DEBUG: Log probabilités après pondération
+    log_prediction_step("Probabilités pondérées finales", final_probs)
+    
     # Score le plus probable
     most = max(final_probs, key=final_probs.get) if final_probs else "Aucune donnée"
     
     logger.info(f"Score le plus probable: {most} ({final_probs.get(most, 0):.2f}%)")
+    
+    # DEBUG: Log résultat final
+    log_final_prediction(most, final_probs.get(most, 0), final_probs)
     
     return {
         "mostProbableScore": most,
