@@ -1,5 +1,5 @@
 from math import exp
-from app.learning import get_diff_expected
+from learning import get_diff_expected
 import logging
 
 logger = logging.getLogger(__name__)
