@@ -81,12 +81,10 @@ def extract_odds(image_path: str):
         
         all_texts = []
         
-        # OCR sur l'image PIL originale (1 seule config)
+        # OCR sur l'image originale
         logger.info("📸 OCR sur image originale...")
         try:
-            # EasyOCR retourne une liste de (bbox, text, confidence)
-            results = reader.readtext(image_path, detail=0)  # detail=0 pour n'avoir que le texte
-            text = "\n".join(results)
+            text = pytesseract.image_to_string(pil_img, lang="fra+eng+spa")
             if text.strip():
                 all_texts.append(("original", text))
                 logger.info(f"✅ OCR original: {len(text)} caractères extraits")
@@ -97,9 +95,9 @@ def extract_odds(image_path: str):
         for img_name, cv_img in processed_images:
             logger.info(f"📸 OCR sur version: {img_name}")
             try:
-                # EasyOCR peut lire directement un array numpy
-                results = reader.readtext(cv_img, detail=0)
-                text = "\n".join(results)
+                # Convertir numpy array en PIL Image
+                pil_from_cv = Image.fromarray(cv_img)
+                text = pytesseract.image_to_string(pil_from_cv, lang="fra+eng+spa")
                 if text.strip():
                     all_texts.append((img_name, text))
                     logger.info(f"✅ {img_name}: {len(text)} caractères extraits")
