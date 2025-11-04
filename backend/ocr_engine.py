@@ -146,6 +146,9 @@ def extract_odds(image_path: str):
         
         logger.info(f"✅ {len(all_texts)} textes extraits au total")
         
+        # DEBUG: Log étape OCR
+        log_ocr_step("Extraction OCR complétée", len(all_texts))
+        
         # Afficher un échantillon du meilleur texte
         if all_texts:
             longest_text = max(all_texts, key=lambda x: len(x[1]))
