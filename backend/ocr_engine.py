@@ -5,6 +5,9 @@ import numpy as np
 import re
 import logging
 
+# Configurer le chemin de tesseract explicitement
+pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+
 logger = logging.getLogger(__name__)
 
 def preprocess_for_green_buttons(image_path: str):
