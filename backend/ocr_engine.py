@@ -46,38 +46,33 @@ def extract_odds(image_path: str):
         # Charger aussi l'image PIL originale
         pil_img = Image.open(image_path)
         
-        # Configurations OCR à tester
+        # Configurations OCR à tester (réduit pour performance)
         configs = [
             "--psm 6",   # Single uniform block
-            "--psm 4",   # Single column
             "--psm 11",  # Sparse text
-            "--psm 3",   # Fully automatic
         ]
         
         all_texts = []
         
-        # OCR sur l'image PIL originale
+        # OCR sur l'image PIL originale (1 seule config)
         logger.info("📸 OCR sur image originale...")
-        for config in configs:
-            try:
-                text = pytesseract.image_to_string(pil_img, lang="eng+fra+spa", config=config)
-                if text.strip():
-                    all_texts.append(("pil_original", text))
-            except Exception as e:
-                logger.warning(f"Erreur OCR PIL: {e}")
+        try:
+            text = pytesseract.image_to_string(pil_img, lang="eng+fra+spa", config=configs[0])
+            if text.strip():
+                all_texts.append(("original", text))
+        except Exception as e:
+            logger.warning(f"Erreur OCR original: {e}")
         
-        # OCR sur chaque version preprocessed
+        # OCR sur chaque version preprocessed (1 config par version)
         for img_name, cv_img in processed_images:
             logger.info(f"📸 OCR sur version: {img_name}")
-            for config in configs[:2]:  # Limiter à 2 configs par version pour performance
-                try:
-                    # Convertir numpy array en PIL Image
-                    pil_from_cv = Image.fromarray(cv_img)
-                    text = pytesseract.image_to_string(pil_from_cv, lang="eng+fra+spa", config=config)
-                    if text.strip():
-                        all_texts.append((img_name, text))
-                except Exception as e:
-                    logger.warning(f"Erreur OCR {img_name}: {e}")
+            try:
+                pil_from_cv = Image.fromarray(cv_img)
+                text = pytesseract.image_to_string(pil_from_cv, lang="eng+fra+spa", config=configs[1])
+                if text.strip():
+                    all_texts.append((img_name, text))
+            except Exception as e:
+                logger.warning(f"Erreur OCR {img_name}: {e}")
         
         logger.info(f"✅ {len(all_texts)} textes extraits au total")
         
