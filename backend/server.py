@@ -135,11 +135,21 @@ async def learn(predicted: str = Form(...), real: str = Form(...)):
     Ajuste le modèle de prédiction avec le score prédit vs score réel.
     """
     try:
-        success = update_model(predicted, real)
+        result = update_model(predicted, real)
         
-        if success:
+        # Gérer le cas où c'est un dict (skipped)
+        if isinstance(result, dict) and result.get("skipped"):
+            logger.info(f"⚠️ Apprentissage ignoré: {result.get('reason')}")
+            return {
+                "success": True,
+                "skipped": True,
+                "message": f"⚠️ {result.get('reason')}",
+                "newDiffExpected": get_diff_expected()
+            }
+        
+        if result:
             diff = get_diff_expected()
-            logger.info(f"Modèle ajusté: {predicted} → {real}, nouvelle diff: {diff}")
+            logger.info(f"✅ Modèle ajusté: {predicted} → {real}, nouvelle diff: {diff}")
             return {
                 "success": True,
                 "message": f"Modèle ajusté avec le score réel: {real} ✅",
@@ -147,7 +157,7 @@ async def learn(predicted: str = Form(...), real: str = Form(...)):
             }
         else:
             return JSONResponse(
-                {"error": "Erreur lors de la mise à jour du modèle"}, 
+                {"error": "Format de score invalide. Utilisez le format X-Y (ex: 2-1)"}, 
                 status_code=400
             )
             
