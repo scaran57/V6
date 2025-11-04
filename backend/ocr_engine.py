@@ -1,12 +1,12 @@
-import easyocr
+import pytesseract
 from PIL import Image, ImageEnhance, ImageFilter
 import cv2
 import numpy as np
 import re
 import logging
 
-# Initialiser EasyOCR (langues: français, anglais, espagnol)
-reader = easyocr.Reader(['fr', 'en', 'es'], gpu=False)
+# Configurer le chemin de tesseract explicitement
+pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 
 logger = logging.getLogger(__name__)
 
