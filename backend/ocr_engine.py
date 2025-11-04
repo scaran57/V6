@@ -90,20 +90,25 @@ def extract_odds(image_path: str):
         # OCR sur l'image PIL originale (1 seule config)
         logger.info("📸 OCR sur image originale...")
         try:
-            text = pytesseract.image_to_string(pil_img, lang="eng+fra+spa", config=configs[0])
+            # EasyOCR retourne une liste de (bbox, text, confidence)
+            results = reader.readtext(image_path, detail=0)  # detail=0 pour n'avoir que le texte
+            text = "\n".join(results)
             if text.strip():
                 all_texts.append(("original", text))
+                logger.info(f"✅ OCR original: {len(text)} caractères extraits")
         except Exception as e:
             logger.warning(f"Erreur OCR original: {e}")
         
-        # OCR sur chaque version preprocessed (1 config par version)
+        # OCR sur chaque version preprocessed
         for img_name, cv_img in processed_images:
             logger.info(f"📸 OCR sur version: {img_name}")
             try:
-                pil_from_cv = Image.fromarray(cv_img)
-                text = pytesseract.image_to_string(pil_from_cv, lang="eng+fra+spa", config=configs[1])
+                # EasyOCR peut lire directement un array numpy
+                results = reader.readtext(cv_img, detail=0)
+                text = "\n".join(results)
                 if text.strip():
                     all_texts.append((img_name, text))
+                    logger.info(f"✅ {img_name}: {len(text)} caractères extraits")
             except Exception as e:
                 logger.warning(f"Erreur OCR {img_name}: {e}")
         
