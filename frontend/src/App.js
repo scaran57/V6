@@ -1,52 +1,298 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
+import { Upload, Brain, TrendingUp, BarChart3 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
+function App() {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+  
+  // Pour l'apprentissage
+  const [showLearning, setShowLearning] = useState(false);
+  const [predictedScore, setPredictedScore] = useState("");
+  const [realScore, setRealScore] = useState("");
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreview(URL.createObjectURL(file));
+      setError(null);
+      setResult(null);
     }
   };
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      setSelectedFile(file);
+      setPreview(URL.createObjectURL(file));
+      setError(null);
+      setResult(null);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const analyzeImage = async () => {
+    if (!selectedFile) {
+      setError("Veuillez sélectionner une image");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const response = await axios.post(`${API}/analyze`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      setResult(response.data);
+      setPredictedScore(response.data.mostProbableScore);
+    } catch (err) {
+      setError(err.response?.data?.error || "Erreur lors de l'analyse de l'image");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const submitLearning = async () => {
+    if (!predictedScore || !realScore) {
+      alert("Veuillez remplir les deux scores");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('predicted', predictedScore);
+    formData.append('real', realScore);
+
+    try {
+      const response = await axios.post(`${API}/learn`, formData);
+      alert(response.data.message);
+      setShowLearning(false);
+      setRealScore("");
+    } catch (err) {
+      alert("Erreur lors de l'apprentissage");
+      console.error(err);
+    }
+  };
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <header className="bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Brain className="w-10 h-10 text-indigo-600" />
+              <h1 className="text-3xl font-bold text-gray-900">Prédicteur de Score</h1>
+            </div>
+            <button
+              onClick={() => setShowLearning(!showLearning)}
+              className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              data-testid="toggle-learning-btn"
+            >
+              <TrendingUp className="w-5 h-5" />
+              <span>Apprentissage</span>
+            </button>
+          </div>
+        </div>
       </header>
-    </div>
-  );
-};
 
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Zone d'upload */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+              <Upload className="w-6 h-6 mr-2 text-indigo-600" />
+              Upload Image Bookmaker
+            </h2>
+            
+            <div
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              className="border-2 border-dashed border-indigo-300 rounded-lg p-8 text-center hover:border-indigo-500 transition-colors cursor-pointer"
+              data-testid="upload-zone"
+            >
+              {preview ? (
+                <div>
+                  <img src={preview} alt="Preview" className="max-h-64 mx-auto rounded-lg shadow-md" />
+                  <p className="mt-4 text-sm text-gray-600">{selectedFile?.name}</p>
+                </div>
+              ) : (
+                <div>
+                  <Upload className="w-16 h-16 mx-auto text-indigo-400 mb-4" />
+                  <p className="text-gray-600 mb-2">Glissez votre image ici</p>
+                  <p className="text-sm text-gray-500">ou cliquez pour sélectionner</p>
+                </div>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                className="hidden"
+                id="file-input"
+              />
+            </div>
+
+            <label htmlFor="file-input" className="block mt-4">
+              <div className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-center cursor-pointer">
+                Choisir une image
+              </div>
+            </label>
+
+            <button
+              onClick={analyzeImage}
+              disabled={!selectedFile || loading}
+              className="w-full mt-4 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-semibold"
+              data-testid="analyze-btn"
+            >
+              {loading ? "Analyse en cours..." : "Analyser & Prédire"}
+            </button>
+
+            {error && (
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg" data-testid="error-message">
+                <p className="text-red-600 text-sm">{error}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Résultats */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+              <BarChart3 className="w-6 h-6 mr-2 text-green-600" />
+              Résultats de Prédiction
+            </h2>
+
+            {result ? (
+              <div>
+                <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg p-6 mb-6 shadow-lg" data-testid="prediction-result">
+                  <p className="text-sm font-medium mb-2">Score le Plus Probable</p>
+                  <p className="text-5xl font-bold" data-testid="most-probable-score">{result.mostProbableScore}</p>
+                  {result.probabilities[result.mostProbableScore] && (
+                    <p className="text-lg mt-2 opacity-90">
+                      Probabilité: {result.probabilities[result.mostProbableScore]}%
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="font-semibold text-gray-700 mb-3">Toutes les Probabilités:</h3>
+                  {Object.entries(result.probabilities)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([score, prob]) => (
+                      <div key={score} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-testid={`probability-${score}`}>
+                        <span className="font-medium text-gray-800">{score}</span>
+                        <div className="flex items-center space-x-3">
+                          <div className="w-32 bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
+                              style={{ width: `${prob}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-sm font-semibold text-gray-600 w-16 text-right">
+                            {prob}%
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                {result.extractedScores && result.extractedScores.length > 0 && (
+                  <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                    <h4 className="font-semibold text-gray-700 mb-2 text-sm">Cotes Extraites:</h4>
+                    <div className="text-xs text-gray-600 space-y-1">
+                      {result.extractedScores.map((item, idx) => (
+                        <div key={idx}>
+                          {item.score}: {item.odds}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-12 text-gray-400">
+                <BarChart3 className="w-20 h-20 mx-auto mb-4 opacity-50" />
+                <p>Les résultats apparaîtront ici après l'analyse</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Module d'apprentissage */}
+        {showLearning && (
+          <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+              <TrendingUp className="w-6 h-6 mr-2 text-purple-600" />
+              Module d'Apprentissage
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              Ajustez le modèle en fournissant le score prédit et le score réel du match.
+            </p>
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Score Prédit (ex: 2-1)
+                </label>
+                <input
+                  type="text"
+                  value={predictedScore}
+                  onChange={(e) => setPredictedScore(e.target.value)}
+                  placeholder="2-1"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  data-testid="predicted-score-input"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Score Réel (ex: 3-1)
+                </label>
+                <input
+                  type="text"
+                  value={realScore}
+                  onChange={(e) => setRealScore(e.target.value)}
+                  placeholder="3-1"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  data-testid="real-score-input"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={submitLearning}
+              className="mt-4 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold"
+              data-testid="submit-learning-btn"
+            >
+              Soumettre l'Apprentissage
+            </button>
+          </div>
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="mt-12 py-6 text-center text-gray-600 text-sm">
+        <p>Prédicteur de Score avec Intelligence Artificielle 🧠⚽</p>
+      </footer>
     </div>
   );
 }
