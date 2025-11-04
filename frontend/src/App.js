@@ -102,7 +102,11 @@ function App() {
     try {
       const response = await axios.post(`${API}/learn`, formData);
       if (response.data.success) {
-        alert(`✅ ${response.data.message}\nNouvelle différence attendue: ${response.data.newDiffExpected || 'N/A'}`);
+        if (response.data.skipped) {
+          alert(`⚠️ ${response.data.message}`);
+        } else {
+          alert(`✅ ${response.data.message}\nNouvelle différence attendue: ${response.data.newDiffExpected || 'N/A'}`);
+        }
         setShowLearning(false);
         setRealScore("");
       } else {
