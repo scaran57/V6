@@ -77,6 +77,102 @@ async def get_status_checks():
     
     return status_checks
 
+# ========== ENDPOINTS PRÉDICTION DE SCORE ==========
+
+@api_router.get("/health")
+async def health():
+    """Vérification de santé de l'API"""
+    return {"status": "ok", "message": "API de prédiction de score en ligne ✅"}
+
+@api_router.post("/analyze")
+async def analyze(file: UploadFile = File(...)):
+    """
+    Analyse une image de bookmaker et prédit le score le plus probable.
+    """
+    try:
+        # Sauvegarder l'image temporairement
+        file_path = os.path.join(UPLOAD_DIR, file.filename)
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        logger.info(f"Image reçue: {file.filename}")
+        
+        # Extraire les cotes via OCR
+        scores = extract_odds(file_path)
+        
+        if not scores:
+            os.remove(file_path)
+            return JSONResponse({
+                "error": "Aucune cote détectée dans l'image",
+                "mostProbableScore": "Aucune donnée",
+                "probabilities": {}
+            })
+        
+        # Prédire le score
+        result = predict_score(scores)
+        
+        # Nettoyer le fichier temporaire
+        os.remove(file_path)
+        
+        logger.info(f"Prédiction réussie: {result['mostProbableScore']}")
+        
+        return JSONResponse({
+            "success": True,
+            "extractedScores": scores,
+            **result
+        })
+        
+    except Exception as e:
+        logger.error(f"Erreur lors de l'analyse: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur lors de l'analyse: {str(e)}"}, 
+            status_code=500
+        )
+
+@api_router.post("/learn")
+async def learn(predicted: str = Form(...), real: str = Form(...)):
+    """
+    Ajuste le modèle de prédiction avec le score prédit vs score réel.
+    """
+    try:
+        success = update_model(predicted, real)
+        
+        if success:
+            diff = get_diff_expected()
+            logger.info(f"Modèle ajusté: {predicted} → {real}, nouvelle diff: {diff}")
+            return {
+                "success": True,
+                "message": f"Modèle ajusté avec le score réel: {real} ✅",
+                "newDiffExpected": diff
+            }
+        else:
+            return JSONResponse(
+                {"error": "Erreur lors de la mise à jour du modèle"}, 
+                status_code=400
+            )
+            
+    except Exception as e:
+        logger.error(f"Erreur lors de l'apprentissage: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
+@api_router.get("/diff")
+async def get_diff():
+    """
+    Récupère la différence de buts attendue (utilisée par l'algorithme).
+    """
+    try:
+        diff = get_diff_expected()
+        return {"diffExpected": diff}
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération de la diff: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
 # Include the router in the main app
 app.include_router(api_router)
 
