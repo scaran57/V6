@@ -130,8 +130,11 @@ async def analyze(file: UploadFile = File(...)):
                 "probabilities": {}
             })
         
-        # Prédire le score
-        result = predict_score(scores)
+        # Obtenir la diffExpected pour le calcul
+        diff_expected = get_diff_expected()
+        
+        # Prédire le score avec le nouvel algorithme
+        result = calculate_probabilities(scores, diff_expected)
         
         # Nettoyer le fichier temporaire
         os.remove(file_path)
