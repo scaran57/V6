@@ -127,7 +127,12 @@ def extract_odds(image_path: str):
             try:
                 # Convertir numpy array en PIL Image
                 pil_img = Image.fromarray(cv_img)
-                text = pytesseract.image_to_string(pil_img, lang=LANGS, config="--psm 6")
+                
+                # Utiliser PSM 11 (sparse text) pour boutons isolés si c'est une version spéciale
+                if img_name in ["red_channel_inv", "green_thresh", "green_buttons"]:
+                    text = pytesseract.image_to_string(pil_img, lang=LANGS, config="--psm 11")
+                else:
+                    text = pytesseract.image_to_string(pil_img, lang=LANGS, config="--psm 6")
                 
                 if text.strip():
                     all_texts.append((img_name, text))
