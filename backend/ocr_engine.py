@@ -183,6 +183,32 @@ def extract_odds(image_path: str):
         for item in scores:
             score = item["score"]
             odds = item["odds"]
+            
+            # VALIDATION: Rejeter les scores impossibles ou peu probables
+            if score != "Autre":
+                parts = score.split('-')
+                if len(parts) == 2:
+                    try:
+                        home = int(parts[0])
+                        away = int(parts[1])
+                        
+                        # Rejeter les scores impossibles:
+                        # - Plus de 10 buts pour une équipe (très rare)
+                        # - Différence de plus de 7 buts (match truqué)
+                        # - Scores négatifs
+                        if home < 0 or away < 0:
+                            logger.warning(f"⚠️ Score rejeté (négatif): {score}")
+                            continue
+                        if home > 10 or away > 10:
+                            logger.warning(f"⚠️ Score rejeté (>10 buts): {score}")
+                            continue
+                        if abs(home - away) > 7:
+                            logger.warning(f"⚠️ Score rejeté (différence >7): {score}")
+                            continue
+                    except:
+                        logger.warning(f"⚠️ Score rejeté (format invalide): {score}")
+                        continue
+            
             if score not in score_odds_map:
                 score_odds_map[score] = []
             score_odds_map[score].append(odds)
