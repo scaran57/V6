@@ -33,8 +33,8 @@ def update_model(predicted, real):
     try:
         # Validation: ignorer si "Autre" ou format invalide
         if "autre" in predicted.lower() or "autre" in real.lower():
-            logger.info(f"Apprentissage ignoré: 'Autre' détecté dans {predicted} ou {real}")
-            return True  # Retourne succès mais sans mise à jour
+            logger.info(f"⚠️ Apprentissage ignoré: 'Autre' détecté (prédit={predicted}, réel={real})")
+            return {"skipped": True, "reason": "Score 'Autre' ne peut pas être utilisé pour l'apprentissage"}
         
         # Valider le format des scores (X-Y)
         if "-" not in predicted or "-" not in real:
