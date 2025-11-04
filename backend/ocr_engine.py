@@ -131,8 +131,15 @@ def extract_odds(image_path: str):
             pattern1 = re.compile(r"(\d+[-:]\d+)\s*([0-9]+[.,][0-9]+)")
             for match in pattern1.finditer(text):
                 score = match.group(1).replace(":", "-")
-                # Nettoyer les scores mal reconnus (ex: "3-07" → "3-0")
-                score = re.sub(r'-0+(\d)$', r'-\1', score)  # Remplacer -07, -08, etc. par -7, -8
+                # Nettoyer les scores mal reconnus
+                # Ex: "3-07" → "3-0", "2-08" → "2-0", etc.
+                parts = score.split('-')
+                if len(parts) == 2:
+                    try:
+                        # Convertir en int puis back en string pour enlever les zéros initiaux
+                        score = f"{int(parts[0])}-{int(parts[1])}"
+                    except:
+                        pass
                 if re.match(r'^\d{1,2}-\d{1,2}$', score):  # Vérifier format valide
                     odds_str = match.group(2).replace(",", ".")
                     try:
