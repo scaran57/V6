@@ -71,77 +71,65 @@ def extract_odds(image_path: str):
     """
     Extrait les cotes et scores depuis une image de bookmaker.
     Supporte le français, anglais et espagnol.
-    Version améliorée pour gérer différents formats et fonds colorés.
+    Version avancée avec preprocessing pour fonds colorés (boutons verts, etc.).
     """
     try:
-        # Charger l'image
-        img = Image.open(image_path)
+        logger.info("🔍 Début de l'extraction avec preprocessing avancé...")
         
-        # Preprocessing pour améliorer la détection OCR (surtout texte blanc sur fond vert)
-        # Convertir en niveaux de gris
-        img_gray = img.convert('L')
+        # Obtenir toutes les versions preprocessed de l'image
+        processed_images = preprocess_for_green_buttons(image_path)
         
-        # Augmenter le contraste
-        enhancer = ImageEnhance.Contrast(img_gray)
-        img_contrast = enhancer.enhance(2.0)
+        # Charger aussi l'image PIL originale
+        pil_img = Image.open(image_path)
         
-        # Augmenter la netteté
-        img_sharp = img_contrast.filter(ImageFilter.SHARPEN)
-        
-        # Tenter différentes configurations OCR
+        # Configurations OCR à tester
         configs = [
-            "--psm 6",  # Assume a single uniform block of text
-            "--psm 4",  # Assume a single column of text of variable sizes
-            "--psm 11", # Sparse text. Find as much text as possible
+            "--psm 6",   # Single uniform block
+            "--psm 4",   # Single column
+            "--psm 11",  # Sparse text
+            "--psm 3",   # Fully automatic
         ]
         
         all_texts = []
         
-        # Essayer avec l'image originale
+        # OCR sur l'image PIL originale
+        logger.info("📸 OCR sur image originale...")
         for config in configs:
             try:
-                text = pytesseract.image_to_string(img, lang="eng+fra+spa", config=config)
-                all_texts.append(text)
-            except:
-                continue
+                text = pytesseract.image_to_string(pil_img, lang="eng+fra+spa", config=config)
+                if text.strip():
+                    all_texts.append(("pil_original", text))
+            except Exception as e:
+                logger.warning(f"Erreur OCR PIL: {e}")
         
-        # Essayer avec l'image preprocessed
-        for config in configs:
-            try:
-                text = pytesseract.image_to_string(img_sharp, lang="eng+fra+spa", config=config)
-                all_texts.append(text)
-            except:
-                continue
+        # OCR sur chaque version preprocessed
+        for img_name, cv_img in processed_images:
+            logger.info(f"📸 OCR sur version: {img_name}")
+            for config in configs[:2]:  # Limiter à 2 configs par version pour performance
+                try:
+                    # Convertir numpy array en PIL Image
+                    pil_from_cv = Image.fromarray(cv_img)
+                    text = pytesseract.image_to_string(pil_from_cv, lang="eng+fra+spa", config=config)
+                    if text.strip():
+                        all_texts.append((img_name, text))
+                except Exception as e:
+                    logger.warning(f"Erreur OCR {img_name}: {e}")
         
-        # Combiner tous les textes extraits
-        combined_text = "\n".join(all_texts)
+        logger.info(f"✅ {len(all_texts)} textes extraits au total")
         
-        logger.info(f"=== TEXTE OCR COMPLET ===\n{combined_text[:1000]}\n=== FIN TEXTE OCR (tronqué) ===")
+        # Afficher un échantillon du texte le plus complet
+        if all_texts:
+            longest_text = max(all_texts, key=lambda x: len(x[1]))
+            logger.info(f"=== MEILLEUR TEXTE OCR ({longest_text[0]}) ===\n{longest_text[1][:500]}\n=== FIN ===")
         
+        # Extraire les scores et cotes
         scores = []
         seen_scores = set()
         
-        # Traiter chaque texte extrait
-        for text in all_texts:
-            # Pattern 1: Score suivi de cote avec espace(s) - ex: "2-1  3.50" ou "2:1    3.50"
-            pattern1 = re.compile(r"(\d+[-:]\d+)\s+([0-9]+[.,][0-9]+)")
+        for source_name, text in all_texts:
+            # Pattern 1: Score directement suivi de cote - ex: "1-0 15.20" ou "1-015.20"
+            pattern1 = re.compile(r"(\d+[-:]\d+)\s*([0-9]+[.,][0-9]+)")
             for match in pattern1.finditer(text):
-                score = match.group(1).replace(":", "-")
-                odds_str = match.group(2).replace(",", ".")
-                try:
-                    odds = float(odds_str)
-                    if 1.01 <= odds <= 1000:  # Cotes raisonnables
-                        score_key = f"{score}_{odds}"
-                        if score_key not in seen_scores:
-                            scores.append({"score": score, "odds": odds})
-                            seen_scores.add(score_key)
-                            logger.info(f"✓ Pattern1 - Score trouvé: {score} avec cote {odds}")
-                except ValueError:
-                    continue
-            
-            # Pattern 2: Score avec cote sans espace - ex: "2-13.50"
-            pattern2 = re.compile(r"(\d+[-:]\d+)([0-9]+[.,][0-9]+)")
-            for match in pattern2.finditer(text):
                 score = match.group(1).replace(":", "-")
                 odds_str = match.group(2).replace(",", ".")
                 try:
@@ -151,64 +139,74 @@ def extract_odds(image_path: str):
                         if score_key not in seen_scores:
                             scores.append({"score": score, "odds": odds})
                             seen_scores.add(score_key)
-                            logger.info(f"✓ Pattern2 - Score trouvé: {score} avec cote {odds}")
+                            logger.info(f"✓ [{source_name}] Pattern1 - {score} @ {odds}")
                 except ValueError:
                     continue
             
-            # Pattern 3: Chercher scores et cotes séparément dans les lignes
-            lines = text.split('\n')
+            # Pattern 2: Extraire tous les scores, puis toutes les cotes, et les associer
+            all_scores_in_text = []
+            all_odds_in_text = []
             
-            # D'abord extraire toutes les cotes potentielles
-            all_odds = []
-            for line in lines:
-                odds_matches = re.findall(r"([0-9]+[.,][0-9]+)", line)
-                for odds_str in odds_matches:
-                    try:
-                        odds = float(odds_str.replace(",", "."))
-                        if 1.01 <= odds <= 1000:
-                            all_odds.append(odds)
-                    except:
-                        continue
+            # Extraire tous les scores possibles
+            score_matches = re.findall(r"(\d+[-:]\d+)", text)
+            for s in score_matches:
+                all_scores_in_text.append(s.replace(":", "-"))
             
-            # Ensuite extraire tous les scores
-            all_scores_found = []
-            for line in lines:
-                score_matches = re.findall(r"(\d+[-:]\d+)", line)
-                for score_match in score_matches:
-                    score = score_match.replace(":", "-")
-                    all_scores_found.append(score)
-            
-            # Associer scores et cotes (si nombre similaire)
-            logger.info(f"Scores trouvés: {len(all_scores_found)}, Cotes trouvées: {len(all_odds)}")
-            
-            if len(all_scores_found) > 0 and len(all_odds) > 0:
-                # Essayer d'associer dans l'ordre
-                for i, score in enumerate(all_scores_found):
-                    if i < len(all_odds):
-                        odds = all_odds[i]
-                        score_key = f"{score}_{odds}"
-                        if score_key not in seen_scores:
-                            scores.append({"score": score, "odds": odds})
-                            seen_scores.add(score_key)
-                            logger.info(f"✓ Pattern3 - Score trouvé: {score} avec cote {odds}")
-        
-        # Chercher "Autre" ou "Other" avec une cote
-        for keyword in ["autre", "other", "any", "aut"]:
-            other_regex = re.search(rf"{keyword}\s*([0-9]+[.,][0-9]+)", combined_text, re.IGNORECASE)
-            if other_regex:
+            # Extraire toutes les cotes possibles
+            odds_matches = re.findall(r"([0-9]+[.,][0-9]+)", text)
+            for o in odds_matches:
                 try:
-                    odds_str = other_regex.group(1).replace(",", ".")
-                    odds = float(odds_str)
+                    odds_val = float(o.replace(",", "."))
+                    if 1.01 <= odds_val <= 1000:
+                        all_odds_in_text.append(odds_val)
+                except:
+                    continue
+            
+            # Associer scores et cotes dans l'ordre
+            min_len = min(len(all_scores_in_text), len(all_odds_in_text))
+            for i in range(min_len):
+                score = all_scores_in_text[i]
+                odds = all_odds_in_text[i]
+                score_key = f"{score}_{odds}"
+                if score_key not in seen_scores:
+                    scores.append({"score": score, "odds": odds})
+                    seen_scores.add(score_key)
+                    logger.info(f"✓ [{source_name}] Pattern2 - {score} @ {odds}")
+        
+        # Chercher "Autre" avec une cote
+        combined_text = " ".join([t[1] for t in all_texts])
+        for keyword in ["autre", "other", "any"]:
+            other_match = re.search(rf"{keyword}\s*([0-9]+[.,][0-9]+)", combined_text, re.IGNORECASE)
+            if other_match:
+                try:
+                    odds = float(other_match.group(1).replace(",", "."))
                     if not any(s["score"] == "Autre" for s in scores):
                         scores.append({"score": "Autre", "odds": odds})
-                        logger.info(f"✓ Option 'Autre' trouvée avec cote {odds}")
+                        logger.info(f"✓ Option 'Autre' @ {odds}")
                         break
-                except ValueError:
+                except:
                     pass
         
-        logger.info(f"📊 TOTAL: {len(scores)} scores extraits avec succès")
+        # Dédupliquer les scores identiques (garder celui avec la cote la plus courante)
+        final_scores = []
+        score_odds_map = {}
+        for item in scores:
+            score = item["score"]
+            odds = item["odds"]
+            if score not in score_odds_map:
+                score_odds_map[score] = []
+            score_odds_map[score].append(odds)
         
-        return scores
+        # Pour chaque score, prendre la cote la plus fréquente
+        for score, odds_list in score_odds_map.items():
+            # Prendre la cote médiane si plusieurs valeurs
+            odds_list.sort()
+            median_odds = odds_list[len(odds_list) // 2]
+            final_scores.append({"score": score, "odds": median_odds})
+        
+        logger.info(f"📊 TOTAL FINAL: {len(final_scores)} scores uniques extraits")
+        
+        return final_scores
         
     except Exception as e:
         logger.error(f"❌ Erreur lors de l'extraction OCR: {str(e)}")
