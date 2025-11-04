@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 def preprocess_for_green_buttons(image_path: str):
     """
     Preprocessing optimisé pour détecter texte sur fonds colorés.
-    Version améliorée avec plus de techniques.
+    Version améliorée supportant thèmes clairs ET sombres.
     """
     img = cv2.imread(image_path)
     processed_images = []
@@ -22,24 +22,42 @@ def preprocess_for_green_buttons(image_path: str):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     processed_images.append(("gray", gray))
     
-    # 3. Amélioration contraste CLAHE
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
-    enhanced = clahe.apply(gray)
-    processed_images.append(("enhanced", enhanced))
+    # 3. Détection automatique du thème (clair vs sombre)
+    mean_brightness = np.mean(gray)
+    is_dark_theme = mean_brightness < 100  # Si moyenne < 100, c'est un thème sombre
     
-    # 4. Augmenter la luminosité et le contraste
-    alpha = 1.5  # Contraste
-    beta = 30   # Luminosité
-    bright = cv2.convertScaleAbs(gray, alpha=alpha, beta=beta)
-    processed_images.append(("bright", bright))
+    logger.info(f"🎨 Thème détecté: {'SOMBRE' if is_dark_theme else 'CLAIR'} (luminosité moyenne: {mean_brightness:.1f})")
     
-    # 5. Seuillage Otsu (bon pour boutons verts)
-    _, otsu = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    processed_images.append(("otsu", otsu))
-    
-    # 6. Inversion (blanc sur fond sombre → noir sur fond clair)
-    inverted = cv2.bitwise_not(enhanced)
-    processed_images.append(("inverted", inverted))
+    if is_dark_theme:
+        # THÈME SOMBRE: texte blanc sur fond noir
+        # Inverser pour avoir texte noir sur fond blanc
+        inverted = cv2.bitwise_not(gray)
+        processed_images.append(("inverted_dark", inverted))
+        
+        # Améliorer le contraste sur l'image inversée
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
+        enhanced_inv = clahe.apply(inverted)
+        processed_images.append(("enhanced_inverted", enhanced_inv))
+        
+        # Seuillage sur l'image inversée
+        _, thresh_inv = cv2.threshold(inverted, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        processed_images.append(("thresh_inverted", thresh_inv))
+    else:
+        # THÈME CLAIR: traitement classique
+        # Amélioration contraste CLAHE
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
+        enhanced = clahe.apply(gray)
+        processed_images.append(("enhanced", enhanced))
+        
+        # Augmenter luminosité et contraste
+        alpha = 1.5
+        beta = 30
+        bright = cv2.convertScaleAbs(gray, alpha=alpha, beta=beta)
+        processed_images.append(("bright", bright))
+        
+        # Seuillage Otsu
+        _, otsu = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        processed_images.append(("otsu", otsu))
     
     return processed_images
 
