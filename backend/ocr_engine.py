@@ -9,61 +9,25 @@ logger = logging.getLogger(__name__)
 
 def preprocess_for_green_buttons(image_path: str):
     """
-    Preprocessing avancé pour détecter texte blanc sur fond vert (boutons bookmaker).
-    Retourne plusieurs versions de l'image optimisées pour l'OCR.
+    Preprocessing optimisé pour détecter texte sur fonds colorés.
+    Version allégée pour meilleure performance.
     """
-    # Lire l'image avec OpenCV
     img = cv2.imread(image_path)
     processed_images = []
     
-    # 1. Image originale convertie en niveaux de gris
+    # 1. Image originale en niveaux de gris
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    processed_images.append(("original_gray", gray))
+    processed_images.append(("gray", gray))
     
-    # 2. Isolation du canal vert (les boutons verts deviennent clairs)
-    b, g, r = cv2.split(img)
-    processed_images.append(("green_channel", g))
+    # 2. Amélioration du contraste (CLAHE)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    enhanced = clahe.apply(gray)
+    processed_images.append(("enhanced", enhanced))
     
-    # 3. Inversion pour convertir blanc sur vert en noir sur blanc
-    inverted = cv2.bitwise_not(gray)
-    processed_images.append(("inverted", inverted))
-    
-    # 4. Seuillage adaptatif pour isoler le texte
-    thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+    # 3. Seuillage adaptatif
+    thresh = cv2.adaptiveThreshold(enhanced, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
                                     cv2.THRESH_BINARY, 11, 2)
-    processed_images.append(("adaptive_thresh", thresh))
-    
-    # 5. Seuillage Otsu
-    _, otsu = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    processed_images.append(("otsu", otsu))
-    
-    # 6. Isolation spécifique des zones vertes (boutons)
-    # Convertir en HSV pour détecter le vert
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    
-    # Plage de vert (ajuster selon les couleurs exactes)
-    lower_green = np.array([35, 40, 40])
-    upper_green = np.array([85, 255, 255])
-    mask_green = cv2.inRange(hsv, lower_green, upper_green)
-    
-    # Inverser le masque pour avoir le texte en noir
-    green_isolated = cv2.bitwise_not(mask_green)
-    processed_images.append(("green_isolated", green_isolated))
-    
-    # 7. Amélioration du contraste sur l'image originale
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-    l, a, b = cv2.split(lab)
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
-    cl = clahe.apply(l)
-    enhanced = cv2.merge((cl,a,b))
-    enhanced = cv2.cvtColor(enhanced, cv2.COLOR_LAB2BGR)
-    enhanced_gray = cv2.cvtColor(enhanced, cv2.COLOR_BGR2GRAY)
-    processed_images.append(("enhanced_contrast", enhanced_gray))
-    
-    # 8. Morphologie pour nettoyer
-    kernel = np.ones((2,2), np.uint8)
-    morph = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
-    processed_images.append(("morphology", morph))
+    processed_images.append(("thresh", thresh))
     
     return processed_images
 
