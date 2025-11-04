@@ -131,17 +131,20 @@ def extract_odds(image_path: str):
             pattern1 = re.compile(r"(\d+[-:]\d+)\s*([0-9]+[.,][0-9]+)")
             for match in pattern1.finditer(text):
                 score = match.group(1).replace(":", "-")
-                odds_str = match.group(2).replace(",", ".")
-                try:
-                    odds = float(odds_str)
-                    if 1.01 <= odds <= 1000:
-                        score_key = f"{score}_{odds}"
-                        if score_key not in seen_scores:
-                            scores.append({"score": score, "odds": odds})
-                            seen_scores.add(score_key)
-                            logger.info(f"✓ [{source_name}] Pattern1 - {score} @ {odds}")
-                except ValueError:
-                    continue
+                # Nettoyer les scores mal reconnus (ex: "3-07" → "3-0")
+                score = re.sub(r'-0+(\d)$', r'-\1', score)  # Remplacer -07, -08, etc. par -7, -8
+                if re.match(r'^\d{1,2}-\d{1,2}$', score):  # Vérifier format valide
+                    odds_str = match.group(2).replace(",", ".")
+                    try:
+                        odds = float(odds_str)
+                        if 1.01 <= odds <= 1000:
+                            score_key = f"{score}_{odds}"
+                            if score_key not in seen_scores:
+                                scores.append({"score": score, "odds": odds})
+                                seen_scores.add(score_key)
+                                logger.info(f"✓ [{source_name}] Pattern1 - {score} @ {odds}")
+                    except ValueError:
+                        continue
             
             # Pattern 2: Extraire tous les scores, puis toutes les cotes, et les associer
             all_scores_in_text = []
@@ -150,7 +153,11 @@ def extract_odds(image_path: str):
             # Extraire tous les scores possibles
             score_matches = re.findall(r"(\d+[-:]\d+)", text)
             for s in score_matches:
-                all_scores_in_text.append(s.replace(":", "-"))
+                score = s.replace(":", "-")
+                # Nettoyer les scores mal reconnus
+                score = re.sub(r'-0+(\d)$', r'-\1', score)
+                if re.match(r'^\d{1,2}-\d{1,2}$', score):
+                    all_scores_in_text.append(score)
             
             # Extraire toutes les cotes possibles
             odds_matches = re.findall(r"([0-9]+[.,][0-9]+)", text)
