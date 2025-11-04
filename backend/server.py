@@ -13,45 +13,6 @@ from datetime import datetime, timezone
 import shutil
 import subprocess
 
-# Fonction pour installer Tesseract au démarrage
-def ensure_tesseract_installed():
-    """Vérifie et installe Tesseract si nécessaire"""
-    try:
-        # Vérifier si tesseract est installé
-        result = subprocess.run(['which', 'tesseract'], 
-                              capture_output=True, text=True, timeout=5)
-        if result.returncode == 0:
-            logging.info("✅ Tesseract déjà installé")
-            return True
-        
-        logging.warning("⚠️ Tesseract non trouvé, installation automatique...")
-        
-        # Installer Tesseract
-        subprocess.run(['apt-get', 'update', '-qq'], 
-                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=60)
-        
-        subprocess.run(['apt-get', 'install', '-y', '-qq', 
-                       'tesseract-ocr', 'tesseract-ocr-fra', 
-                       'tesseract-ocr-eng', 'tesseract-ocr-spa'],
-                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=120)
-        
-        # Vérifier l'installation
-        result = subprocess.run(['which', 'tesseract'], 
-                              capture_output=True, text=True, timeout=5)
-        if result.returncode == 0:
-            logging.info("✅ Tesseract installé automatiquement avec succès")
-            return True
-        else:
-            logging.error("❌ Échec de l'installation automatique de Tesseract")
-            return False
-            
-    except Exception as e:
-        logging.error(f"❌ Erreur lors de l'installation de Tesseract: {e}")
-        return False
-
-# Installer Tesseract au démarrage
-ensure_tesseract_installed()
-
 # Import des modules de prédiction de score
 from ocr_engine import extract_odds
 from predictor import predict_score
