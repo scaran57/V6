@@ -37,6 +37,9 @@ def predict_score(scores):
     norm_probs = {k: v / total_raw for k, v in raw_probs.items()}
     
     logger.info(f"Probabilités normalisées: {norm_probs}")
+    
+    # DEBUG: Log probabilités initiales
+    log_prediction_step("Probabilités brutes (1/cotes)", norm_probs)
 
     # --- NOUVEAU: Analyse de l'équilibre global entre victoires et défaites ---
     win_sum = 0
