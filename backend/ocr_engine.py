@@ -16,9 +16,8 @@ LANGS = "eng+fra+spa"
 
 def preprocess_image(image_path: str) -> list:
     """
-    Transforme une image en plusieurs variantes prétraitées (6 versions)
-    pour maximiser la lecture OCR.
-    Améliorations: distinction 0/O et 1/I, meilleure stabilité.
+    Transforme une image en plusieurs variantes prétraitées pour maximiser la lecture OCR.
+    Amélioration spéciale: détection texte BLANC sur VERT (boutons Unibet/Winamax)
     """
     # Charger l'image
     image = Image.open(image_path).convert("RGB")
@@ -58,6 +57,32 @@ def preprocess_image(image_path: str) -> list:
     # 6. Combinaison blur + threshold (Otsu)
     _, thr2 = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     versions.append(("otsu", thr2))
+    
+    # 7. NOUVEAU: Isolation du canal ROUGE (texte blanc sur vert apparaît bien)
+    # Le vert a peu de rouge, donc texte blanc ressort
+    if len(img.shape) == 3:
+        b, g, r = cv2.split(img)
+        # Inverser le rouge pour que texte blanc devienne noir
+        red_inverted = cv2.bitwise_not(r)
+        versions.append(("red_channel_inv", red_inverted))
+        
+        # 8. NOUVEAU: Seuillage sur canal vert inversé
+        green_inv = cv2.bitwise_not(g)
+        _, green_thresh = cv2.threshold(green_inv, 150, 255, cv2.THRESH_BINARY)
+        versions.append(("green_thresh", green_thresh))
+        
+        # 9. NOUVEAU: Masque spécifique pour boutons verts
+        # Détecter zones vertes (boutons) et extraire le texte
+        hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+        # Plage de vert plus large
+        lower_green = np.array([25, 40, 40])
+        upper_green = np.array([95, 255, 255])
+        mask = cv2.inRange(hsv, lower_green, upper_green)
+        # Inverser: zones vertes deviennent blanches, texte reste
+        mask_inv = cv2.bitwise_not(mask)
+        # Appliquer sur image grise
+        green_buttons = cv2.bitwise_and(gray, gray, mask=mask_inv)
+        versions.append(("green_buttons", green_buttons))
 
     return versions
 
