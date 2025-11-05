@@ -300,8 +300,13 @@ def extract_match_info(image_path: str):
                         break
             
             if team1 and team2:
-                match_name = f"{team1} vs {team2}"
-                logger.info(f"✓ Match détecté: {match_name}")
+                # Nettoyer les noms d'équipes (enlever les mots collés type "ChampionsLeague")
+                team1_clean = ' '.join([w for w in team1.split() if w.lower() not in excluded_words and len(w) >= 3])
+                team2_clean = ' '.join([w for w in team2.split() if w.lower() not in excluded_words and len(w) >= 3])
+                
+                if team1_clean and team2_clean:
+                    match_name = f"{team1_clean} - {team2_clean}"  # Utiliser tiret au lieu de "vs"
+                    logger.info(f"✓ Match détecté: {match_name}")
         
         # Pattern alternatif: chercher "vs", "v", "-" dans le texte
         if not match_name:
