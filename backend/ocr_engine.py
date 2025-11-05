@@ -143,11 +143,18 @@ def extract_match_info(image_path: str):
         text3 = pytesseract.image_to_string(Image.fromarray(thresh), lang=LANGS, config="--psm 6")
         all_texts.append(text3)
         
-        # Méthode 4: Section haute uniquement (meilleure pour titres)
-        top_section = img[:int(height * 0.35), :]
-        gray_top = cv2.cvtColor(top_section, cv2.COLOR_RGB2GRAY)
-        text4 = pytesseract.image_to_string(Image.fromarray(gray_top), lang=LANGS, config="--psm 6")
+        # Méthode 4: Section centrale (15-45% de la hauteur) - évite header/footer
+        # C'est ici que se trouvent généralement les noms d'équipes
+        central_section = img[int(height * 0.15):int(height * 0.45), :]
+        gray_central = cv2.cvtColor(central_section, cv2.COLOR_RGB2GRAY)
+        text4 = pytesseract.image_to_string(Image.fromarray(gray_central), lang=LANGS, config="--psm 6")
         all_texts.append(text4)
+        
+        # Méthode 5: Section haute (meilleure pour titres si présents)
+        top_section = img[:int(height * 0.25), :]
+        gray_top = cv2.cvtColor(top_section, cv2.COLOR_RGB2GRAY)
+        text5 = pytesseract.image_to_string(Image.fromarray(gray_top), lang=LANGS, config="--psm 6")
+        all_texts.append(text5)
         
         # Combiner tous les textes
         all_text = "\n".join(all_texts)
