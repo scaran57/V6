@@ -152,9 +152,22 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False):
     else:
         scores_dict = scores
     
-    logger.info(f"Calcul probabilités pour {len(scores_dict)} scores, diffExpected={diff_expected}")
+    logger.info(f"Calcul probabilités pour {len(scores_dict)} scores, diffExpected={diff_expected}, odds_weighting={use_odds_weighting}")
     
-    # Normalisation de base (1 / cote)
+    # 🎯 Pondération par cotes si activée
+    if use_odds_weighting:
+        logger.info("⚙️ Application de la pondération par cote bookmaker...")
+        odds_weights = {}
+        for score, odds in scores_dict.items():
+            try:
+                odds_val = float(odds)
+                odds_weights[score] = adjust_score_weight_by_odds(odds_val)
+            except (ValueError, TypeError):
+                odds_weights[score] = 1.0
+    else:
+        odds_weights = {score: 1.0 for score in scores_dict.keys()}
+    
+    # Normalisation de base (1 / cote) × poids cote
     raw_probs = {}
     for score, odds in scores_dict.items():
         try:
