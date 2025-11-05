@@ -90,8 +90,8 @@ class ScorePredictorTester:
                 if response.status_code == 200:
                     data = response.json()
                     
-                    # Check required fields
-                    required_fields = ['success', 'extractedScores', 'mostProbableScore', 'probabilities']
+                    # Check required fields (including new match info fields)
+                    required_fields = ['success', 'extractedScores', 'mostProbableScore', 'probabilities', 'matchName', 'bookmaker']
                     missing_fields = [field for field in required_fields if field not in data]
                     
                     if missing_fields:
