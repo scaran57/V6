@@ -10,7 +10,120 @@ import os
 
 logger = logging.getLogger(__name__)
 
-def calculate_probabilities(scores, diff_expected=2):
+
+# ============================================================================
+# 🎯 MODULE : PONDÉRATION PAR COTE BOOKMAKER (AJOUT OFFICIEL)
+# ============================================================================
+
+def adjust_score_weight_by_odds(odds: float, base_weight: float = 1.0) -> float:
+    """
+    Ajuste le poids d'un score selon la cote bookmaker.
+    Cette fonction est appelée après OCR et avant le calcul principal.
+    
+    Logique:
+    - Cotes très basses (≤ 1.8): trop évidentes → réduction 15%
+    - Cotes moyennes (1.8-4.0): zone neutre → pas d'ajustement
+    - Cotes intéressantes (4.0-8.0): value bet → augmentation 10%
+    - Cotes élevées (8.0-15.0): peu probable → réduction 10%
+    - Cotes extrêmes (> 15.0): très peu probable → réduction 20%
+    
+    Args:
+        odds: Cote du bookmaker
+        base_weight: Poids de base (défaut: 1.0)
+        
+    Returns:
+        float: Poids ajusté
+    """
+    if odds <= 1.8:
+        return base_weight * 0.85   # Trop évident → -15%
+    elif 1.8 < odds <= 4.0:
+        return base_weight          # Zone neutre
+    elif 4.0 < odds <= 8.0:
+        return base_weight * 1.10   # Légère value → +10%
+    elif 8.0 < odds <= 15.0:
+        return base_weight * 0.90   # Peu probable → -10%
+    else:
+        return base_weight * 0.80   # Score extrême → -20%
+
+
+def process_scores_with_odds(extracted_scores: dict, enable_odds_weighting: bool = True) -> dict:
+    """
+    Transforme les scores extraits (OCR) en pondérations probabilistes ajustées.
+    
+    Cette fonction peut être utilisée AVANT calculate_probabilities pour
+    préajuster les probabilités selon la confiance du bookmaker.
+    
+    Args:
+        extracted_scores: dict {"score": odds} ou list [{"score": "X-Y", "odds": Z}]
+        enable_odds_weighting: Activer/désactiver la pondération (défaut: True)
+        
+    Returns:
+        dict: Probabilités normalisées à 100% {score: probability}
+    """
+    # Conversion si format liste
+    if isinstance(extracted_scores, list):
+        scores_dict = {item["score"]: item["odds"] for item in extracted_scores}
+    else:
+        scores_dict = extracted_scores
+    
+    weighted_scores = {}
+    
+    for score, odds in scores_dict.items():
+        try:
+            odds_val = float(odds)
+        except (ValueError, TypeError):
+            logger.warning(f"Cote invalide pour {score}: {odds}")
+            continue
+        
+        # Application de la pondération si activée
+        if enable_odds_weighting:
+            weight = adjust_score_weight_by_odds(odds_val)
+            logger.debug(f"Score {score}: cote={odds_val:.2f}, poids ajusté={weight:.3f}")
+        else:
+            weight = 1.0
+        
+        weighted_scores[score] = weight
+    
+    # Normalisation à 100%
+    total_weight = sum(weighted_scores.values())
+    if total_weight == 0:
+        logger.warning("Poids total = 0, impossible de normaliser")
+        return {s: 0 for s in weighted_scores}
+    
+    probabilities = {s: (w / total_weight) * 100 for s, w in weighted_scores.items()}
+    
+    # Tri par probabilité décroissante
+    sorted_probs = dict(sorted(probabilities.items(), key=lambda x: x[1], reverse=True))
+    
+    logger.info(f"🎯 Pondération par cotes: {len(sorted_probs)} scores traités")
+    if sorted_probs:
+        top_score = list(sorted_probs.items())[0]
+        logger.info(f"   Top score après pondération: {top_score[0]} ({top_score[1]:.2f}%)")
+    
+    return sorted_probs
+
+
+# ============================================================================
+# 🧩 EXEMPLE D'UTILISATION (COMPATIBILITÉ TOTALE)
+# ============================================================================
+# 
+# Après l'OCR, vous pouvez:
+#
+# Option 1: Utiliser directement process_scores_with_odds (pondération uniquement)
+# extracted_scores = {"2-4": 5.5, "4-2": 7.6, "2-0": 3.2, "2-3": 6.8, "1-0": 2.1}
+# probabilities = process_scores_with_odds(extracted_scores)
+# 
+# Option 2: Utiliser calculate_probabilities (algorithme complet avec Poisson)
+# result = calculate_probabilities(extracted_scores, diff_expected=2)
+#
+# Option 3: Combiner les deux (recommandé pour meilleure précision)
+# pre_weighted = process_scores_with_odds(extracted_scores)
+# result = calculate_probabilities(extracted_scores, diff_expected=2)
+#
+# ============================================================================
+
+
+def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False):
     """
     Calcule les probabilités corrigées de chaque score selon l'algorithme original
     avec pondération Poisson simplifiée et ajustement adaptatif des matchs nuls.
