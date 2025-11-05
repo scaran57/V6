@@ -161,5 +161,118 @@ def generate_match_id(match_name, bookmaker, date=None):
     
     return f"{clean_name}_{clean_bookmaker}_{date}"
 
+# --- 📊 RAPPORT DE SUIVI AUTOMATIQUE ---
+def generate_system_report():
+    """
+    🔍 Génère un rapport synthétique sur les matchs en mémoire, l'apprentissage, et la stabilité.
+    
+    Returns:
+        dict: Rapport structuré avec statistiques et dernières analyses
+    """
+    try:
+        total_matches = len(analyzed_matches)
+        
+        # Obtenir la date de dernière modification du fichier
+        last_update = "—"
+        if os.path.exists(MEMORY_FILE):
+            last_update_timestamp = os.path.getmtime(MEMORY_FILE)
+            last_update = datetime.fromtimestamp(last_update_timestamp).strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Comptage des stats
+        bookmakers = {}
+        match_names = []
+        confidence_scores = []
+        
+        for match_id, info in analyzed_matches.items():
+            if isinstance(info, dict):
+                # Bookmaker
+                if "bookmaker" in info:
+                    bm = info["bookmaker"]
+                    bookmakers[bm] = bookmakers.get(bm, 0) + 1
+                
+                # Nom du match
+                if "match_name" in info:
+                    match_names.append(info["match_name"])
+                
+                # Confiance
+                if "confidence" in info:
+                    confidence_scores.append(info["confidence"])
+        
+        # Calcul de la confiance moyenne
+        avg_confidence = sum(confidence_scores) / len(confidence_scores) if confidence_scores else 0
+        
+        # Générer rapport textuel
+        report_text = f"""
+===============================
+📊 RAPPORT DE SUIVI AUTOMATIQUE
+===============================
+
+🕒 Dernière mise à jour : {last_update}
+📁 Matchs mémorisés : {total_matches}
+📈 Confiance moyenne : {avg_confidence * 100:.1f}%
+
+🔸 Répartition par bookmaker :
+"""
+        if bookmakers:
+            for bm, count in sorted(bookmakers.items(), key=lambda x: x[1], reverse=True):
+                report_text += f"   - {bm}: {count} match(s)\n"
+        else:
+            report_text += "   Aucun bookmaker enregistré\n"
+
+        report_text += "\n"
+        report_text += "✅ Mémoire fonctionnelle et stable\n" if total_matches > 0 else "⚠️ Aucune donnée encore sauvegardée\n"
+
+        # Derniers matchs analysés
+        if total_matches > 0:
+            recent_matches = list(analyzed_matches.items())[-5:]  # 5 derniers
+            report_text += f"\n📋 {min(5, total_matches)} dernier(s) match(s) analysé(s) :\n"
+            
+            for match_id, match_data in reversed(recent_matches):
+                if isinstance(match_data, dict):
+                    match_name = match_data.get("match_name", "N/A")
+                    confidence = match_data.get("confidence", 0) * 100
+                    top_score = match_data.get("top3", [{}])[0].get("score", "N/A") if match_data.get("top3") else "N/A"
+                    
+                    report_text += f"   • {match_name}\n"
+                    report_text += f"     Score prédit: {top_score} | Confiance: {confidence:.1f}%\n"
+
+        report_text += "\n===============================\n"
+        
+        # Rapport structuré pour l'API
+        report_data = {
+            "timestamp": datetime.now().isoformat(),
+            "last_update": last_update,
+            "statistics": {
+                "total_matches": total_matches,
+                "average_confidence": round(avg_confidence, 4),
+                "bookmakers_count": len(bookmakers),
+                "bookmakers_distribution": bookmakers
+            },
+            "recent_matches": [
+                {
+                    "match_id": mid,
+                    "match_name": mdata.get("match_name", "N/A"),
+                    "bookmaker": mdata.get("bookmaker", "N/A"),
+                    "confidence": mdata.get("confidence", 0),
+                    "top_score": mdata.get("top3", [{}])[0].get("score", "N/A") if mdata.get("top3") else "N/A",
+                    "analyzed_at": mdata.get("analyzed_at", "N/A")
+                }
+                for mid, mdata in list(analyzed_matches.items())[-5:]
+                if isinstance(mdata, dict)
+            ],
+            "status": "operational" if total_matches > 0 else "empty",
+            "report_text": report_text
+        }
+        
+        logger.info("📊 Rapport de suivi généré")
+        return report_data
+        
+    except Exception as e:
+        logger.error(f"⚠️ Erreur génération rapport : {e}")
+        return {
+            "error": str(e),
+            "status": "error"
+        }
+
 # --- ⚙️ CHARGEMENT AUTOMATIQUE AU DÉMARRAGE ---
 load_matches_memory()
