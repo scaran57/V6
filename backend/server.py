@@ -222,32 +222,47 @@ async def learn(
 ):
     """
     Ajuste le modèle de prédiction avec le score prédit vs score réel.
+    Utilise le système sécurisé avec log append-only.
     Optionnel: Noms des équipes pour apprentissage contextuel.
     """
     try:
-        result = update_model(predicted, real, home_team, away_team)
+        # Utiliser le système sécurisé
+        import sys
+        sys.path.insert(0, '/app')
+        from modules.local_learning_safe import record_learning_event, load_meta
         
-        # Gérer le cas où c'est un dict (skipped)
-        if isinstance(result, dict) and result.get("skipped"):
-            logger.info(f"⚠️ Apprentissage ignoré: {result.get('reason')}")
-            return {
-                "success": True,
-                "skipped": True,
-                "message": f"⚠️ {result.get('reason')}",
-                "newDiffExpected": get_diff_expected()
-            }
+        # Générer un match_id
+        import time
+        match_id = f"learn_{int(time.time())}"
         
-        if result:
-            diff = get_diff_expected()
-            logger.info(f"✅ Modèle ajusté: {predicted} → {real}, nouvelle diff: {diff}")
+        # Enregistrer l'événement d'apprentissage
+        success, result = record_learning_event(
+            match_id=match_id,
+            home_team=home_team or "Unknown",
+            away_team=away_team or "Unknown",
+            predicted=predicted,
+            real=real,
+            agent_id="api_learn_endpoint",
+            keep_last=5  # Garder les 5 derniers
+        )
+        
+        if success:
+            meta = load_meta()
+            diff = meta.get("diffExpected")
+            logger.info(f"✅ Apprentissage sécurisé: {predicted} → {real}, nouvelle diff: {diff}")
+            
+            # Aussi mettre à jour l'ancien système pour compatibilité
+            update_model(predicted, real, home_team, away_team)
+            
             return {
                 "success": True,
                 "message": f"Modèle ajusté avec le score réel: {real} ✅",
-                "newDiffExpected": diff
+                "newDiffExpected": diff,
+                "event": result
             }
         else:
             return JSONResponse(
-                {"error": "Format de score invalide. Utilisez le format X-Y (ex: 2-1)"}, 
+                {"error": f"Erreur d'enregistrement: {result}"}, 
                 status_code=400
             )
             
