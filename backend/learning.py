@@ -69,6 +69,23 @@ def update_model(predicted, real, home_team=None, away_team=None):
         logger.info(f"✅ Apprentissage: prédit={predicted}, réel={real}")
         logger.info(f"📊 Différence attendue mise à jour: {current} → {new_diff}")
         
+        # Si les noms d'équipes sont fournis, mettre à jour leurs stats
+        if home_team and away_team:
+            try:
+                from score_predictor import update_team_results, adjust_diff_expected
+                
+                # Mettre à jour les stats des équipes
+                update_team_results(home_team, r_home, r_away)
+                update_team_results(away_team, r_away, r_home)
+                
+                # Ajuster le diffExpected basé sur les équipes
+                adjusted_diff = adjust_diff_expected(new_diff, home_team, away_team)
+                new_diff = adjusted_diff
+                
+                logger.info(f"🎯 Ajustement par équipes: {home_team} vs {away_team}")
+            except Exception as e:
+                logger.warning(f"⚠️ Impossible d'ajuster par équipes: {str(e)}")
+        
         # Sauvegarde
         with open(DATA_FILE, "w") as f:
             json.dump({"diffExpected": new_diff}, f)
