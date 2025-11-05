@@ -141,10 +141,17 @@ async def analyze(file: UploadFile = File(...)):
         
         logger.info(f"Prédiction réussie: {result['mostProbableScore']}")
         
+        # Calculer le top 3 pour le retour
+        sorted_probs = sorted(result['probabilities'].items(), key=lambda x: x[1], reverse=True)
+        top3 = [{"score": s, "probability": p} for s, p in sorted_probs[:3]]
+        
         return JSONResponse({
             "success": True,
             "extractedScores": scores,
-            **result
+            "mostProbableScore": result['mostProbableScore'],
+            "probabilities": result['probabilities'],
+            "confidence": result.get('confidence', 0.0),
+            "top3": top3
         })
         
     except Exception as e:
