@@ -23,7 +23,8 @@ from matches_memory import (
     generate_match_id,
     get_all_matches,
     delete_match,
-    clear_all_matches
+    clear_all_matches,
+    generate_system_report
 )
 
 
