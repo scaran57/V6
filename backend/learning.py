@@ -23,10 +23,16 @@ def get_diff_expected():
             logger.error(f"Erreur lors de la lecture du fichier d'apprentissage: {str(e)}")
     return 2
 
-def update_model(predicted, real):
+def update_model(predicted, real, home_team=None, away_team=None):
     """
     Met à jour le modèle d'apprentissage avec le score prédit vs réel.
     Ajuste progressivement la différence de buts attendue.
+    
+    Args:
+        predicted: Score prédit (format "X-Y")
+        real: Score réel (format "X-Y")
+        home_team: Nom de l'équipe domicile (optionnel)
+        away_team: Nom de l'équipe extérieur (optionnel)
     """
     current = get_diff_expected()
     
