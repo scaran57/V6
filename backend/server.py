@@ -119,6 +119,9 @@ async def analyze(file: UploadFile = File(...)):
         
         logger.info(f"Image reçue: {file.filename}")
         
+        # Extraire les informations du match (nom et bookmaker)
+        match_info = extract_match_info(file_path)
+        
         # Extraire les cotes via OCR
         scores = extract_odds(file_path)
         
