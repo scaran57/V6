@@ -155,12 +155,18 @@ async def analyze(file: UploadFile = File(...)):
         )
 
 @api_router.post("/learn")
-async def learn(predicted: str = Form(...), real: str = Form(...)):
+async def learn(
+    predicted: str = Form(...), 
+    real: str = Form(...),
+    home_team: str = Form(None),
+    away_team: str = Form(None)
+):
     """
     Ajuste le modèle de prédiction avec le score prédit vs score réel.
+    Optionnel: Noms des équipes pour apprentissage contextuel.
     """
     try:
-        result = update_model(predicted, real)
+        result = update_model(predicted, real, home_team, away_team)
         
         # Gérer le cas où c'est un dict (skipped)
         if isinstance(result, dict) and result.get("skipped"):
