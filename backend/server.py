@@ -129,6 +129,31 @@ async def analyze(file: UploadFile = File(...)):
         
         # Extraire les informations du match (nom et bookmaker)
         match_info = extract_match_info(file_path)
+        match_name = match_info.get("match_name", "Match non détecté")
+        bookmaker = match_info.get("bookmaker", "Bookmaker inconnu")
+        
+        # Générer un ID unique pour ce match
+        match_id = generate_match_id(match_name, bookmaker)
+        
+        # Vérifier si ce match a déjà été analysé
+        existing_result = get_match_result(match_id)
+        if existing_result:
+            logger.info(f"🔍 Match {match_id} déjà en mémoire - résultat figé retourné")
+            os.remove(file_path)
+            
+            return JSONResponse({
+                "success": True,
+                "fromMemory": True,
+                "matchId": match_id,
+                "matchName": existing_result["match_name"],
+                "bookmaker": existing_result["bookmaker"],
+                "extractedScores": existing_result["extracted_scores"],
+                "mostProbableScore": existing_result["top3"][0]["score"] if existing_result["top3"] else "N/A",
+                "probabilities": existing_result["probabilities"],
+                "confidence": existing_result["confidence"],
+                "top3": existing_result["top3"],
+                "analyzedAt": existing_result.get("analyzed_at")
+            })
         
         # Extraire les cotes via OCR
         scores = extract_odds(file_path)
@@ -156,10 +181,23 @@ async def analyze(file: UploadFile = File(...)):
         sorted_probs = sorted(result['probabilities'].items(), key=lambda x: x[1], reverse=True)
         top3 = [{"score": s, "probability": p} for s, p in sorted_probs[:3]]
         
+        # Sauvegarder dans la mémoire
+        saved_result = analyze_match_stable(
+            match_id=match_id,
+            scores_data=scores,
+            probabilities=result['probabilities'],
+            confidence=result.get('confidence', 0.0),
+            top3=top3,
+            bookmaker=bookmaker,
+            match_name=match_name
+        )
+        
         return JSONResponse({
             "success": True,
-            "matchName": match_info.get("match_name", "Match non détecté"),
-            "bookmaker": match_info.get("bookmaker", "Bookmaker inconnu"),
+            "fromMemory": False,
+            "matchId": match_id,
+            "matchName": match_name,
+            "bookmaker": bookmaker,
             "extractedScores": scores,
             "mostProbableScore": result['mostProbableScore'],
             "probabilities": result['probabilities'],
