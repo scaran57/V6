@@ -224,6 +224,41 @@ backend:
           - Updates diffExpected based on prediction accuracy
           - Maintains learning state between requests
 
+  - task: "Extract and display match name and bookmaker"
+    implemented: true
+    working: true
+    file: "/app/backend/ocr_engine.py, /app/backend/server.py, /app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: |
+          ✅ FEATURE COMPLETE - MATCH NAME & BOOKMAKER DISPLAY
+          
+          Backend changes:
+          - Created extract_match_info() function in ocr_engine.py
+          - Analyzes multiple image sections (top 25%, middle 10-40%, full image)
+          - Detects bookmaker via keywords: Unibet, BetClic, Winamax, PMU, etc.
+          - Extracts match names with pattern matching (Team vs Team format)
+          - Fallback detection from filename if not found in image
+          - Added to /api/analyze response: matchName and bookmaker fields
+          
+          Frontend changes:
+          - Added display section above "Top 3 des Scores"
+          - Clean blue gradient box (indigo-50 to blue-50)
+          - Shows match with ⚽ icon
+          - Shows bookmaker with 🎰 icon
+          - Only displays if data is detected (graceful fallback)
+          - Maintains lightweight, non-intrusive design
+          
+          Testing completed:
+          - Winamax test image: Bookmaker detected ✅
+          - Simulated BetClic PSG vs Marseille: Both match and bookmaker detected ✅
+          - UI tested via screenshot: Clean display confirmed ✅
+          - Positioned correctly above Top 3 as requested ✅
+
 frontend:
   - task: "Image upload and analysis display"
     implemented: true
