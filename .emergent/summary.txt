@@ -1,105 +1,68 @@
 <analysis>
-The AI engineer successfully transformed a basic score prediction backend into a more robust, full-stack application. The development trajectory was highly iterative, driven by user feedback on OCR accuracy and system stability. Initial efforts focused on integrating the core components, establishing API contracts, and addressing basic functionality. The most significant challenge encountered was the inconsistent OCR performance across various bookmaker screenshot formats and themes (light vs. dark), coupled with Tesseract's environmental instability. The AI engineer demonstrated adaptability by first attempting to resolve Tesseract PATH issues, then migrating to EasyOCR (which caused memory issues), and finally implementing a persistent Tesseract installation mechanism. User-provided updates, including a new prediction algorithm and a debug logger, were integrated, enhancing both functionality and observability. The process involved continuous refinement of OCR preprocessing, regex patterns, and score validation logic based on real-world image analysis.
+The AI engineer successfully evolved a basic score prediction application into a feature-rich, full-stack system. Initial work focused on OCR robustness, adapting to diverse bookmaker formats, and resolving Tesseract stability issues. Key developments included integrating a sophisticated score prediction algorithm, implementing an adaptive learning mechanism with a bug fix for  calculation, and enhancing reactivity using a 60/40 weighted average. Recent advancements integrated a team-based learning module, a new odds weighting logic, and a final prediction system calculating confidence and a top 3 scores. The frontend was updated to display these new insights. The development was highly iterative, responding to user feedback on accuracy, learning responsiveness, and the need for comprehensive diagnostics and backups. The current task revolves around further enhancing the UI with match-specific information.
 </analysis>
 
 <product_requirements>
-The user initially requested a score prediction application capable of processing images from bookmakers. The core problem was to extract match scores and their corresponding odds from screenshots, then use a pre-existing algorithm to predict the most probable score. This started as a personal project, without external users.
-
-Over time, explicit requirements evolved:
-- **OCR Robustness:** The primary and most challenging requirement was to make the OCR engine reliable across different bookmakers (Unibet, Winamax), varying display formats (e.g., scores and odds on separate lines, green buttons with white text, table layouts), and themes (light/dark mode). The system needed to filter out extraneous information like time, percentages, and impossible scores.
-- **Prediction Algorithm Integration:** The user provided a specific score prediction algorithm (akin to a Kotlin original) involving raw probabilities, Gaussian weighting based on expected difference, and later an improved version with dynamic draw penalty based on odds balance. This needed to be accurately integrated and used.
-- **Learning Mechanism:** The application required a learning component to update an expected difference () value based on predicted vs. real scores, with handling for non-numeric scores like Autre.
-- **Performance:** The analysis process needed to be efficient, avoiding long processing times and timeouts.
-- **Observability:** A debug logging system was requested to monitor the OCR and prediction pipeline.
-- **System Stability:** Address issues like Tesseract getting uninstalled or not being found in the PATH after system reboots.
-- **Backup:** A mechanism to save the current working version was requested before significant changes.
-
-The implementation so far has built a full-stack application (FastAPI backend, React frontend) that attempts to meet these requirements. The backend exposes endpoints for health checks, image analysis, model learning, and retrieving the expected difference. The frontend provides an interface for image uploads and result display. The OCR engine uses PyTesseract with extensive image preprocessing, pattern matching, and validation. The prediction and learning algorithms are integrated into  and  respectively.
+The core product goal is a score prediction application processing bookmaker images. Initially, it extracted scores/odds and predicted the most probable score using a given algorithm. Requirements evolved to demand robust OCR across various bookmakers, formats, and themes, filtering extraneous data. Integration of a user-provided prediction algorithm (initially Gaussian, later improved with dynamic draw penalty) was crucial. An adaptive learning mechanism to update  based on actual scores, handling non-numeric inputs, was required. Performance and system stability (e.g., persistent Tesseract installation) were ongoing concerns. Observability was addressed with a debug logger. Recent additions include a team-based learning system to track historical performance, an odds weighting module to refine probabilities, and a final confidence score with top-3 predictions. The frontend needed to display these advanced analytical results clearly, including interpretation and recommendations. The user now wants to display match names and bookmaker information in the UI.
 </product_requirements>
 
 <key_technical_concepts>
-
-- **FastAPI:** Python web framework for building the backend API.
-- **React:** JavaScript library for building the interactive frontend UI.
-- **PyTesseract:** Python wrapper for Google's Tesseract OCR engine, used for text extraction from images.
-- **OpenCV (cv2):** Python library for image processing, crucial for preprocessing bookmaker screenshots.
-- **PIL (Pillow):** Python Imaging Library, used for image manipulation.
-- **Supervisor:** Process control system for managing backend and frontend services.
-- **Docker/Docker Compose:** Containerization for environment consistency and deployment.
-- **OCR Preprocessing:** Techniques like grayscale, blur, adaptive thresholding, CLAHE, denoising, color channel extraction, inversion for improving text recognition.
-- **Regex:** Regular expressions for pattern matching to extract scores and odds.
-- **Score Prediction Algorithm:** Custom logic involving odds-to-probability conversion, Gaussian weighting based on score difference, and adaptive draw penalties.
-- **Dynamic Learning:** Model adjustment based on real vs. predicted scores.
+- **FastAPI:** Backend API.
+- **React:** Frontend UI.
+- **PyTesseract & OpenCV:** OCR and image preprocessing.
+- **PIL (Pillow):** Image manipulation.
+- **Supervisor:** Process management.
+- **Dynamic Learning:** Adaptive  with weighted averaging.
+- **Odds Weighting:** Adjusting score probabilities based on bookmaker odds.
+- **Team-based Learning:** Storing and retrieving team match history.
+- **Confidence Score:** Quantifying prediction reliability.
+- **Top 3 Predictions:** Providing multiple probable outcomes.
 </key_technical_concepts>
 
 <code_architecture>
-
-The application follows a standard full-stack architecture with a FastAPI backend and a React frontend. It leverages Docker for containerization and Supervisor for process management.
-
-**Directory Structure:**
+The application uses a FastAPI backend and a React frontend, managed by Docker and Supervisor.
 
 
 
--   **/app/backend/app/main.py**:
-    -   **Importance**: Main FastAPI application entry point, defines API routes (, , , ).
-    -   **Changes**:
-        -   Initial setup of FastAPI app and routes.
-        -   Added relative imports.
-        -   Added  for automatic Tesseract installation and configuration.
-        -   Integrated  from  into API endpoints.
-        -   Modified  endpoint to handle  scores like Autre.
-        -   Modified  to return  even if it's Aucune donnée.
+-   **/app/backend/app/server.py (formerly main.py)**:
+    -   **Importance**: Main FastAPI entry point, defining API routes.
+    -   **Changes**: Modified  endpoint to integrate new  logic, , and return ,  in the API response. Modified  to incorporate team-based learning, and added a new  endpoint.
 -   **/app/backend/app/ocr_engine.py**:
-    -   **Importance**: Core OCR logic for extracting scores and odds from images.
-    -   **Changes**:
-        -   Initial implementation for  using .
-        -   Fixed relative imports.
-        -   Enhanced regex and logic for diverse bookmaker formats.
-        -   Added advanced preprocessing using OpenCV () for white text on colored backgrounds.
-        -   Introduced score cleaning and validation filters (e.g., ).
-        -   Reverted from EasyOCR to PyTesseract after memory issues, re-implementing Tesseract configuration.
-        -   Integrated user-provided patch for improved stability (0/O, 1/I distinction, noisy images).
-        -   Added specific logic for Unibet format (scores on one line, odds on the next, white text on green).
-        -   Implemented automatic image cropping to remove UI elements (time, header).
-        -   Integrated  for OCR steps.
+    -   **Importance**: Handles OCR from images, preprocessing, and text extraction.
+    -   **Changes**: No recent direct modifications in this trajectory segment, but its output is consumed by .
 -   **/app/backend/app/predictor.py**:
-    -   **Importance**: Implements the score prediction algorithm.
-    -   **Changes**:
-        -   Initial implementation of  using  and Gaussian weighting.
-        -   Fixed relative imports.
-        -   Integrated user-provided *new calculation algorithm* () which includes dynamic draw penalty and odds balance analysis.
-        -   Integrated  for prediction steps.
+    -   **Importance**: Previously contained the primary score prediction algorithm.
+    -   **Changes**: Its functionality for  has been superseded by the new  module. It is likely kept for backup or historical reference but is not actively used for new predictions.
 -   **/app/backend/app/learning.py**:
-    -   **Importance**: Handles the adaptive learning mechanism for .
-    -   **Changes**:
-        -   Initial implementation of  and .
-        -   Fixed relative imports.
-        -   Modified  to gracefully handle non-numeric  scores (e.g., Autre).
+    -   **Importance**: Manages the  learning mechanism.
+    -   **Changes**: Fixed a bug using  instead of  for  calculation. Updated the weighted average formula from 80/20 to 60/40 for increased reactivity. Integrated calls to  and  from the new team learning module.
+-   **/app/backend/app/score_predictor.py (NEW)**:
+    -   **Importance**: New module for advanced score prediction and odds weighting.
+    -   **Content**: Contains  (updated with odds weighting and draw penalty logic), , , , , , and . It’s the central module for all prediction and intelligent adjustments.
+-   **/app/backend/app/data/teams_data.json (NEW)**:
+    -   **Importance**: Stores historical match data (goals for/against) for each team to support team-based learning.
 -   **/app/frontend/src/App.js**:
-    -   **Importance**: Main React component, user interface for image upload, analysis display, and learning.
-    -   **Changes**:
-        -   Initial basic UI structure for image upload and displaying results.
-        -   Increased API call timeout to handle longer backend processing.
-        -   Improved feedback and validation messages for the learning module.
--   **/app/backend/app/debug_logger.py (NEW)**:
-    -   **Importance**: Provides a centralized, toggleable logging utility for tracking OCR and calculation pipeline stages.
-    -   **Content**: Contains  flag,  function, and  function.
--   **/app/backend/app/DEBUG_GUIDE.md (NEW)**:
-    -   **Importance**: Documentation for enabling/disabling the debug mode.
--   **/app/backend/install_tesseract.sh (NEW, but integrated)**:
-    -   **Importance**: Script to install Tesseract, initially standalone, then its logic was absorbed into 's startup event for persistence.
--   **/app/backup_working_version_20251104_1520/ (NEW)**:
-    -   **Importance**: A snapshot of the working codebase (, , , , ) and a  script, created at user's request.
+    -   **Importance**: Main React component for user interaction and displaying results.
+    -   **Changes**: Modified to display the  score (with a visual gauge/badge), the  predicted scores in a table, an automatic  of the confidence level, and  based on confidence.
+-   **/app/SAUVEGARDE_V3.2_20251105_155203/ (NEW)**:
+    -   **Importance**: A complete snapshot of the codebase created before significant frontend changes.
 </code_architecture>
 
 <pending_tasks>
-- The immediate pending task is to integrate the  file provided by the user into the backend, which contains a new  function.
+- Integrate the match names and the analyzed bookmaker name into the frontend UI, making sure it is clean and lightweight.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer had just received a new Python file, , from the user. This file contains an updated calculation algorithm named , which is intended to replace or enhance the existing prediction logic. The user specified that this file should be placed in the  folder. The AI engineer acknowledged this, stated that a backup of the current working version had been created, and confirmed that it would integrate this new algorithm. The last action in the trajectory was the AI engineer preparing to create this new file and integrate it into the application.
+Immediately before this summary request, the AI engineer had just completed a significant update to the frontend. Following the user's explicit request, the  file within  was modified to prominently display key analytical results that were already available in the backend API. Specifically, the UI now shows:
+
+1.  **Confidence Score:** Presented with a visual gauge or badge (green, orange, red) to indicate reliability.
+2.  **Top 3 Scores:** A table showcasing the three most probable scores with their respective percentages.
+3.  **Automatic Interpretation:** Textual feedback on the confidence level (e.g., Match incertain).
+4.  **Personalized Recommendations:** Advice based on confidence, such as Prédiction fiable or Prudence recommandée.
+
+The frontend changes were then confirmed by restarting the frontend service and generating a screenshot (though the screenshot content itself is not provided in the trajectory, the action of taking it indicates completion of the UI update). This integration significantly enhanced the user's ability to understand the prediction results. The application is now in a state where the backend provides rich analytical data, and the frontend effectively visualizes it.
 </current_work>
 
 <optional_next_step>
-Integrate the user-provided  file into the backend.
+Integrate the match name and the analyzed bookmaker name into the frontend UI.
 </optional_next_step>
