@@ -334,6 +334,91 @@ async def get_team_stats_by_name(team_name: str):
             status_code=500
         )
 
+@api_router.get("/matches/memory")
+async def get_matches_memory():
+    """
+    Récupère tous les matchs en mémoire.
+    """
+    try:
+        matches = get_all_matches()
+        return {
+            "success": True,
+            "total_matches": len(matches),
+            "matches": matches
+        }
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération de la mémoire: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
+@api_router.get("/matches/{match_id}")
+async def get_match_by_id(match_id: str):
+    """
+    Récupère un match spécifique par son ID.
+    """
+    try:
+        result = get_match_result(match_id)
+        if result:
+            return {
+                "success": True,
+                "match": result
+            }
+        else:
+            return JSONResponse(
+                {"error": f"Match {match_id} non trouvé"}, 
+                status_code=404
+            )
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération du match {match_id}: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
+@api_router.delete("/matches/{match_id}")
+async def delete_match_by_id(match_id: str):
+    """
+    Supprime un match de la mémoire.
+    """
+    try:
+        deleted = delete_match(match_id)
+        if deleted:
+            return {
+                "success": True,
+                "message": f"Match {match_id} supprimé"
+            }
+        else:
+            return JSONResponse(
+                {"error": f"Match {match_id} non trouvé"}, 
+                status_code=404
+            )
+    except Exception as e:
+        logger.error(f"Erreur lors de la suppression du match {match_id}: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
+@api_router.delete("/matches/memory/clear")
+async def clear_matches_memory():
+    """
+    Supprime tous les matchs de la mémoire.
+    """
+    try:
+        clear_all_matches()
+        return {
+            "success": True,
+            "message": "Mémoire complètement effacée"
+        }
+    except Exception as e:
+        logger.error(f"Erreur lors du nettoyage de la mémoire: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
 # Include the router in the main app
 app.include_router(api_router)
 
