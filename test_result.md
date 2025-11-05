@@ -403,6 +403,33 @@ agent_communication:
       - test_betclic_psg.jpg: Match "BetClic PSG vs Marseille" + Bookmaker BetClic ✅
       
       RECOMMANDATION: La fonctionnalité est prête pour la production. Main agent peut procéder au résumé final.
+  - agent: "testing"
+    message: |
+      🎯 TESTS SPÉCIFIQUES AVEC IMAGES RÉELLES UTILISATEUR TERMINÉS
+      
+      RÉSULTATS DÉTAILLÉS DES 3 IMAGES TESTÉES:
+      
+      1️⃣ test_winamax_real.jpg (Olympiakos vs PSV attendu):
+         - API: ✅ Fonctionnel (21 scores extraits)
+         - Bookmaker: ✅ "Winamax" correctement détecté
+         - Match: ❌ "Match non détecté" - extraction échouée
+      
+      2️⃣ test_unibet1.jpg (match Unibet):
+         - API: ✅ Fonctionnel (23 scores extraits)
+         - Bookmaker: ✅ "Unibet" correctement détecté
+         - Match: ⚠️ "S'inscrire vs Olympiakos Eindhoven" - contient élément d'interface
+      
+      3️⃣ newcastle_bilbao.jpg (Newcastle vs Athletic Bilbao attendu):
+         - API: ✅ Fonctionnel (4 scores extraits)
+         - Bookmaker: ✅ "BetClic" détecté (screenshot d'app)
+         - Match: ❌ "Match non détecté" - extraction échouée
+      
+      BILAN:
+      ✅ Détection bookmaker: Excellente (3/3 réussies)
+      ⚠️ Extraction nom match: Nécessite amélioration (1/3 partielle, 2/3 échouées)
+      ✅ Fonctionnalité API: Parfaitement opérationnelle
+      
+      RECOMMANDATION: L'algorithme fonctionne mais nécessite des ajustements pour mieux extraire les noms de matchs des vraies images de bookmakers. Les éléments d'interface sont parfois inclus dans l'extraction.
   test_priority: "high_first"
 
 agent_communication:
