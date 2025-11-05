@@ -420,6 +420,22 @@ async def clear_matches_memory():
             status_code=500
         )
 
+@api_router.get("/system/report")
+async def get_system_report():
+    """
+    Génère un rapport de suivi automatique du système.
+    Inclut statistiques sur les matchs, bookmakers, confiance moyenne, etc.
+    """
+    try:
+        report = generate_system_report()
+        return report
+    except Exception as e:
+        logger.error(f"Erreur lors de la génération du rapport: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
 # Include the router in the main app
 app.include_router(api_router)
 
