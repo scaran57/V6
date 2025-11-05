@@ -17,6 +17,14 @@ import subprocess
 from ocr_engine import extract_odds, extract_match_info
 from score_predictor import calculate_probabilities
 from learning import update_model, get_diff_expected
+from matches_memory import (
+    analyze_match_stable, 
+    get_match_result, 
+    generate_match_id,
+    get_all_matches,
+    delete_match,
+    clear_all_matches
+)
 
 
 ROOT_DIR = Path(__file__).parent
