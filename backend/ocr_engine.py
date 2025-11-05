@@ -197,6 +197,15 @@ def extract_match_info(image_path: str):
         lines = all_text.split('\n')
         lines = [line.strip() for line in lines if line.strip()]
         
+        # Mots à exclure (interface, boutons, etc.)
+        excluded_words = {
+            'score', 'exact', 'cote', 'match', 'autre', 'but', 'foot', 'football',
+            'preview', 'bookmaker', 'top', 'voir', 'cotes', 'extraites', 'scores',
+            'inscrire', 'connexion', 'parier', 'paris', 'live', 'direct', 'resultat',
+            'probabilite', 'recommandation', 'interpretation', 'confiance', 'analyse',
+            'analyser', 'predire', 'upload', 'image', 'choisir', 'glissez', 'cliquez'
+        }
+        
         # Chercher les noms d'équipes (mots capitalisés de 3+ caractères)
         team_candidates = []
         for line in lines:
@@ -210,11 +219,14 @@ def extract_match_info(image_path: str):
             words = line.split()
             team_name_parts = []
             for word in words:
+                # Nettoyer le mot (enlever ponctuation)
+                clean_word = re.sub(r'[^\w\s\-\'À-ÿ]', '', word)
+                
                 # Mot commence par majuscule, pas de chiffres, 3+ caractères
-                if word and word[0].isupper() and not any(c.isdigit() for c in word) and len(word) >= 3:
-                    # Exclure les mots communs
-                    if word.lower() not in ['score', 'exact', 'cote', 'match', 'autre', 'but', 'foot', 'football']:
-                        team_name_parts.append(word)
+                if clean_word and clean_word[0].isupper() and not any(c.isdigit() for c in clean_word) and len(clean_word) >= 3:
+                    # Exclure les mots communs d'interface
+                    if clean_word.lower() not in excluded_words:
+                        team_name_parts.append(clean_word)
             
             if team_name_parts:
                 potential_team = ' '.join(team_name_parts[:3])  # Max 3 mots
