@@ -1,9 +1,12 @@
 """
 Module de calcul des probabilités de scores
 Basé sur l'algorithme original avec pondération Poisson et correction adaptative des nuls
++ Apprentissage par équipe avec historique des 5 derniers matchs
 """
 import math
 import logging
+import json
+import os
 
 logger = logging.getLogger(__name__)
 
