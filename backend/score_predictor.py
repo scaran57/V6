@@ -131,9 +131,14 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False):
     Args:
         scores: dict {score: odds} ou list [{"score": "X-Y", "odds": Z}]
         diff_expected: différence de buts attendue (défaut: 2)
+        use_odds_weighting: Appliquer la pondération par cote AVANT le calcul (défaut: False)
     
     Returns:
         dict avec mostProbableScore et probabilities
+        
+    Note:
+        Si use_odds_weighting=True, les scores seront prépondérés selon les cotes
+        bookmaker avant d'appliquer l'algorithme Poisson et la correction des nuls.
     """
     
     # 🧩 Étape 1 : Vérification et normalisation des données
