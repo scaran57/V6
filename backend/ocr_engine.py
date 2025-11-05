@@ -240,7 +240,15 @@ def extract_match_info(image_path: str):
             
             if team_name_parts:
                 potential_team = ' '.join(team_name_parts[:3])  # Max 3 mots
-                if len(potential_team) >= 4:
+                
+                # Vérifier que ce n'est pas une phrase exclue
+                is_excluded = False
+                for excluded_phrase in excluded_phrases:
+                    if excluded_phrase in potential_team.lower():
+                        is_excluded = True
+                        break
+                
+                if not is_excluded and len(potential_team) >= 4:
                     team_candidates.append(potential_team)
         
         # Filtrer et dédupliquer
