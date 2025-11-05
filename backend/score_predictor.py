@@ -172,7 +172,9 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False):
     for score, odds in scores_dict.items():
         try:
             if float(odds) > 0:
-                raw_probs[score] = 1.0 / float(odds)
+                base_prob = 1.0 / float(odds)
+                # Appliquer le poids de la cote si activé
+                raw_probs[score] = base_prob * odds_weights.get(score, 1.0)
         except (ValueError, TypeError):
             logger.warning(f"Cote invalide pour {score}: {odds}")
             continue
