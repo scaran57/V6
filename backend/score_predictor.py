@@ -113,3 +113,88 @@ def calculate_probabilities(scores, diff_expected=2):
         "mostProbableScore": most_probable,
         "probabilities": {k: round(v, 2) for k, v in final_probabilities.items()}
     }
+
+
+# ============================================================================
+# === Module Local Learning Compact - Apprentissage par Équipe ===
+# ============================================================================
+json_path = "/app/data/teams_data.json"
+
+def _load_data():
+    """Charge les données des équipes"""
+    if not os.path.exists(json_path):
+        os.makedirs(os.path.dirname(json_path), exist_ok=True)
+        with open(json_path, "w") as f: 
+            json.dump({}, f)
+    with open(json_path, "r") as f: 
+        return json.load(f)
+
+def _save_data(d): 
+    """Sauvegarde les données des équipes"""
+    with open(json_path, "w") as f: 
+        json.dump(d, f, indent=2)
+
+def update_team_results(team, gf, ga):
+    """
+    Enregistre le résultat d'un match pour une équipe.
+    Garde les 5 derniers matchs seulement.
+    
+    Args:
+        team: Nom de l'équipe
+        gf: Goals For (buts marqués)
+        ga: Goals Against (buts encaissés)
+    """
+    d = _load_data()
+    d.setdefault(team, []).append([gf, ga])
+    d[team] = d[team][-5:]  # garde les 5 derniers matchs
+    _save_data(d)
+    logger.info(f"📝 Stats mises à jour pour {team}: {gf}-{ga}")
+
+def get_team_stats(team):
+    """
+    Récupère les statistiques moyennes d'une équipe.
+    
+    Args:
+        team: Nom de l'équipe
+        
+    Returns:
+        tuple: (moyenne buts marqués, moyenne buts encaissés)
+    """
+    d = _load_data()
+    if team not in d or not d[team]: 
+        return (1.5, 1.5)  # Valeurs par défaut
+    
+    gf = sum(x[0] for x in d[team]) / len(d[team])
+    ga = sum(x[1] for x in d[team]) / len(d[team])
+    return round(gf, 2), round(ga, 2)
+
+def adjust_diff_expected(diff, home, away):
+    """
+    Ajuste le diffExpected en fonction des statistiques des équipes.
+    
+    Args:
+        diff: diffExpected actuel
+        home: Nom de l'équipe domicile
+        away: Nom de l'équipe extérieur
+        
+    Returns:
+        float: diffExpected ajusté entre 0 et 3
+    """
+    h_for, h_against = get_team_stats(home)
+    a_for, a_against = get_team_stats(away)
+    
+    # Calcul de l'ajustement basé sur la force offensive et défensive
+    adj = ((h_for - a_against) - (a_for - h_against)) / 2
+    
+    # Ajuster et limiter entre 0 et 3
+    new_diff = max(0, min(3, round(diff + adj, 2)))
+    
+    logger.info(f"⚙️ Ajustement diffExpected: {diff} → {new_diff} (home: {home}, away: {away})")
+    logger.info(f"   {home}: {h_for} buts/match, {h_against} encaissés/match")
+    logger.info(f"   {away}: {a_for} buts/match, {a_against} encaissés/match")
+    
+    return new_diff
+
+def get_all_teams_stats():
+    """Récupère les statistiques de toutes les équipes"""
+    return _load_data()
