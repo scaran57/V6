@@ -282,6 +282,26 @@ function App() {
                   </div>
                 )}
 
+                {/* Informations du Match et Bookmaker */}
+                {(result.matchName || result.bookmaker) && (
+                  <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-4 border border-indigo-200">
+                    {result.matchName && result.matchName !== "Match non détecté" && (
+                      <div className="flex items-center space-x-2 mb-2">
+                        <span className="text-lg">⚽</span>
+                        <span className="text-sm font-semibold text-gray-700">Match:</span>
+                        <span className="text-sm font-bold text-indigo-700">{result.matchName}</span>
+                      </div>
+                    )}
+                    {result.bookmaker && result.bookmaker !== "Bookmaker inconnu" && (
+                      <div className="flex items-center space-x-2">
+                        <span className="text-lg">🎰</span>
+                        <span className="text-sm font-semibold text-gray-700">Bookmaker:</span>
+                        <span className="text-sm text-gray-600">{result.bookmaker}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Top 3 des Scores */}
                 {result.top3 && result.top3.length > 0 && (
                   <div>
