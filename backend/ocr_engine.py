@@ -258,17 +258,38 @@ def extract_match_info(image_path: str):
         
         # Chercher des paires d'équipes
         if len(team_candidates) >= 2:
-            # Prendre les 2 premières équipes différentes
-            team1 = team_candidates[0]
+            # Prendre les 2 premières équipes différentes et valides
+            team1 = None
             team2 = None
             
-            for candidate in team_candidates[1:]:
-                # Vérifier que ce n'est pas une variation du même nom
-                if candidate.lower() != team1.lower() and not (candidate in team1 or team1 in candidate):
-                    team2 = candidate
+            # Trouver la première équipe valide
+            for candidate in team_candidates:
+                # Une vraie équipe a généralement au moins 4 caractères
+                # et ne contient pas trop de mots (max 3)
+                word_count = len(candidate.split())
+                if len(candidate) >= 4 and word_count <= 3:
+                    team1 = candidate
                     break
             
-            if team2:
+            if team1:
+                # Chercher la deuxième équipe (différente)
+                for candidate in team_candidates:
+                    if candidate == team1:
+                        continue
+                    
+                    # Vérifier que ce n'est pas une variation du même nom
+                    similarity_check = (
+                        candidate.lower() != team1.lower() and 
+                        not (candidate.lower() in team1.lower()) and 
+                        not (team1.lower() in candidate.lower())
+                    )
+                    
+                    word_count = len(candidate.split())
+                    if similarity_check and len(candidate) >= 4 and word_count <= 3:
+                        team2 = candidate
+                        break
+            
+            if team1 and team2:
                 match_name = f"{team1} vs {team2}"
                 logger.info(f"✓ Match détecté: {match_name}")
         
