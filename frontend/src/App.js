@@ -206,50 +206,160 @@ function App() {
             </h2>
 
             {result ? (
-              <div>
-                <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg p-6 mb-6 shadow-lg" data-testid="prediction-result">
+              <div className="space-y-6">
+                {/* Score Principal avec Confiance */}
+                <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg p-6 shadow-lg" data-testid="prediction-result">
                   <p className="text-sm font-medium mb-2">Score le Plus Probable</p>
-                  <p className="text-5xl font-bold" data-testid="most-probable-score">{result.mostProbableScore}</p>
+                  <p className="text-5xl font-bold mb-3" data-testid="most-probable-score">{result.mostProbableScore}</p>
                   {result.probabilities[result.mostProbableScore] && (
-                    <p className="text-lg mt-2 opacity-90">
+                    <p className="text-lg opacity-90">
                       Probabilité: {result.probabilities[result.mostProbableScore]}%
                     </p>
                   )}
-                </div>
-
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-gray-700 mb-3">Toutes les Probabilités:</h3>
-                  {Object.entries(result.probabilities)
-                    .sort((a, b) => b[1] - a[1])
-                    .map(([score, prob]) => (
-                      <div key={score} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-testid={`probability-${score}`}>
-                        <span className="font-medium text-gray-800">{score}</span>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-32 bg-gray-200 rounded-full h-2">
-                            <div
-                              className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
-                              style={{ width: `${prob}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-sm font-semibold text-gray-600 w-16 text-right">
-                            {prob}%
-                          </span>
-                        </div>
+                  
+                  {/* Jauge de Confiance */}
+                  {result.confidence !== undefined && (
+                    <div className="mt-4 pt-4 border-t border-white/30">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium">Niveau de Confiance</span>
+                        <span className="text-lg font-bold">{(result.confidence * 100).toFixed(1)}%</span>
                       </div>
-                    ))}
+                      <div className="w-full bg-white/30 rounded-full h-3">
+                        <div
+                          className={`h-3 rounded-full transition-all duration-700 ${
+                            result.confidence >= 0.7 ? 'bg-green-300' :
+                            result.confidence >= 0.4 ? 'bg-yellow-300' : 'bg-red-300'
+                          }`}
+                          style={{ width: `${result.confidence * 100}%` }}
+                        ></div>
+                      </div>
+                      <div className="mt-2 flex items-center space-x-2">
+                        {result.confidence >= 0.7 ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            🟢 Confiance Élevée
+                          </span>
+                        ) : result.confidence >= 0.4 ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            🟠 Confiance Moyenne
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            🔴 Confiance Faible
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                {result.extractedScores && result.extractedScores.length > 0 && (
-                  <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                    <h4 className="font-semibold text-gray-700 mb-2 text-sm">Cotes Extraites:</h4>
-                    <div className="text-xs text-gray-600 space-y-1">
-                      {result.extractedScores.map((item, idx) => (
-                        <div key={idx}>
-                          {item.score}: {item.odds}
+                {/* Interprétation et Recommandations */}
+                {result.confidence !== undefined && (
+                  <div className={`p-4 rounded-lg border-l-4 ${
+                    result.confidence >= 0.7 ? 'bg-green-50 border-green-500' :
+                    result.confidence >= 0.4 ? 'bg-yellow-50 border-yellow-500' : 'bg-red-50 border-red-500'
+                  }`}>
+                    <h4 className="font-semibold text-gray-800 mb-2">
+                      {result.confidence >= 0.7 ? '✅ Interprétation' :
+                       result.confidence >= 0.4 ? '⚠️ Interprétation' : '❌ Interprétation'}
+                    </h4>
+                    <p className="text-sm text-gray-700 mb-3">
+                      {result.confidence >= 0.7 ? 
+                        'Prédiction très fiable. Un score domine clairement, ce qui indique une forte probabilité pour ce résultat.' :
+                       result.confidence >= 0.4 ?
+                        'Prédiction modérée. Plusieurs scores possibles, mais avec quelques favoris qui se dégagent.' :
+                        'Prédiction incertaine. Match très ouvert avec de nombreuses possibilités. Aucun favori clair ne se dégage.'}
+                    </p>
+                    <div className="bg-white/50 p-3 rounded text-sm">
+                      <strong className="text-gray-800">💡 Recommandation:</strong>
+                      <p className="text-gray-700 mt-1">
+                        {result.confidence >= 0.7 ?
+                          'Vous pouvez vous fier à cette prédiction avec confiance. Le score indiqué a une forte probabilité de se réaliser.' :
+                         result.confidence >= 0.4 ?
+                          'Restez prudent. Considérez les autres scores du Top 3 et envisagez des paris combinés.' :
+                          'Prudence maximale recommandée. Évitez les paris importants sur un seul score. Match très imprévisible.'}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Top 3 des Scores */}
+                {result.top3 && result.top3.length > 0 && (
+                  <div>
+                    <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
+                      🏆 Top 3 des Scores
+                    </h3>
+                    <div className="space-y-2">
+                      {result.top3.map((item, idx) => (
+                        <div
+                          key={idx}
+                          className={`flex items-center justify-between p-4 rounded-lg border-2 ${
+                            idx === 0 ? 'bg-yellow-50 border-yellow-400' :
+                            idx === 1 ? 'bg-gray-50 border-gray-300' :
+                            'bg-orange-50 border-orange-300'
+                          }`}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <span className="text-2xl font-bold">
+                              {idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'}
+                            </span>
+                            <span className="text-xl font-bold text-gray-800">{item.score}</span>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-indigo-600">
+                              {item.probability}%
+                            </div>
+                            <div className="text-xs text-gray-500">probabilité</div>
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
+                )}
+
+                {/* Toutes les Probabilités (repliable) */}
+                <details className="mt-4">
+                  <summary className="cursor-pointer font-semibold text-gray-700 hover:text-indigo-600 transition-colors">
+                    📊 Voir toutes les probabilités ({Object.keys(result.probabilities).length} scores)
+                  </summary>
+                  <div className="mt-3 space-y-2 max-h-64 overflow-y-auto">
+                    {Object.entries(result.probabilities)
+                      .sort((a, b) => b[1] - a[1])
+                      .map(([score, prob]) => (
+                        <div key={score} className="flex items-center justify-between p-2 bg-gray-50 rounded" data-testid={`probability-${score}`}>
+                          <span className="font-medium text-gray-800 text-sm">{score}</span>
+                          <div className="flex items-center space-x-3">
+                            <div className="w-24 bg-gray-200 rounded-full h-1.5">
+                              <div
+                                className="bg-indigo-600 h-1.5 rounded-full transition-all duration-500"
+                                style={{ width: `${prob}%` }}
+                              ></div>
+                            </div>
+                            <span className="text-xs font-semibold text-gray-600 w-12 text-right">
+                              {prob}%
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </details>
+
+                {/* Cotes Extraites (repliable) */}
+                {result.extractedScores && result.extractedScores.length > 0 && (
+                  <details>
+                    <summary className="cursor-pointer font-semibold text-gray-700 hover:text-indigo-600 transition-colors">
+                      🎯 Cotes extraites ({result.extractedScores.length} scores)
+                    </summary>
+                    <div className="mt-3 p-4 bg-blue-50 rounded-lg max-h-48 overflow-y-auto">
+                      <div className="text-xs text-gray-600 space-y-1">
+                        {result.extractedScores.map((item, idx) => (
+                          <div key={idx} className="flex justify-between">
+                            <span className="font-medium">{item.score}</span>
+                            <span>Cote: {item.odds}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </details>
                 )}
               </div>
             ) : (
