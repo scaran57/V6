@@ -114,76 +114,123 @@ def clean_score(score_str: str) -> str:
 def extract_match_info(image_path: str):
     """
     Extrait le nom du match et le bookmaker depuis l'image.
-    Analyse les 30% supérieurs de l'image (non cropés) pour capturer ces infos.
+    Analyse différentes sections de l'image pour capturer ces infos.
     """
     try:
         # Charger l'image complète (sans crop)
         image = Image.open(image_path).convert("RGB")
         img = np.array(image)
         
-        # Analyser la partie supérieure (30% du haut) pour le nom du match et bookmaker
         height, width = img.shape[:2]
-        top_section = img[:int(height * 0.30), :]  # 30% supérieur
         
-        # Prétraitement simple pour la lecture de texte
-        gray = cv2.cvtColor(top_section, cv2.COLOR_RGB2GRAY)
+        # Analyser plusieurs sections de l'image
+        sections = [
+            ("haut", img[:int(height * 0.25), :]),      # 25% supérieur
+            ("milieu_haut", img[int(height * 0.1):int(height * 0.4), :]),  # 10-40%
+            ("complet", img)  # Image complète en dernier recours
+        ]
         
-        # OCR sur la section supérieure
-        text = pytesseract.image_to_string(Image.fromarray(gray), lang=LANGS, config="--psm 6")
+        all_text = ""
         
-        logger.info(f"📝 Texte extrait de l'en-tête:\n{text[:200]}")
+        for section_name, section_img in sections:
+            # Prétraitement avec plusieurs méthodes
+            gray = cv2.cvtColor(section_img, cv2.COLOR_RGB2GRAY)
+            
+            # Version normale
+            text1 = pytesseract.image_to_string(Image.fromarray(gray), lang=LANGS, config="--psm 6")
+            
+            # Version inversée (pour thème sombre)
+            inverted = cv2.bitwise_not(gray)
+            text2 = pytesseract.image_to_string(Image.fromarray(inverted), lang=LANGS, config="--psm 6")
+            
+            all_text += f"\n{text1}\n{text2}"
+            
+            if len(text1) > 50 or len(text2) > 50:  # Si on a du texte significatif, pas besoin de continuer
+                break
         
-        # Détection du bookmaker (mots-clés communs)
-        bookmaker = "Bookmaker inconnu"
+        logger.info(f"📝 Texte extrait (échantillon):\n{all_text[:300]}")
+        
+        # Détection du bookmaker (mots-clés communs) - recherche insensible à la casse
+        bookmaker = None
         bookmaker_keywords = {
             "unibet": "Unibet",
-            "betclic": "BetClic",
+            "betclic": "BetClic", 
+            "betclick": "BetClic",
             "winamax": "Winamax",
+            "wina max": "Winamax",
             "pmu": "PMU",
-            "parions sport": "Parions Sport",
+            "parions": "Parions Sport",
             "bwin": "Bwin",
             "zebet": "ZEbet",
             "netbet": "NetBet",
-            "france pari": "France Pari"
+            "france pari": "France Pari",
+            "bet365": "Bet365",
+            "1xbet": "1xBet"
         }
         
-        text_lower = text.lower()
+        text_lower = all_text.lower()
         for keyword, name in bookmaker_keywords.items():
             if keyword in text_lower:
                 bookmaker = name
+                logger.info(f"✓ Bookmaker trouvé via mot-clé: {keyword} → {name}")
                 break
         
-        # Détection du nom du match (recherche de pattern "équipe vs équipe" ou "équipe - équipe")
-        match_name = "Match non détecté"
+        # Si pas de bookmaker détecté, essayer de détecter depuis le nom de fichier
+        if not bookmaker:
+            filename_lower = image_path.lower()
+            for keyword, name in bookmaker_keywords.items():
+                if keyword in filename_lower:
+                    bookmaker = name
+                    logger.info(f"✓ Bookmaker détecté depuis le nom de fichier: {name}")
+                    break
         
-        # Pattern: chercher deux groupes de mots séparés par "vs", "-", "v", etc.
-        # Exemple: "PSG vs Lyon", "Real Madrid - Barcelona"
-        match_patterns = [
-            r"([A-Z][a-zA-ZÀ-ÿ\s]+)\s+(?:vs|v|VS|V|-)\s+([A-Z][a-zA-ZÀ-ÿ\s]+)",
-            r"([A-Z][a-zA-Z\s]+)\s+(?:vs|v|VS|V|-)\s+([A-Z][a-zA-Z\s]+)",
+        # Détection du nom du match avec patterns plus flexibles
+        match_name = None
+        
+        # Pattern 1: Format classique "Équipe vs Équipe" avec variations
+        patterns = [
+            r"([A-ZÀ-Ÿ][a-zA-ZÀ-ÿ\'\-]{2,}(?:\s+[A-ZÀ-Ÿ][a-zA-ZÀ-ÿ\'\-]{2,}){0,2})\s+(?:vs\.?|v\.?|VS|V|-|—)\s+([A-ZÀ-Ÿ][a-zA-ZÀ-ÿ\'\-]{2,}(?:\s+[A-ZÀ-Ÿ][a-zA-ZÀ-ÿ\'\-]{2,}){0,2})",
+            # Pattern 2: Format avec ligne (ex: "PSG\nLyon")
+            r"([A-ZÀ-Ÿ][a-zA-ZÀ-ÿ\s]{2,15})\n+([A-ZÀ-Ÿ][a-zA-ZÀ-ÿ\s]{2,15})",
         ]
         
-        for pattern in match_patterns:
-            match = re.search(pattern, text)
-            if match:
+        for pattern in patterns:
+            matches = re.finditer(pattern, all_text, re.MULTILINE)
+            for match in matches:
                 team1 = match.group(1).strip()
                 team2 = match.group(2).strip()
-                # Nettoyer et limiter la longueur
-                team1 = " ".join(team1.split()[:3])  # Max 3 mots
-                team2 = " ".join(team2.split()[:3])
+                
+                # Filtrer les faux positifs (mots trop courts, nombres, etc.)
+                if len(team1) < 3 or len(team2) < 3:
+                    continue
+                if any(char.isdigit() for char in team1) or any(char.isdigit() for char in team2):
+                    continue
+                
+                # Nettoyer et limiter
+                team1_words = team1.split()[:3]
+                team2_words = team2.split()[:3]
+                team1 = " ".join(team1_words)
+                team2 = " ".join(team2_words)
+                
                 match_name = f"{team1} vs {team2}"
+                logger.info(f"✓ Match trouvé: {match_name}")
+                break
+            
+            if match_name:
                 break
         
-        logger.info(f"🏟️ Match détecté: {match_name}")
-        logger.info(f"🎰 Bookmaker détecté: {bookmaker}")
+        logger.info(f"🏟️ Match final: {match_name or 'Match non détecté'}")
+        logger.info(f"🎰 Bookmaker final: {bookmaker or 'Bookmaker inconnu'}")
         
         return {
-            "match_name": match_name,
-            "bookmaker": bookmaker
+            "match_name": match_name or "Match non détecté",
+            "bookmaker": bookmaker or "Bookmaker inconnu"
         }
         
     except Exception as e:
         logger.error(f"❌ Erreur extraction infos match: {str(e)}")
+        import traceback
+        logger.error(traceback.format_exc())
         return {
             "match_name": "Match non détecté",
             "bookmaker": "Bookmaker inconnu"
