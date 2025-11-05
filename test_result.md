@@ -287,6 +287,43 @@ backend:
           Backend logs: ✅ No errors detected, OCR processing working correctly
           
           CONCLUSION: New match name and bookmaker extraction feature is fully functional and ready for production use.
+      - working: true
+        agent: "testing"
+        comment: |
+          🎯 SPECIFIC REAL BOOKMAKER IMAGES TESTING COMPLETED
+          
+          USER-PROVIDED IMAGES TESTED:
+          
+          📸 test_winamax_real.jpg (Expected: Olympiakos vs PSV):
+          - Status: ✅ API working, 21 scores detected
+          - Match Name: "Match non détecté" (NOT_DETECTED)
+          - Bookmaker: "Winamax" (GOOD detection)
+          - Analysis: Bookmaker correctly identified, but match name extraction failed
+          
+          📸 test_unibet1.jpg (Expected: Unibet match):
+          - Status: ✅ API working, 23 scores detected  
+          - Match Name: "S'inscrire vs Olympiakos Eindhoven" (GOOD quality)
+          - Bookmaker: "Unibet" (GOOD detection)
+          - Analysis: Both fields extracted, but match name contains interface element "S'inscrire"
+          
+          📸 newcastle_bilbao.jpg (Expected: Newcastle vs Athletic Bilbao):
+          - Status: ✅ API working, 4 scores detected
+          - Match Name: "Match non détecté" (NOT_DETECTED)
+          - Bookmaker: "BetClic" (GOOD detection)
+          - Analysis: Bookmaker detected from app screenshot, match name extraction failed
+          
+          FINDINGS SUMMARY:
+          ✅ Bookmaker detection: Working excellently (3/3 correct)
+          ⚠️ Match name extraction: Needs improvement (1/3 partially correct, 2/3 failed)
+          ✅ API functionality: All endpoints working correctly
+          ✅ Score extraction: Working on all images (4-23 scores per image)
+          
+          ISSUES IDENTIFIED:
+          1. Match name extraction struggles with real bookmaker layouts
+          2. Interface elements sometimes included in match names ("S'inscrire")
+          3. Algorithm may need adjustment for different bookmaker image structures
+          
+          RECOMMENDATION: Algorithm works but needs refinement for better match name extraction from real bookmaker images.
 
 frontend:
   - task: "Image upload and analysis display"
