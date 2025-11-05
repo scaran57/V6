@@ -543,6 +543,96 @@ async def admin_export_learning_log():
             status_code=500
         )
 
+# ========== ENDPOINTS DIAGNOSTIC ==========
+
+@api_router.get("/diagnostic/last-analysis")
+async def diagnostic_last_analysis():
+    """
+    🔍 Retourne la dernière analyse effectuée depuis la mémoire des matchs.
+    """
+    try:
+        matches = get_all_matches()
+        
+        if not matches or len(matches.get('matches', {})) == 0:
+            return {
+                "success": False,
+                "message": "Aucune analyse en mémoire"
+            }
+        
+        # Récupérer le dernier match analysé
+        all_matches = matches.get('matches', {})
+        last_match_id = list(all_matches.keys())[-1]
+        last_match = all_matches[last_match_id]
+        
+        return {
+            "success": True,
+            "match_id": last_match_id,
+            "analysis": {
+                "match_name": last_match.get("match_name"),
+                "bookmaker": last_match.get("bookmaker"),
+                "analyzed_at": last_match.get("analyzed_at"),
+                "confidence": last_match.get("confidence"),
+                "top3": last_match.get("top3"),
+                "extracted_scores": last_match.get("extracted_scores"),
+                "probabilities": last_match.get("probabilities")
+            }
+        }
+    except Exception as e:
+        logger.error(f"Erreur diagnostic: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
+@api_router.get("/diagnostic/system-status")
+async def diagnostic_system_status():
+    """
+    📊 Diagnostic complet du système (apprentissage + analyses + santé).
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from modules.local_learning_safe import get_learning_stats
+        
+        # Statistiques d'apprentissage
+        learning_stats = get_learning_stats()
+        
+        # Statistiques de mémoire des matchs
+        matches = get_all_matches()
+        
+        # Santé du système
+        diff = get_diff_expected()
+        
+        return {
+            "success": True,
+            "timestamp": datetime.now().isoformat(),
+            "learning_system": {
+                "total_events": learning_stats.get("total_learning_events", 0),
+                "teams_count": learning_stats.get("teams_count", 0),
+                "diffExpected": learning_stats.get("diffExpected", 0),
+                "schema_version": learning_stats.get("schema_version", 0),
+                "files_ok": all([
+                    learning_stats.get("log_file_exists"),
+                    learning_stats.get("teams_file_exists"),
+                    learning_stats.get("meta_file_exists")
+                ])
+            },
+            "matches_memory": {
+                "total_matches_analyzed": matches.get("total_matches", 0),
+                "last_match_id": list(matches.get("matches", {}).keys())[-1] if matches.get("matches") else None
+            },
+            "current_config": {
+                "diffExpected": diff
+            },
+            "status": "operational"
+        }
+    except Exception as e:
+        logger.error(f"Erreur diagnostic système: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
 # Include the router in the main app
 app.include_router(api_router)
 
