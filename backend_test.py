@@ -111,36 +111,36 @@ class ScorePredictorTester:
                             }
                             self.log(f"❌ {image_name}: Missing required fields: {missing_fields}")
                         else:
-                        # Validate data structure
-                        extracted_scores = data.get('extractedScores', {})
-                        probabilities = data.get('probabilities', {})
-                        most_probable = data.get('mostProbableScore', '')
-                        match_name = data.get('matchName', '')
-                        bookmaker = data.get('bookmaker', '')
-                        
-                        # Check if probabilities sum to approximately 100%
-                        prob_sum = sum(probabilities.values()) if probabilities else 0
-                        prob_sum_valid = 95 <= prob_sum <= 105  # Allow 5% tolerance
-                        
-                        if extracted_scores and probabilities and most_probable and prob_sum_valid:
-                            self.results["analyze"]["tests"][image_name] = {
-                                "status": "PASS",
-                                "extracted_scores_count": len(extracted_scores),
-                                "most_probable_score": most_probable,
-                                "probabilities_sum": round(prob_sum, 2),
-                                "match_name": match_name,
-                                "bookmaker": bookmaker
-                            }
-                            successful_tests += 1
-                            self.log(f"✅ {image_name}: Analysis successful - {most_probable} (prob sum: {prob_sum:.1f}%)")
-                            self.log(f"    📝 Match: {match_name}")
-                            self.log(f"    🎰 Bookmaker: {bookmaker}")
-                        else:
-                            self.results["analyze"]["tests"][image_name] = {
-                                "status": "FAIL",
-                                "error": f"Invalid data: scores={len(extracted_scores)}, probs={len(probabilities)}, sum={prob_sum:.1f}%"
-                            }
-                            self.log(f"❌ {image_name}: Invalid response data")
+                            # Validate data structure
+                            extracted_scores = data.get('extractedScores', {})
+                            probabilities = data.get('probabilities', {})
+                            most_probable = data.get('mostProbableScore', '')
+                            match_name = data.get('matchName', '')
+                            bookmaker = data.get('bookmaker', '')
+                            
+                            # Check if probabilities sum to approximately 100%
+                            prob_sum = sum(probabilities.values()) if probabilities else 0
+                            prob_sum_valid = 95 <= prob_sum <= 105  # Allow 5% tolerance
+                            
+                            if extracted_scores and probabilities and most_probable and prob_sum_valid:
+                                self.results["analyze"]["tests"][image_name] = {
+                                    "status": "PASS",
+                                    "extracted_scores_count": len(extracted_scores),
+                                    "most_probable_score": most_probable,
+                                    "probabilities_sum": round(prob_sum, 2),
+                                    "match_name": match_name,
+                                    "bookmaker": bookmaker
+                                }
+                                successful_tests += 1
+                                self.log(f"✅ {image_name}: Analysis successful - {most_probable} (prob sum: {prob_sum:.1f}%)")
+                                self.log(f"    📝 Match: {match_name}")
+                                self.log(f"    🎰 Bookmaker: {bookmaker}")
+                            else:
+                                self.results["analyze"]["tests"][image_name] = {
+                                    "status": "FAIL",
+                                    "error": f"Invalid data: scores={len(extracted_scores)}, probs={len(probabilities)}, sum={prob_sum:.1f}%"
+                                }
+                                self.log(f"❌ {image_name}: Invalid response data")
                 else:
                     self.results["analyze"]["tests"][image_name] = {
                         "status": "FAIL",
