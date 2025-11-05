@@ -9,19 +9,35 @@ DATA_FILE = "/app/backend/learning_data.json"
 
 def get_diff_expected():
     """
-    Récupère la différence de buts attendue depuis le fichier de données.
+    Récupère la différence de buts attendue depuis le système sécurisé.
+    Fallback sur l'ancien fichier si le nouveau n'existe pas.
     Par défaut: 2 buts de différence.
     """
-    if os.path.exists(DATA_FILE):
-        try:
-            with open(DATA_FILE, "r") as f:
-                data = json.load(f)
-                diff = data.get("diffExpected", 2)
-                logger.info(f"Différence attendue chargée: {diff}")
-                return diff
-        except Exception as e:
-            logger.error(f"Erreur lors de la lecture du fichier d'apprentissage: {str(e)}")
-    return 2
+    # Essayer d'abord le nouveau système sécurisé
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from modules.local_learning_safe import load_meta
+        
+        meta = load_meta()
+        diff = meta.get("diffExpected", 2)
+        logger.info(f"✅ Différence attendue (système sécurisé): {diff}")
+        return diff
+    except Exception as e:
+        logger.warning(f"⚠️ Système sécurisé indisponible, fallback ancien système: {str(e)}")
+        
+        # Fallback sur l'ancien système
+        if os.path.exists(DATA_FILE):
+            try:
+                with open(DATA_FILE, "r") as f:
+                    data = json.load(f)
+                    diff = data.get("diffExpected", 2)
+                    logger.info(f"Différence attendue (ancien système): {diff}")
+                    return diff
+            except Exception as e:
+                logger.error(f"Erreur lecture ancien fichier: {str(e)}")
+        
+        return 2
 
 def update_model(predicted, real, home_team=None, away_team=None):
     """
