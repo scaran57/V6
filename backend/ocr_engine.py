@@ -320,12 +320,17 @@ def extract_match_info(image_path: str):
                     team1 = match.group(1).strip()
                     team2 = match.group(2).strip()
                     
-                    # Validation
+                    # Validation et nettoyage
                     if len(team1) >= 3 and len(team2) >= 3:
                         if not any(c.isdigit() for c in team1+team2):
-                            match_name = f"{team1} vs {team2}"
-                            logger.info(f"✓ Match (pattern vs): {match_name}")
-                            break
+                            # Nettoyer les noms
+                            team1_clean = ' '.join([w for w in team1.split() if w.lower() not in excluded_words and len(w) >= 3])
+                            team2_clean = ' '.join([w for w in team2.split() if w.lower() not in excluded_words and len(w) >= 3])
+                            
+                            if team1_clean and team2_clean:
+                                match_name = f"{team1_clean} - {team2_clean}"  # Tiret au lieu de "vs"
+                                logger.info(f"✓ Match (pattern): {match_name}")
+                                break
                 
                 if match_name:
                     break
