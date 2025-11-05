@@ -308,8 +308,185 @@ class ScorePredictorTester:
         
         self.log("=" * 60)
 
+    def test_match_name_extraction_specific(self):
+        """Test match name extraction with specific user-provided images"""
+        self.log("Testing match name extraction with specific real bookmaker images...")
+        
+        # Specific test images as requested by user
+        specific_images = [
+            {
+                "path": "/app/test_winamax_real.jpg",
+                "expected_match": "Olympiakos vs PSV",
+                "expected_bookmaker": "Winamax",
+                "description": "Real Winamax image"
+            },
+            {
+                "path": "/app/test_unibet1.jpg", 
+                "expected_match": "Unknown (to be determined)",
+                "expected_bookmaker": "Unibet",
+                "description": "Unibet match image"
+            },
+            {
+                "path": "/app/newcastle_bilbao.jpg",
+                "expected_match": "Newcastle vs Athletic Bilbao",
+                "expected_bookmaker": "Unknown (app screenshot)",
+                "description": "Application screenshot (not direct bookmaker)"
+            }
+        ]
+        
+        results = {}
+        
+        for image_info in specific_images:
+            image_path = image_info["path"]
+            image_name = os.path.basename(image_path)
+            
+            self.log(f"\n--- Testing {image_name} ---")
+            self.log(f"Description: {image_info['description']}")
+            self.log(f"Expected match: {image_info['expected_match']}")
+            self.log(f"Expected bookmaker: {image_info['expected_bookmaker']}")
+            
+            if not os.path.exists(image_path):
+                results[image_name] = {
+                    "status": "FAIL",
+                    "error": f"Image not found at {image_path}"
+                }
+                self.log(f"❌ Image not found: {image_path}")
+                continue
+            
+            try:
+                with open(image_path, 'rb') as f:
+                    files = {'file': (image_name, f, 'image/jpeg')}
+                    response = requests.post(f"{BASE_URL}/analyze", files=files, timeout=30)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    
+                    # Check if analysis was successful or if no scores detected
+                    if 'error' in data and 'Aucune cote détectée' in data['error']:
+                        results[image_name] = {
+                            "status": "NO_SCORES",
+                            "match_name": "N/A (no scores detected)",
+                            "bookmaker": "N/A (no scores detected)",
+                            "note": "OCR could not detect valid scores in this image"
+                        }
+                        self.log(f"⚠️ {image_name}: No scores detected by OCR")
+                    else:
+                        # Extract match info
+                        match_name = data.get('matchName', 'Not extracted')
+                        bookmaker = data.get('bookmaker', 'Not detected')
+                        extracted_scores = data.get('extractedScores', {})
+                        
+                        # Analyze the quality of extraction
+                        match_quality = self._analyze_match_name_quality(match_name)
+                        bookmaker_quality = self._analyze_bookmaker_quality(bookmaker)
+                        
+                        results[image_name] = {
+                            "status": "SUCCESS",
+                            "match_name": match_name,
+                            "bookmaker": bookmaker,
+                            "scores_count": len(extracted_scores),
+                            "match_quality": match_quality,
+                            "bookmaker_quality": bookmaker_quality,
+                            "raw_response": {
+                                "success": data.get('success'),
+                                "mostProbableScore": data.get('mostProbableScore')
+                            }
+                        }
+                        
+                        self.log(f"✅ {image_name}: Analysis completed")
+                        self.log(f"    📝 Match extracted: '{match_name}' (Quality: {match_quality})")
+                        self.log(f"    🎰 Bookmaker detected: '{bookmaker}' (Quality: {bookmaker_quality})")
+                        self.log(f"    📊 Scores detected: {len(extracted_scores)}")
+                        
+                        # Additional analysis
+                        if match_quality == "POOR":
+                            self.log(f"    ⚠️ Match name may contain interface elements or be incorrectly extracted")
+                        if bookmaker_quality == "POOR":
+                            self.log(f"    ⚠️ Bookmaker detection may be inaccurate")
+                            
+                else:
+                    results[image_name] = {
+                        "status": "FAIL",
+                        "error": f"HTTP {response.status_code}: {response.text[:200]}"
+                    }
+                    self.log(f"❌ {image_name}: HTTP error {response.status_code}")
+                    
+            except Exception as e:
+                results[image_name] = {
+                    "status": "FAIL",
+                    "error": f"Exception: {str(e)}"
+                }
+                self.log(f"❌ {image_name}: Exception - {str(e)}")
+        
+        return results
+    
+    def _analyze_match_name_quality(self, match_name):
+        """Analyze the quality of extracted match name"""
+        if not match_name or match_name in ["Match non détecté", "Not extracted"]:
+            return "NOT_DETECTED"
+        
+        # Check for typical team vs team pattern
+        if " vs " in match_name or " - " in match_name:
+            # Check for interface elements that shouldn't be in team names
+            interface_keywords = ["cote", "odds", "bet", "mise", "gain", "€", "$", "live", "direct", "temps"]
+            if any(keyword.lower() in match_name.lower() for keyword in interface_keywords):
+                return "POOR"
+            return "GOOD"
+        
+        # Check if it contains team-like names (proper nouns)
+        words = match_name.split()
+        if len(words) >= 2 and all(word[0].isupper() for word in words if word):
+            return "FAIR"
+        
+        return "POOR"
+    
+    def _analyze_bookmaker_quality(self, bookmaker):
+        """Analyze the quality of bookmaker detection"""
+        if not bookmaker or bookmaker in ["Bookmaker inconnu", "Not detected"]:
+            return "NOT_DETECTED"
+        
+        known_bookmakers = ["winamax", "unibet", "betclic", "pmu", "parions", "zebet"]
+        if bookmaker.lower() in known_bookmakers:
+            return "GOOD"
+        
+        return "FAIR"
+
 if __name__ == "__main__":
     tester = ScorePredictorTester()
+    
+    # Run specific match name extraction tests as requested
+    print("🎯 RUNNING SPECIFIC MATCH NAME EXTRACTION TESTS")
+    print("=" * 60)
+    match_results = tester.test_match_name_extraction_specific()
+    
+    print("\n📋 DETAILED MATCH NAME EXTRACTION RESULTS:")
+    print("=" * 60)
+    
+    for image_name, result in match_results.items():
+        print(f"\n📸 {image_name}:")
+        print(f"   Status: {result['status']}")
+        
+        if result['status'] == 'SUCCESS':
+            print(f"   Match Name: '{result['match_name']}' (Quality: {result['match_quality']})")
+            print(f"   Bookmaker: '{result['bookmaker']}' (Quality: {result['bookmaker_quality']})")
+            print(f"   Scores Found: {result['scores_count']}")
+            
+            if result['match_quality'] == 'POOR':
+                print(f"   ⚠️ WARNING: Match name may contain interface elements")
+            if result['bookmaker_quality'] == 'NOT_DETECTED':
+                print(f"   ⚠️ WARNING: Bookmaker not detected")
+                
+        elif result['status'] == 'NO_SCORES':
+            print(f"   Note: {result['note']}")
+        else:
+            print(f"   Error: {result.get('error', 'Unknown error')}")
+    
+    print("\n" + "=" * 60)
+    print("🎯 MATCH NAME EXTRACTION TEST COMPLETE")
+    print("=" * 60)
+    
+    # Also run full backend tests for completeness
+    print("\n🔧 RUNNING FULL BACKEND TESTS FOR COMPLETENESS")
     results = tester.run_all_tests()
     
     # Print final status
