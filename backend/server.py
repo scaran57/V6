@@ -436,6 +436,20 @@ async def get_system_report():
             status_code=500
         )
 
+@api_router.get("/report")
+def report():
+    """
+    🔎 Endpoint de suivi automatique des matchs analysés.
+    Version simplifiée retournant uniquement le rapport textuel.
+    """
+    try:
+        report_data = generate_system_report()
+        report_text = report_data.get('report_text', '')
+        return {"rapport": report_text or "Aucun rapport généré."}
+    except Exception as e:
+        logger.error(f"Erreur lors de la génération du rapport: {str(e)}")
+        return {"rapport": f"Erreur: {str(e)}"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
