@@ -150,6 +150,8 @@ async def analyze(file: UploadFile = File(...)):
         
         return JSONResponse({
             "success": True,
+            "matchName": match_info.get("match_name", "Match non détecté"),
+            "bookmaker": match_info.get("bookmaker", "Bookmaker inconnu"),
             "extractedScores": scores,
             "mostProbableScore": result['mostProbableScore'],
             "probabilities": result['probabilities'],
