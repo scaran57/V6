@@ -214,6 +214,68 @@ async def get_diff():
             status_code=500
         )
 
+@api_router.get("/teams/stats")
+async def get_teams_stats():
+    """
+    Récupère les statistiques de toutes les équipes.
+    """
+    try:
+        from score_predictor import get_all_teams_stats, get_team_stats
+        
+        teams_data = get_all_teams_stats()
+        
+        # Enrichir avec les moyennes
+        stats = {}
+        for team, matches in teams_data.items():
+            gf, ga = get_team_stats(team)
+            stats[team] = {
+                "matches_count": len(matches),
+                "avg_goals_for": gf,
+                "avg_goals_against": ga,
+                "recent_matches": matches
+            }
+        
+        return {"teams": stats, "total_teams": len(stats)}
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération des stats: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
+@api_router.get("/teams/{team_name}")
+async def get_team_stats_by_name(team_name: str):
+    """
+    Récupère les statistiques d'une équipe spécifique.
+    """
+    try:
+        from score_predictor import get_team_stats, _load_data
+        
+        gf, ga = get_team_stats(team_name)
+        data = _load_data()
+        
+        if team_name not in data:
+            return {
+                "team": team_name,
+                "found": False,
+                "message": "Aucune donnée pour cette équipe"
+            }
+        
+        return {
+            "team": team_name,
+            "found": True,
+            "avg_goals_for": gf,
+            "avg_goals_against": ga,
+            "matches_count": len(data[team_name]),
+            "recent_matches": data[team_name]
+        }
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération des stats pour {team_name}: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
 # Include the router in the main app
 app.include_router(api_router)
 
