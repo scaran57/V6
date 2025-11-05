@@ -217,13 +217,14 @@ def extract_match_info(image_path: str):
             'coro', 'produit', 'made', 'with', 'emergent', 'plus', 'probable',
             'aptos', 'application', 'android', 'ios', 'mobile', 'championsleague',
             'unibet', 'betclic', 'winamax', 'parions', 'sport', 'fdj', 'pmu',
-            'kairat', 'almaty', 'fco', 'pafos'  # Termes de contexte souvent collés
+            'stats', 'compos', 'mesure', 'parisurmesure', 'compositions', 'statistiques'
         }
         
         # Phrases à exclure (multi-mots)
         excluded_phrases = {
             'mi-temps', 'mi temps', 'score exact', 'the coro', 'coro produit',
-            'top scores', 'top 3', 'niveau de', 'made with'
+            'top scores', 'top 3', 'niveau de', 'made with', 'pari sur mesure',
+            'sur mesure'
         }
         
         # Chercher les noms d'équipes (mots capitalisés de 3+ caractères)
