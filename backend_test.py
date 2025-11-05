@@ -105,6 +105,8 @@ class ScorePredictorTester:
                         extracted_scores = data.get('extractedScores', {})
                         probabilities = data.get('probabilities', {})
                         most_probable = data.get('mostProbableScore', '')
+                        match_name = data.get('matchName', '')
+                        bookmaker = data.get('bookmaker', '')
                         
                         # Check if probabilities sum to approximately 100%
                         prob_sum = sum(probabilities.values()) if probabilities else 0
@@ -115,10 +117,14 @@ class ScorePredictorTester:
                                 "status": "PASS",
                                 "extracted_scores_count": len(extracted_scores),
                                 "most_probable_score": most_probable,
-                                "probabilities_sum": round(prob_sum, 2)
+                                "probabilities_sum": round(prob_sum, 2),
+                                "match_name": match_name,
+                                "bookmaker": bookmaker
                             }
                             successful_tests += 1
                             self.log(f"✅ {image_name}: Analysis successful - {most_probable} (prob sum: {prob_sum:.1f}%)")
+                            self.log(f"    📝 Match: {match_name}")
+                            self.log(f"    🎰 Bookmaker: {bookmaker}")
                         else:
                             self.results["analyze"]["tests"][image_name] = {
                                 "status": "FAIL",
