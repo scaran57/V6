@@ -197,13 +197,23 @@ def extract_match_info(image_path: str):
         lines = all_text.split('\n')
         lines = [line.strip() for line in lines if line.strip()]
         
-        # Mots à exclure (interface, boutons, etc.)
+        # Mots/phrases à exclure (interface, boutons, termes de paris)
         excluded_words = {
             'score', 'exact', 'cote', 'match', 'autre', 'but', 'foot', 'football',
             'preview', 'bookmaker', 'top', 'voir', 'cotes', 'extraites', 'scores',
             'inscrire', 'connexion', 'parier', 'paris', 'live', 'direct', 'resultat',
             'probabilite', 'recommandation', 'interpretation', 'confiance', 'analyse',
-            'analyser', 'predire', 'upload', 'image', 'choisir', 'glissez', 'cliquez'
+            'analyser', 'predire', 'upload', 'image', 'choisir', 'glissez', 'cliquez',
+            'temps', 'ecart', 'handicap', 'corner', 'carton', 'penalty', 'buteur',
+            'ligue', 'champions', 'europa', 'coupe', 'division', 'finale', 'groupe',
+            'journee', 'tour', 'phase', 'qualification', 'premier', 'deuxieme',
+            'coro', 'produit', 'made', 'with', 'emergent', 'plus', 'probable'
+        }
+        
+        # Phrases à exclure (multi-mots)
+        excluded_phrases = {
+            'mi-temps', 'mi temps', 'score exact', 'the coro', 'coro produit',
+            'top scores', 'top 3', 'niveau de', 'made with'
         }
         
         # Chercher les noms d'équipes (mots capitalisés de 3+ caractères)
