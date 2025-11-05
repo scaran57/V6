@@ -215,7 +215,7 @@ def extract_match_info(image_path: str):
             'ligue', 'champions', 'europa', 'coupe', 'division', 'finale', 'groupe',
             'journee', 'tour', 'phase', 'qualification', 'premier', 'deuxieme',
             'coro', 'produit', 'made', 'with', 'emergent', 'plus', 'probable',
-            'aptos', 'eindhoven', 'sporting', 'juventus', 'psv', 'olympiakos'  # Temporaire pour test
+            'aptos', 'application'
         }
         
         # Phrases à exclure (multi-mots)
