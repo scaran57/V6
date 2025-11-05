@@ -450,6 +450,84 @@ def report():
         logger.error(f"Erreur lors de la génération du rapport: {str(e)}")
         return {"rapport": f"Erreur: {str(e)}"}
 
+# ========== ENDPOINTS ADMIN - Gestion Apprentissage Sécurisé ==========
+
+@api_router.post("/admin/rebuild-learning")
+async def admin_rebuild_learning(keep_last: int = 20):
+    """
+    🔧 [ADMIN] Reconstruit teams_data.json et learning_meta.json depuis le log append-only.
+    Utile pour récupérer l'historique après une corruption ou pour ajuster le nombre de matchs conservés.
+    """
+    try:
+        import subprocess
+        result = subprocess.run(
+            ["python3", "/app/scripts/rebuild_from_learning_log.py", "--keep-last", str(keep_last)],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        
+        return {
+            "success": result.returncode == 0,
+            "output": result.stdout,
+            "error": result.stderr if result.returncode != 0 else None,
+            "keep_last": keep_last
+        }
+    except Exception as e:
+        logger.error(f"Erreur lors du rebuild: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
+@api_router.get("/admin/learning-stats")
+async def admin_learning_stats():
+    """
+    📊 [ADMIN] Retourne des statistiques sur le système d'apprentissage sécurisé.
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from modules.local_learning_safe import get_learning_stats
+        
+        stats = get_learning_stats()
+        return {
+            "success": True,
+            "stats": stats
+        }
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération des stats: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
+@api_router.get("/admin/export-learning-log")
+async def admin_export_learning_log():
+    """
+    💾 [ADMIN] Exporte le log complet d'apprentissage pour backup.
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from modules.local_learning_safe import export_learning_log
+        from fastapi.responses import FileResponse
+        
+        export_path = "/tmp/learning_backup.jsonl"
+        export_learning_log(export_path)
+        
+        return FileResponse(
+            export_path,
+            media_type="application/x-ndjson",
+            filename="learning_events_backup.jsonl"
+        )
+    except Exception as e:
+        logger.error(f"Erreur lors de l'export: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
 # Include the router in the main app
 app.include_router(api_router)
 
