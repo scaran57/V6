@@ -123,6 +123,57 @@ def process_scores_with_odds(extracted_scores: dict, enable_odds_weighting: bool
 # ============================================================================
 
 
+def calculate_confidence(probabilities: dict, best_score: str) -> float:
+    """
+    Calcule un indicateur de confiance global de la prédiction.
+    
+    La confiance est basée sur:
+    - La probabilité du meilleur score
+    - L'écart avec le 2ème score
+    - La distribution globale des probabilités
+    
+    Args:
+        probabilities: Dict des probabilités calculées
+        best_score: Score le plus probable
+        
+    Returns:
+        float: Score de confiance entre 0.0 et 1.0
+        
+    Exemples:
+        - Confiance élevée (0.8-1.0): Un score domine clairement
+        - Confiance moyenne (0.5-0.8): Plusieurs scores possibles
+        - Confiance faible (0.0-0.5): Distribution très éparse
+    """
+    if not probabilities or best_score not in probabilities:
+        return 0.0
+    
+    sorted_probs = sorted(probabilities.items(), key=lambda x: x[1], reverse=True)
+    
+    # Probabilité du meilleur score (normalisée sur 100)
+    best_prob = sorted_probs[0][1] / 100.0
+    
+    # Écart avec le 2ème score
+    if len(sorted_probs) > 1:
+        second_prob = sorted_probs[1][1] / 100.0
+        gap = best_prob - second_prob
+    else:
+        gap = best_prob
+    
+    # Formule de confiance combinée (inspirée du vFinal avec ajustements)
+    # Facteur 1: Probabilité du meilleur (poids 60%)
+    # Facteur 2: Écart avec le 2ème (poids 40%)
+    confidence = (best_prob * 0.6) + (gap * 0.4)
+    
+    # Facteur d'ajustement si la proba du meilleur est très élevée
+    if best_prob > 0.25:  # Plus de 25%
+        confidence *= 1.2
+    
+    # Limitation entre 0 et 1
+    confidence = min(1.0, max(0.0, confidence))
+    
+    return confidence
+
+
 def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False):
     """
     Calcule les probabilités corrigées de chaque score selon l'algorithme original
