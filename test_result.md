@@ -274,15 +274,44 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "1.0"
-  test_sequence: 2
+  version: "1.1"
+  test_sequence: 3
   run_ui: false
+  last_update: "2025-11-05"
+  last_feature: "Match name and bookmaker display"
 
 test_plan:
   current_focus:
-    - "All backend tasks completed and tested successfully"
+    - "Match name and bookmaker extraction and display - COMPLETED ✅"
   stuck_tasks: []
   test_all: false
+
+agent_communication:
+  - agent: "main"
+    message: |
+      ✅ NOUVELLE FONCTIONNALITÉ IMPLÉMENTÉE ET TESTÉE
+      
+      Tâche: Afficher le nom du match et le bookmaker dans l'UI
+      
+      Ce qui a été fait:
+      1. Backend: Ajout de extract_match_info() pour extraction OCR
+         - Détection de bookmaker (Unibet, BetClic, Winamax, PMU, etc.)
+         - Extraction du nom du match (format "Équipe vs Équipe")
+         - Analyse multi-sections de l'image pour meilleure détection
+      
+      2. API: Ajout de matchName et bookmaker dans la réponse /api/analyze
+      
+      3. Frontend: Affichage propre et léger au-dessus du Top 3
+         - Boîte bleue élégante avec icônes ⚽ et 🎰
+         - Affichage conditionnel (seulement si détecté)
+         - Design non intrusif et responsive
+      
+      Tests réalisés:
+      - ✅ Test backend avec image Winamax: Bookmaker détecté
+      - ✅ Test avec image simulée BetClic PSG: Match + Bookmaker détectés
+      - ✅ Test UI complet: Affichage correct et esthétique
+      
+      Status: PRÊT POUR UTILISATION ✅
   test_priority: "high_first"
 
 agent_communication:
