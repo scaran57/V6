@@ -111,6 +111,85 @@ def clean_score(score_str: str) -> str:
     return score_str
 
 
+def extract_match_info(image_path: str):
+    """
+    Extrait le nom du match et le bookmaker depuis l'image.
+    Analyse les 30% supérieurs de l'image (non cropés) pour capturer ces infos.
+    """
+    try:
+        # Charger l'image complète (sans crop)
+        image = Image.open(image_path).convert("RGB")
+        img = np.array(image)
+        
+        # Analyser la partie supérieure (30% du haut) pour le nom du match et bookmaker
+        height, width = img.shape[:2]
+        top_section = img[:int(height * 0.30), :]  # 30% supérieur
+        
+        # Prétraitement simple pour la lecture de texte
+        gray = cv2.cvtColor(top_section, cv2.COLOR_RGB2GRAY)
+        
+        # OCR sur la section supérieure
+        text = pytesseract.image_to_string(Image.fromarray(gray), lang=LANGS, config="--psm 6")
+        
+        logger.info(f"📝 Texte extrait de l'en-tête:\n{text[:200]}")
+        
+        # Détection du bookmaker (mots-clés communs)
+        bookmaker = "Bookmaker inconnu"
+        bookmaker_keywords = {
+            "unibet": "Unibet",
+            "betclic": "BetClic",
+            "winamax": "Winamax",
+            "pmu": "PMU",
+            "parions sport": "Parions Sport",
+            "bwin": "Bwin",
+            "zebet": "ZEbet",
+            "netbet": "NetBet",
+            "france pari": "France Pari"
+        }
+        
+        text_lower = text.lower()
+        for keyword, name in bookmaker_keywords.items():
+            if keyword in text_lower:
+                bookmaker = name
+                break
+        
+        # Détection du nom du match (recherche de pattern "équipe vs équipe" ou "équipe - équipe")
+        match_name = "Match non détecté"
+        
+        # Pattern: chercher deux groupes de mots séparés par "vs", "-", "v", etc.
+        # Exemple: "PSG vs Lyon", "Real Madrid - Barcelona"
+        match_patterns = [
+            r"([A-Z][a-zA-ZÀ-ÿ\s]+)\s+(?:vs|v|VS|V|-)\s+([A-Z][a-zA-ZÀ-ÿ\s]+)",
+            r"([A-Z][a-zA-Z\s]+)\s+(?:vs|v|VS|V|-)\s+([A-Z][a-zA-Z\s]+)",
+        ]
+        
+        for pattern in match_patterns:
+            match = re.search(pattern, text)
+            if match:
+                team1 = match.group(1).strip()
+                team2 = match.group(2).strip()
+                # Nettoyer et limiter la longueur
+                team1 = " ".join(team1.split()[:3])  # Max 3 mots
+                team2 = " ".join(team2.split()[:3])
+                match_name = f"{team1} vs {team2}"
+                break
+        
+        logger.info(f"🏟️ Match détecté: {match_name}")
+        logger.info(f"🎰 Bookmaker détecté: {bookmaker}")
+        
+        return {
+            "match_name": match_name,
+            "bookmaker": bookmaker
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ Erreur extraction infos match: {str(e)}")
+        return {
+            "match_name": "Match non détecté",
+            "bookmaker": "Bookmaker inconnu"
+        }
+
+
 def extract_odds(image_path: str):
     """
     Extrait les cotes et scores depuis une image de bookmaker.
