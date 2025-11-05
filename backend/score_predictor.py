@@ -244,10 +244,15 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False):
     
     logger.info(f"🏆 Score le plus probable: {most_probable} ({final_probabilities.get(most_probable, 0):.2f}%)")
 
-    # 🔁 Étape 5 : Retour formaté
+    # 🎯 Étape 5 : Calcul de la confiance globale
+    confidence = calculate_confidence(final_probabilities, most_probable)
+    logger.info(f"💯 Confiance globale: {confidence:.2%}")
+
+    # 🔁 Étape 6 : Retour formaté
     return {
         "mostProbableScore": most_probable,
-        "probabilities": {k: round(v, 2) for k, v in final_probabilities.items()}
+        "probabilities": {k: round(v, 2) for k, v in final_probabilities.items()},
+        "confidence": round(confidence, 3)
     }
 
 
