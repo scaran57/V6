@@ -263,5 +263,135 @@
       }
     ],
     "analyzed_at": "2025-11-05T17:59:26.598732"
+  },
+  "pafosvillarrealllrogosono_betclic_2025-11-05": {
+    "match_id": "pafosvillarrealllrogosono_betclic_2025-11-05",
+    "match_name": "Pafos Villarreal - LLROGOS ONO",
+    "bookmaker": "BetClic",
+    "extracted_scores": [
+      {
+        "score": "0-0",
+        "odds": 13.0
+      },
+      {
+        "score": "0-1",
+        "odds": 7.75
+      },
+      {
+        "score": "1-1",
+        "odds": 9.75
+      },
+      {
+        "score": "0-2",
+        "odds": 16.25
+      },
+      {
+        "score": "2-2",
+        "odds": 16.25
+      },
+      {
+        "score": "1-2",
+        "odds": 18.0
+      },
+      {
+        "score": "0-3",
+        "odds": 22.0
+      },
+      {
+        "score": "1-3",
+        "odds": 9.75
+      },
+      {
+        "score": "1-4",
+        "odds": 8.0
+      },
+      {
+        "score": "1-0",
+        "odds": 8.0
+      },
+      {
+        "score": "2-0",
+        "odds": 18.75
+      },
+      {
+        "score": "2-1",
+        "odds": 18.0
+      },
+      {
+        "score": "3-0",
+        "odds": 17.0
+      },
+      {
+        "score": "3-3",
+        "odds": 22.0
+      },
+      {
+        "score": "3-1",
+        "odds": 17.0
+      },
+      {
+        "score": "4-4",
+        "odds": 17.0
+      },
+      {
+        "score": "3-2",
+        "odds": 7.0
+      },
+      {
+        "score": "2-3",
+        "odds": 6.0
+      },
+      {
+        "score": "4-0",
+        "odds": 9.0
+      },
+      {
+        "score": "0-4",
+        "odds": 9.0
+      },
+      {
+        "score": "4-1",
+        "odds": 11.0
+      }
+    ],
+    "probabilities": {
+      "0-0": 4.51,
+      "0-1": 11.29,
+      "1-1": 6.02,
+      "0-2": 3.61,
+      "2-2": 3.43,
+      "1-2": 4.86,
+      "0-3": 0.8,
+      "1-3": 6.02,
+      "1-4": 2.21,
+      "1-0": 10.94,
+      "2-0": 3.13,
+      "2-1": 4.86,
+      "3-0": 1.04,
+      "3-3": 2.0,
+      "3-1": 3.45,
+      "4-4": 2.59,
+      "3-2": 12.5,
+      "2-3": 14.59,
+      "4-0": 0.27,
+      "0-4": 0.27,
+      "4-1": 1.61
+    },
+    "confidence": 0.096,
+    "top3": [
+      {
+        "score": "2-3",
+        "probability": 14.59
+      },
+      {
+        "score": "3-2",
+        "probability": 12.5
+      },
+      {
+        "score": "0-1",
+        "probability": 11.29
+      }
+    ],
+    "analyzed_at": "2025-11-05T20:12:13.051807"
   }
 }
