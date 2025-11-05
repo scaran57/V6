@@ -204,7 +204,7 @@ def extract_match_info(image_path: str):
         lines = all_text.split('\n')
         lines = [line.strip() for line in lines if line.strip()]
         
-        # Mots/phrases à exclure (interface, boutons, termes de paris)
+        # Mots/phrases à exclure (interface, boutons, contexte, bookmakers)
         excluded_words = {
             'score', 'exact', 'cote', 'match', 'autre', 'but', 'foot', 'football',
             'preview', 'bookmaker', 'top', 'voir', 'cotes', 'extraites', 'scores',
@@ -215,7 +215,9 @@ def extract_match_info(image_path: str):
             'ligue', 'champions', 'europa', 'coupe', 'division', 'finale', 'groupe',
             'journee', 'tour', 'phase', 'qualification', 'premier', 'deuxieme',
             'coro', 'produit', 'made', 'with', 'emergent', 'plus', 'probable',
-            'aptos', 'application'
+            'aptos', 'application', 'android', 'ios', 'mobile', 'championsleague',
+            'unibet', 'betclic', 'winamax', 'parions', 'sport', 'fdj', 'pmu',
+            'kairat', 'almaty', 'fco', 'pafos'  # Termes de contexte souvent collés
         }
         
         # Phrases à exclure (multi-mots)
