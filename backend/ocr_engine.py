@@ -138,13 +138,17 @@ def extract_bold_team_names_parionssport(image_path: str):
         # Seuillage pour isoler le texte foncé (gras)
         _, binary = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
         
-        # Dilatation pour renforcer les caractères gras
+        # Débruitage pour enlever petits artefacts
+        denoised = cv2.medianBlur(binary, 3)
+        
+        # Dilatation pour renforcer les caractères gras ET connecter les lettres
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-        dilated = cv2.dilate(binary, kernel, iterations=1)
+        dilated = cv2.dilate(denoised, kernel, iterations=1)
         
         # OCR avec configuration pour texte large et espacé (noms d'équipes)
         # Utiliser PSM 6 (bloc de texte uniforme) et accepter lettres + espaces
-        custom_config = r'--oem 3 --psm 6'
+        # PSM 3 = Automatic page segmentation (peut mieux séparer les lignes)
+        custom_config = r'--oem 3 --psm 3'
         
         text = pytesseract.image_to_string(
             Image.fromarray(dilated),
