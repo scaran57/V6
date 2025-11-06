@@ -6,6 +6,7 @@ export default function AnalyzePage() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [disableCache, setDisableCache] = useState(false);
+  const [manualMatchName, setManualMatchName] = useState("");
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
