@@ -120,7 +120,7 @@ async def health():
 async def analyze(
     file: UploadFile = File(...),
     disable_cache: bool = Query(default=False, description="Force un nouveau calcul (ignore le cache)"),
-    use_combined_algo: bool = Query(default=True, description="Utiliser l'algorithme combiné (Poisson + ImpliedOdds)")
+    use_combined_algo: bool = Query(default=False, description="Utiliser l'algorithme combiné (Poisson + ImpliedOdds)")
 ):
     """
     Analyse une image de bookmaker et prédit le score le plus probable.
