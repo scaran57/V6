@@ -142,13 +142,19 @@ async def analyze(
         
         logger.info(f"Image reçue: {file.filename}")
         
+        # Calculer le hash MD5 de l'image pour garantir l'unicité
+        with open(file_path, "rb") as f:
+            image_hash = hashlib.md5(f.read()).hexdigest()
+        
+        logger.info(f"Hash de l'image: {image_hash}")
+        
         # Extraire les informations du match (nom et bookmaker)
         match_info = extract_match_info(file_path)
         match_name = match_info.get("match_name", "Match non détecté")
         bookmaker = match_info.get("bookmaker", "Bookmaker inconnu")
         
-        # Générer un ID unique pour ce match
-        match_id = generate_match_id(match_name, bookmaker)
+        # Générer un ID unique pour ce match (basé sur le hash de l'image)
+        match_id = generate_match_id(match_name, bookmaker, image_hash=image_hash)
         
         # Vérifier si ce match a déjà été analysé (sauf si cache désactivé)
         if not disable_cache:
