@@ -118,7 +118,7 @@ async def health():
 @api_router.post("/analyze")
 async def analyze(
     file: UploadFile = File(...),
-    disable_cache: bool = False
+    disable_cache: bool = Query(default=False, description="Force un nouveau calcul (ignore le cache)")
 ):
     """
     Analyse une image de bookmaker et prédit le score le plus probable.
@@ -126,6 +126,9 @@ async def analyze(
     Args:
         file: Image du bookmaker à analyser
         disable_cache: Si True, force un nouveau calcul même si le match existe en mémoire (défaut: False)
+    
+    Usage:
+        curl -X POST "http://localhost:8001/api/analyze?disable_cache=true" -F "file=@image.jpg"
     """
     try:
         # Sauvegarder l'image temporairement
