@@ -141,8 +141,9 @@ def extract_bold_team_names_parionssport(image_path: str):
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
         dilated = cv2.dilate(binary, kernel, iterations=1)
         
-        # OCR avec configuration pour grands caractères
-        custom_config = r'--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZÀÂÄÆÇÉÈÊËÏÎÔÙÛÜŸŒ -'
+        # OCR avec configuration pour texte large et espacé (noms d'équipes)
+        # Utiliser PSM 6 (bloc de texte uniforme) et accepter lettres + espaces
+        custom_config = r'--oem 3 --psm 6'
         
         text = pytesseract.image_to_string(
             Image.fromarray(dilated),
@@ -150,21 +151,50 @@ def extract_bold_team_names_parionssport(image_path: str):
             config=custom_config
         )
         
-        logger.info(f"🎯 OCR spécialisé Parions Sport (texte gras): {text[:200]}")
+        logger.info(f"🎯 OCR spécialisé Parions Sport (texte gras): {text[:300]}")
         
         # Nettoyer et extraire les noms d'équipes
         lines = [line.strip() for line in text.split('\n') if line.strip()]
         
+        # Mots à exclure (UI elements, bookmaker text, etc.)
+        excluded_words_lower = {
+            'league', 'ligue', 'champions', 'europa', 'conference', 'coupe', 'cup',
+            'qualification', 'barrage', 'finale', 'demi', 'quart', 'huitième',
+            'match', 'jour', 'journée', 'tour', 'phase', 'groupe', 'poule',
+            'parions', 'sport', 'fdj', 'pmu', 'cote', 'cotes', 'score', 'exact',
+            'stats', 'statistiques', 'live', 'direct', 'résultat', 'but', 'buts',
+            'the', 'and', 'vs', 'versus'
+        }
+        
         # Filtrer les lignes qui ressemblent à des noms d'équipes
-        # (mots de 3+ caractères, principalement majuscules)
         team_candidates = []
         for line in lines:
-            # Ignorer les lignes trop courtes ou avec des chiffres
-            if len(line) < 3 or any(char.isdigit() for char in line):
+            # Ignorer lignes trop courtes ou trop longues
+            if len(line) < 3 or len(line) > 50:
                 continue
-            # Garder si majorité de majuscules
-            if sum(1 for c in line if c.isupper()) > len(line) * 0.5:
-                team_candidates.append(line)
+            
+            # Ignorer si trop de chiffres (probablement des cotes)
+            digit_count = sum(1 for c in line if c.isdigit())
+            if digit_count > len(line) * 0.2:
+                continue
+            
+            # Ignorer si contient des symboles de cotes (., :, -, x, etc. en quantité)
+            symbol_count = sum(1 for c in line if c in '.:x-/\\')
+            if symbol_count > 2:
+                continue
+            
+            # Nettoyer la ligne
+            clean_line = line.strip()
+            
+            # Vérifier si la ligne contient des mots exclus
+            line_lower = clean_line.lower()
+            if any(excluded in line_lower for excluded in excluded_words_lower):
+                continue
+            
+            # Garder si commence par une majuscule et contient principalement des lettres
+            alpha_count = sum(1 for c in clean_line if c.isalpha())
+            if alpha_count > len(clean_line) * 0.7 and clean_line[0].isupper():
+                team_candidates.append(clean_line)
         
         logger.info(f"✓ Candidats trouvés: {team_candidates}")
         
