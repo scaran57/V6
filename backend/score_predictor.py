@@ -399,3 +399,210 @@ def adjust_diff_expected(diff, home, away):
 def get_all_teams_stats():
     """Récupère les statistiques de toutes les équipes"""
     return _load_data()
+
+
+# ============================================================================
+# === NOUVEL ALGORITHME COMBINÉ - predict_combined ===
+# ============================================================================
+
+def implied_prob_from_odds(odds):
+    """
+    Convertit une cote (ex: 5.5) en probabilité implicite (non normalisée).
+    On laisse 1/odds ; la normalisation se fait après.
+    """
+    try:
+        o = float(odds)
+        if o <= 0:
+            return 0.0
+        return 1.0 / o
+    except:
+        return 0.0
+
+def poisson_pmf(k, lam):
+    """PMF de Poisson"""
+    # limiter overflow
+    if lam <= 0:
+        return 0.0 if k > 0 else 1.0
+    try:
+        return (lam**k) * math.exp(-lam) / math.factorial(k)
+    except OverflowError:
+        return 0.0
+
+def compute_team_lambdas(teamA_stats, teamB_stats, global_scale=1.0):
+    """
+    Calcule lambda_home, lambda_away à partir des stats (avg scored/conceded).
+    teamX_stats: dict {'avg_goals_scored':float, 'avg_goals_conceded':float}
+    global_scale: multiplicateur si tu veux augmenter tendance aux buts
+    """
+    # estimation simple : moyenne entre attaque locale et défense adverse
+    lam_home = (teamA_stats.get('avg_goals_scored', 1.5) + teamB_stats.get('avg_goals_conceded', 1.5)) / 2.0
+    lam_away = (teamB_stats.get('avg_goals_scored', 1.5) + teamA_stats.get('avg_goals_conceded', 1.5)) / 2.0
+    return lam_home * global_scale, lam_away * global_scale
+
+def predict_combined(score_odds_map, teamA_stats=None, teamB_stats=None, diffExpected=2):
+    """
+    Algorithme combiné utilisant Poisson + ImpliedOdds avec smoothing de voisinage.
+    
+    Args:
+        score_odds_map: dict like {"2-4": 5.5, "3-1": 2.1, ...} ou list [{"score": "X-Y", "odds": Z}]
+        teamA_stats: optional dict for lambdas calculation (see compute_team_lambdas)
+        teamB_stats: optional dict for lambdas calculation (see compute_team_lambdas)
+        diffExpected: valeur issue du learning_meta
+        
+    Returns:
+        dict: {"mostProbableScore": str, "probabilities": dict, "confidence": float}
+    """
+    logger.info(f"🔬 NOUVEL ALGORITHME COMBINÉ - diffExpected={diffExpected}, ALPHA={ALPHA}, BLEND_BETA={BLEND_BETA}")
+    
+    # Conversion si format liste
+    if isinstance(score_odds_map, list):
+        score_odds_map = {item["score"]: item["odds"] for item in score_odds_map}
+    
+    # 1) build implied probabilities from odds
+    implied_raw = {}
+    for s, o in score_odds_map.items():
+        implied_raw[s] = implied_prob_from_odds(o)
+
+    # 2) compute lambdas (Poisson) from team stats if provided, else neutral
+    if teamA_stats and teamB_stats:
+        lam_home, lam_away = compute_team_lambdas(teamA_stats, teamB_stats)
+        logger.info(f"📊 Lambdas calculés depuis stats équipes: λ_home={lam_home:.2f}, λ_away={lam_away:.2f}")
+    else:
+        lam_home, lam_away = 1.5, 1.5
+        logger.info(f"📊 Lambdas par défaut: λ_home={lam_home:.2f}, λ_away={lam_away:.2f}")
+
+    # 3) compute Poisson joint probs for all score pairs within clamp
+    poisson_raw = {}
+    for s in score_odds_map.keys():
+        parts = s.replace(":", "-").split("-")
+        if len(parts) != 2:
+            continue
+        try:
+            h = int(parts[0]); a = int(parts[1])
+        except ValueError:
+            continue
+            
+        # clamp
+        if h < 0 or a < 0 or h > MAX_GOALS or a > MAX_GOALS:
+            # give tiny probability to extreme (or skip)
+            poisson_raw[s] = EPS
+            continue
+        # joint prob = P(home goals = h) * P(away goals = a)
+        p_h = poisson_pmf(h, lam_home)
+        p_a = poisson_pmf(a, lam_away)
+        poisson_raw[s] = max(EPS, p_h * p_a)
+
+    # 4) apply diffExpected gaussian penalty/bonus to poisson_raw (make it stronger)
+    adjusted_poisson = {}
+    for s, p in poisson_raw.items():
+        parts = s.split("-")
+        try:
+            h = int(parts[0]); a = int(parts[1])
+        except ValueError:
+            adjusted_poisson[s] = p
+            continue
+            
+        diff = abs(a - h)
+        # alpha is stronger than before to increase discrimination
+        weight_diff = math.exp(-ALPHA * (diff - diffExpected)**2)
+        adjusted_poisson[s] = p * weight_diff + EPS
+        
+        if p * weight_diff > 0.01:  # Log seulement les scores significatifs
+            logger.debug(f"  {s}: Poisson={p:.4f}, diff={diff}, weight={weight_diff:.3f}, final={adjusted_poisson[s]:.4f}")
+
+    # 5) normalize both distributions
+    sum_pois = sum(adjusted_poisson.values()) or EPS
+    pois_norm = {s: v / sum_pois for s, v in adjusted_poisson.items()}
+
+    sum_impl = sum(implied_raw.values()) or EPS
+    impl_norm = {s: implied_raw.get(s, 0.0) / sum_impl for s in adjusted_poisson.keys()}
+
+    # 6) blend Poisson and ImpliedOdds with BLEND_BETA
+    blended = {}
+    for s in adjusted_poisson.keys():
+        blended[s] = BLEND_BETA * pois_norm.get(s, 0.0) + (1 - BLEND_BETA) * impl_norm.get(s, 0.0) + EPS
+
+    # 7) final normalization and convert to percentages
+    total = sum(blended.values()) or EPS
+    final_probs = {s: (v / total) * 100 for s, v in blended.items()}
+
+    # 8) optional smoothing: boost nearby scores (small neighborhood smoothing)
+    # (helps move mass from impossible isolated spikes)
+    smoothed = defaultdict(float)
+    for s, p in final_probs.items():
+        try:
+            h, a = map(int, s.split("-"))
+        except ValueError:
+            smoothed[s] = p
+            continue
+            
+        # distribute 80% to self, 20% to neighbors (up/down by 1 goal)
+        smoothed[s] += p * 0.80
+        for dh, da in ((1,0),(-1,0),(0,1),(0,-1)):
+            nh, na = h+dh, a+da
+            key = f"{nh}-{na}"
+            if 0 <= nh <= MAX_GOALS and 0 <= na <= MAX_GOALS:
+                smoothed[key] += p * 0.05
+
+    # normalize smoothed
+    total_sm = sum(smoothed.values()) or EPS
+    final_smoothed = {s: (v/total_sm) * 100 for s, v in smoothed.items() if s in final_probs}
+
+    # pick top
+    if not final_smoothed:
+        return {"mostProbableScore": "Aucune donnée", "probabilities": {}, "confidence": 0.0}
+    
+    top_score = max(final_smoothed.items(), key=lambda x: x[1])[0]
+    
+    # Calculer la confiance
+    confidence = calculate_confidence(final_smoothed, top_score)
+    
+    logger.info(f"🏆 Score le plus probable (combiné): {top_score} ({final_smoothed[top_score]:.2f}%)")
+    logger.info(f"💯 Confiance: {confidence:.2%}")
+    
+    return {
+        "mostProbableScore": top_score,
+        "probabilities": {k: round(v, 2) for k, v in final_smoothed.items()},
+        "confidence": round(confidence, 3)
+    }
+
+
+# ============================================================================
+# === FONCTION WRAPPER POUR COMPATIBILITÉ ===
+# ============================================================================
+
+def calculate_probabilities_v2(scores, diff_expected=2, use_combined=True, teamA_name=None, teamB_name=None):
+    """
+    Nouvelle interface unifiée pour le calcul de probabilités.
+    
+    Args:
+        scores: dict {score: odds} ou list [{"score": "X-Y", "odds": Z}]
+        diff_expected: différence de buts attendue (défaut: 2)
+        use_combined: Utiliser le nouvel algorithme combiné (défaut: True)
+        teamA_name: Nom équipe A (optionnel, pour stats)
+        teamB_name: Nom équipe B (optionnel, pour stats)
+    
+    Returns:
+        dict avec mostProbableScore, probabilities et confidence
+    """
+    if not scores:
+        logger.warning("Aucune donnée pour la prédiction")
+        return {"mostProbableScore": "Aucune donnée", "probabilities": {}, "confidence": 0.0}
+    
+    if use_combined:
+        logger.info("🆕 Utilisation de l'algorithme COMBINÉ (Poisson + ImpliedOdds + Smoothing)")
+        
+        # Récupérer les stats des équipes si disponibles
+        teamA_stats = None
+        teamB_stats = None
+        if teamA_name and teamB_name:
+            gf_a, ga_a = get_team_stats(teamA_name)
+            gf_b, ga_b = get_team_stats(teamB_name)
+            teamA_stats = {'avg_goals_scored': gf_a, 'avg_goals_conceded': ga_a}
+            teamB_stats = {'avg_goals_scored': gf_b, 'avg_goals_conceded': ga_b}
+            logger.info(f"📊 Stats équipes chargées - {teamA_name}: {gf_a}G/{ga_a}C, {teamB_name}: {gf_b}G/{ga_b}C")
+        
+        return predict_combined(scores, teamA_stats, teamB_stats, diff_expected)
+    else:
+        logger.info("📌 Utilisation de l'algorithme CLASSIQUE (compatibilité)")
+        return calculate_probabilities(scores, diff_expected)
