@@ -168,19 +168,24 @@ def extract_bold_team_names_parionssport(image_path: str):
         
         # Filtrer les lignes qui ressemblent à des noms d'équipes
         team_candidates = []
+        raw_lines_log = []
+        
         for line in lines:
+            raw_lines_log.append(line[:50])  # Pour debugging
+            
             # Ignorer lignes trop courtes ou trop longues
-            if len(line) < 3 or len(line) > 50:
+            if len(line) < 2 or len(line) > 60:
                 continue
             
             # Ignorer si trop de chiffres (probablement des cotes)
             digit_count = sum(1 for c in line if c.isdigit())
-            if digit_count > len(line) * 0.2:
+            if digit_count > len(line) * 0.3:
                 continue
             
-            # Ignorer si contient des symboles de cotes (., :, -, x, etc. en quantité)
-            symbol_count = sum(1 for c in line if c in '.:x-/\\')
-            if symbol_count > 2:
+            # Ignorer si contient des symboles de cotes suspects (:, x, /, \)
+            # Mais ACCEPTER les tirets (-) et points (.) car présents dans noms d'équipes
+            suspect_symbol_count = sum(1 for c in line if c in ':x/\\')
+            if suspect_symbol_count > 1:
                 continue
             
             # Nettoyer la ligne
@@ -188,13 +193,28 @@ def extract_bold_team_names_parionssport(image_path: str):
             
             # Vérifier si la ligne contient des mots exclus
             line_lower = clean_line.lower()
-            if any(excluded in line_lower for excluded in excluded_words_lower):
+            words_in_line = line_lower.split()
+            
+            # Exclure si un mot complet est dans excluded_words_lower
+            has_excluded = False
+            for word in words_in_line:
+                if word in excluded_words_lower:
+                    has_excluded = True
+                    break
+            
+            if has_excluded:
                 continue
             
-            # Garder si commence par une majuscule et contient principalement des lettres
-            alpha_count = sum(1 for c in clean_line if c.isalpha())
-            if alpha_count > len(clean_line) * 0.7 and clean_line[0].isupper():
+            # Garder si commence par une majuscule et contient principalement des lettres ou espaces
+            alpha_space_count = sum(1 for c in clean_line if c.isalpha() or c.isspace())
+            total_relevant = sum(1 for c in clean_line if c.isalpha() or c.isspace() or c in '-.')
+            
+            if (alpha_space_count > len(clean_line) * 0.6 and 
+                clean_line[0].isupper() and
+                total_relevant > len(clean_line) * 0.8):
                 team_candidates.append(clean_line)
+        
+        logger.info(f"📄 Lignes brutes extraites: {raw_lines_log[:10]}")
         
         if team_candidates:
             logger.info(f"✅ Candidats trouvés ({len(team_candidates)}): {team_candidates}")
