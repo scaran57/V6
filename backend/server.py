@@ -118,7 +118,8 @@ async def health():
 @api_router.post("/analyze")
 async def analyze(
     file: UploadFile = File(...),
-    disable_cache: bool = Query(default=False, description="Force un nouveau calcul (ignore le cache)")
+    disable_cache: bool = Query(default=False, description="Force un nouveau calcul (ignore le cache)"),
+    use_combined_algo: bool = Query(default=True, description="Utiliser l'algorithme combiné (Poisson + ImpliedOdds)")
 ):
     """
     Analyse une image de bookmaker et prédit le score le plus probable.
@@ -126,9 +127,11 @@ async def analyze(
     Args:
         file: Image du bookmaker à analyser
         disable_cache: Si True, force un nouveau calcul même si le match existe en mémoire (défaut: False)
+        use_combined_algo: Si True, utilise l'algorithme combiné avancé (défaut: True)
     
     Usage:
         curl -X POST "http://localhost:8001/api/analyze?disable_cache=true" -F "file=@image.jpg"
+        curl -X POST "http://localhost:8001/api/analyze?use_combined_algo=false" -F "file=@image.jpg"
     """
     try:
         # Sauvegarder l'image temporairement
