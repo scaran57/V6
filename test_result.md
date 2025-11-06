@@ -387,11 +387,11 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "1.1"
-  test_sequence: 3
+  version: "1.2"
+  test_sequence: 4
   run_ui: false
-  last_update: "2025-11-05"
-  last_feature: "Match name and bookmaker display"
+  last_update: "2025-11-06"
+  last_feature: "Système de routage avec Mode Production et Mode Test + Contrôles avancés du cache"
 
 test_plan:
   current_focus:
