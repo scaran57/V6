@@ -192,20 +192,25 @@ async def analyze(
         sorted_probs = sorted(result['probabilities'].items(), key=lambda x: x[1], reverse=True)
         top3 = [{"score": s, "probability": p} for s, p in sorted_probs[:3]]
         
-        # Sauvegarder dans la mémoire
-        saved_result = analyze_match_stable(
-            match_id=match_id,
-            scores_data=scores,
-            probabilities=result['probabilities'],
-            confidence=result.get('confidence', 0.0),
-            top3=top3,
-            bookmaker=bookmaker,
-            match_name=match_name
-        )
+        # Sauvegarder dans la mémoire (seulement si cache activé)
+        if not disable_cache:
+            saved_result = analyze_match_stable(
+                match_id=match_id,
+                scores_data=scores,
+                probabilities=result['probabilities'],
+                confidence=result.get('confidence', 0.0),
+                top3=top3,
+                bookmaker=bookmaker,
+                match_name=match_name
+            )
+            logger.info(f"💾 Résultat sauvegardé en mémoire")
+        else:
+            logger.info(f"⚠️ Cache désactivé - résultat non sauvegardé")
         
         return JSONResponse({
             "success": True,
             "fromMemory": False,
+            "cacheDisabled": disable_cache,
             "matchId": match_id,
             "matchName": match_name,
             "bookmaker": bookmaker,
