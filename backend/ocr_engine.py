@@ -174,39 +174,23 @@ def extract_bold_team_names_parionssport(image_path: str):
         for line in lines:
             raw_lines_log.append(line[:50])  # Pour debugging
             
-            # NETTOYAGE PRÉLIMINAIRE : Enlever les caractères parasites isolés
-            # Enlever les chiffres isolés (ex: "8 -" ou "- 8")
-            cleaned = re.sub(r'\s+\d+\s+', ' ', line)  # " 8 " → " "
-            cleaned = re.sub(r'^\d+\s+', '', cleaned)   # Début: "8 " → ""
-            cleaned = re.sub(r'\s+\d+$', '', cleaned)   # Fin: " 8" → ""
-            
-            # Enlever les @ isolés
-            cleaned = re.sub(r'\s*@\s*', ' ', cleaned)
-            
-            # Enlever caractères spéciaux isolés au début/fin
-            cleaned = re.sub(r'^[^\w\s]+', '', cleaned)
-            cleaned = re.sub(r'[^\w\s]+$', '', cleaned)
-            
-            # Nettoyer espaces multiples
-            cleaned = re.sub(r'\s+', ' ', cleaned).strip()
-            
-            # Ignorer lignes trop courtes ou trop longues après nettoyage
-            if len(cleaned) < 3 or len(cleaned) > 60:
+            # Ignorer lignes trop courtes ou trop longues
+            if len(line) < 2 or len(line) > 60:
                 continue
             
             # Ignorer si trop de chiffres (probablement des cotes)
-            digit_count = sum(1 for c in cleaned if c.isdigit())
-            if digit_count > len(cleaned) * 0.2:  # Réduit de 0.3 à 0.2
+            digit_count = sum(1 for c in line if c.isdigit())
+            if digit_count > len(line) * 0.3:
                 continue
             
             # Ignorer si contient des symboles de cotes suspects (:, x, /, \)
             # Mais ACCEPTER les tirets (-) et points (.) car présents dans noms d'équipes
-            suspect_symbol_count = sum(1 for c in cleaned if c in ':x/\\@')
-            if suspect_symbol_count > 0:
+            suspect_symbol_count = sum(1 for c in line if c in ':x/\\')
+            if suspect_symbol_count > 1:
                 continue
             
             # Nettoyer la ligne
-            clean_line = cleaned
+            clean_line = line.strip()
             
             # Vérifier si la ligne contient des mots exclus
             line_lower = clean_line.lower()
