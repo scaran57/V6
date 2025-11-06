@@ -17,6 +17,9 @@ function App() {
   const [showLearning, setShowLearning] = useState(false);
   const [predictedScore, setPredictedScore] = useState("");
   const [realScore, setRealScore] = useState("");
+  
+  // Pour la saisie manuelle du nom du match
+  const [manualMatchName, setManualMatchName] = useState("");
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
