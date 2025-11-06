@@ -173,6 +173,7 @@ async def analyze(
             logger.info(f"🔄 CACHE DÉSACTIVÉ - Nouveau calcul forcé pour {match_id} (OCR + prédiction)")
         
         # Extraire les cotes via OCR
+        logger.info(f"🔍 OCR en cours pour {match_id}...")
         scores = extract_odds(file_path)
         
         if not scores:
@@ -183,16 +184,19 @@ async def analyze(
                 "probabilities": {}
             })
         
+        logger.info(f"✅ OCR terminé: {len(scores)} scores extraits")
+        
         # Obtenir la diffExpected pour le calcul
         diff_expected = get_diff_expected()
         
         # Prédire le score avec le nouvel algorithme
+        logger.info(f"🧮 Calcul des probabilités avec diffExpected={diff_expected}...")
         result = calculate_probabilities(scores, diff_expected)
         
         # Nettoyer le fichier temporaire
         os.remove(file_path)
         
-        logger.info(f"Prédiction réussie: {result['mostProbableScore']}")
+        logger.info(f"✅ Prédiction terminée: {result['mostProbableScore']} (confiance: {result.get('confidence', 0)*100:.1f}%)")
         
         # Calculer le top 3 pour le retour
         sorted_probs = sorted(result['probabilities'].items(), key=lambda x: x[1], reverse=True)
