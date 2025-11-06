@@ -206,15 +206,21 @@ export default function AnalyzePage() {
             </div>
 
             {/* Informations du match */}
-            {result.matchName && 
-             result.matchName !== "Match non détecté" && 
-             !result.matchName.startsWith("League -") &&
-             !result.matchName.includes("CANAI") && (
+            {(manualMatchName || 
+             (result.matchName && 
+              result.matchName !== "Match non détecté" && 
+              !result.matchName.startsWith("League -") &&
+              !result.matchName.includes("CANAI"))) && (
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-4 border border-indigo-200">
                 <div className="flex items-center space-x-2 mb-2">
                   <span className="text-lg">⚽</span>
                   <span className="text-sm font-semibold text-gray-700">Match:</span>
-                  <span className="text-sm font-bold text-indigo-700">{result.matchName}</span>
+                  <span className="text-sm font-bold text-indigo-700">
+                    {manualMatchName || result.matchName}
+                  </span>
+                  {manualMatchName && (
+                    <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">✓ Saisi manuellement</span>
+                  )}
                 </div>
                 {result.bookmaker && result.bookmaker !== "Bookmaker inconnu" && (
                   <div className="flex items-center space-x-2">
