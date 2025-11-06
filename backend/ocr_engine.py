@@ -111,10 +111,75 @@ def clean_score(score_str: str) -> str:
     return score_str
 
 
+def extract_bold_team_names_parionssport(image_path: str):
+    """
+    Extraction spécialisée pour Parions Sport:
+    - Cible les GRANDES LETTRES en GRAS
+    - Zone près des drapeaux (section haute de l'image)
+    - Amélioration du contraste pour texte en gras
+    """
+    try:
+        image = Image.open(image_path).convert("RGB")
+        img = np.array(image)
+        height, width = img.shape[:2]
+        
+        # Zone haute où se trouvent généralement les noms d'équipes (10-35% de la hauteur)
+        team_zone = img[int(height * 0.10):int(height * 0.35), :]
+        
+        # Convertir en niveaux de gris
+        gray = cv2.cvtColor(team_zone, cv2.COLOR_RGB2GRAY)
+        
+        # Améliorer le contraste pour détecter le texte en GRAS
+        # Les caractères gras ont plus de pixels noirs/foncés
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
+        enhanced = clahe.apply(gray)
+        
+        # Seuillage pour isoler le texte foncé (gras)
+        _, binary = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+        
+        # Dilatation pour renforcer les caractères gras
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+        dilated = cv2.dilate(binary, kernel, iterations=1)
+        
+        # OCR avec configuration pour grands caractères
+        custom_config = r'--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZÀÂÄÆÇÉÈÊËÏÎÔÙÛÜŸŒ -'
+        
+        text = pytesseract.image_to_string(
+            Image.fromarray(dilated),
+            lang=LANGS,
+            config=custom_config
+        )
+        
+        logger.info(f"🎯 OCR spécialisé Parions Sport (texte gras): {text[:200]}")
+        
+        # Nettoyer et extraire les noms d'équipes
+        lines = [line.strip() for line in text.split('\n') if line.strip()]
+        
+        # Filtrer les lignes qui ressemblent à des noms d'équipes
+        # (mots de 3+ caractères, principalement majuscules)
+        team_candidates = []
+        for line in lines:
+            # Ignorer les lignes trop courtes ou avec des chiffres
+            if len(line) < 3 or any(char.isdigit() for char in line):
+                continue
+            # Garder si majorité de majuscules
+            if sum(1 for c in line if c.isupper()) > len(line) * 0.5:
+                team_candidates.append(line)
+        
+        logger.info(f"✓ Candidats trouvés: {team_candidates}")
+        
+        return team_candidates
+        
+    except Exception as e:
+        logger.error(f"Erreur extraction spécialisée: {e}")
+        return []
+
+
 def extract_match_info(image_path: str):
     """
     Extrait le nom du match et le bookmaker depuis l'image.
     Version améliorée avec analyse complète et détection intelligente.
+    PRIORITÉ: Extraction spécialisée pour Parions Sport (texte en gras)
     """
     try:
         # Charger l'image complète
