@@ -116,9 +116,16 @@ async def health():
     return {"status": "ok", "message": "API de prédiction de score en ligne ✅"}
 
 @api_router.post("/analyze")
-async def analyze(file: UploadFile = File(...)):
+async def analyze(
+    file: UploadFile = File(...),
+    disable_cache: bool = False
+):
     """
     Analyse une image de bookmaker et prédit le score le plus probable.
+    
+    Args:
+        file: Image du bookmaker à analyser
+        disable_cache: Si True, force un nouveau calcul même si le match existe en mémoire (défaut: False)
     """
     try:
         # Sauvegarder l'image temporairement
@@ -136,25 +143,28 @@ async def analyze(file: UploadFile = File(...)):
         # Générer un ID unique pour ce match
         match_id = generate_match_id(match_name, bookmaker)
         
-        # Vérifier si ce match a déjà été analysé
-        existing_result = get_match_result(match_id)
-        if existing_result:
-            logger.info(f"🔍 Match {match_id} déjà en mémoire - résultat figé retourné")
-            os.remove(file_path)
-            
-            return JSONResponse({
-                "success": True,
-                "fromMemory": True,
-                "matchId": match_id,
-                "matchName": existing_result["match_name"],
-                "bookmaker": existing_result["bookmaker"],
-                "extractedScores": existing_result["extracted_scores"],
-                "mostProbableScore": existing_result["top3"][0]["score"] if existing_result["top3"] else "N/A",
-                "probabilities": existing_result["probabilities"],
-                "confidence": existing_result["confidence"],
-                "top3": existing_result["top3"],
-                "analyzedAt": existing_result.get("analyzed_at")
-            })
+        # Vérifier si ce match a déjà été analysé (sauf si cache désactivé)
+        if not disable_cache:
+            existing_result = get_match_result(match_id)
+            if existing_result:
+                logger.info(f"🔍 Match {match_id} déjà en mémoire - résultat figé retourné")
+                os.remove(file_path)
+                
+                return JSONResponse({
+                    "success": True,
+                    "fromMemory": True,
+                    "matchId": match_id,
+                    "matchName": existing_result["match_name"],
+                    "bookmaker": existing_result["bookmaker"],
+                    "extractedScores": existing_result["extracted_scores"],
+                    "mostProbableScore": existing_result["top3"][0]["score"] if existing_result["top3"] else "N/A",
+                    "probabilities": existing_result["probabilities"],
+                    "confidence": existing_result["confidence"],
+                    "top3": existing_result["top3"],
+                    "analyzedAt": existing_result.get("analyzed_at")
+                })
+        else:
+            logger.info(f"🔄 Cache désactivé - nouveau calcul forcé pour {match_id}")
         
         # Extraire les cotes via OCR
         scores = extract_odds(file_path)
