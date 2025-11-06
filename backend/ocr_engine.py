@@ -123,8 +123,9 @@ def extract_bold_team_names_parionssport(image_path: str):
         img = np.array(image)
         height, width = img.shape[:2]
         
-        # Zone haute où se trouvent généralement les noms d'équipes (10-35% de la hauteur)
-        team_zone = img[int(height * 0.10):int(height * 0.35), :]
+        # Zone haute où se trouvent généralement les noms d'équipes (5-40% de la hauteur)
+        # Élargi pour capturer plus de variantes de mise en page
+        team_zone = img[int(height * 0.05):int(height * 0.40), :]
         
         # Convertir en niveaux de gris
         gray = cv2.cvtColor(team_zone, cv2.COLOR_RGB2GRAY)
