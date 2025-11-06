@@ -153,25 +153,37 @@ export default function AnalyzePage() {
               Résultat de l'analyse
             </h2>
 
-            {/* Badge source */}
-            <div className="mb-4">
-              {result.fromMemory === true && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                  <span className="mr-1">🧠</span>
-                  Récupéré depuis le cache
-                </span>
-              )}
-              {result.fromMemory === false && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                  <span className="mr-1">🔁</span>
-                  Nouveau calcul complet
-                </span>
-              )}
-              {result.cacheDisabled && (
-                <span className="ml-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-                  <span className="mr-1">⚠️</span>
-                  Cache désactivé
-                </span>
+            {/* Badge source + Message de debug */}
+            <div className="mb-4 space-y-3">
+              <div className="flex flex-wrap gap-2">
+                {result.fromMemory === true && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                    <span className="mr-1">🧠</span>
+                    Récupéré depuis le cache
+                  </span>
+                )}
+                {result.fromMemory === false && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    <span className="mr-1">🔁</span>
+                    Nouveau calcul complet (OCR + Prédiction)
+                  </span>
+                )}
+                {result.cacheDisabled && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                    <span className="mr-1">⚠️</span>
+                    Cache désactivé
+                  </span>
+                )}
+              </div>
+              
+              {/* Message explicatif détaillé */}
+              {result.debug && (
+                <div className="bg-gray-50 border-l-4 border-gray-400 p-3 text-sm text-gray-700">
+                  <p className="flex items-start">
+                    <span className="mr-2 mt-0.5">ℹ️</span>
+                    <span><strong>Info:</strong> {result.debug}</span>
+                  </p>
+                </div>
               )}
             </div>
 
