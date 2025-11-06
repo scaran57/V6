@@ -265,7 +265,22 @@ def extract_match_info(image_path: str):
         # ========== DÉTECTION DU NOM DU MATCH ==========
         match_name = None
         
-        # Extraire toutes les lignes du texte
+        # SI PARIONS SPORT DÉTECTÉ : Utiliser l'extraction spécialisée pour texte en GRAS
+        if bookmaker and "Parions" in bookmaker:
+            logger.info("🎯 Bookmaker Parions Sport détecté - Utilisation extraction spécialisée (texte gras)")
+            bold_teams = extract_bold_team_names_parionssport(image_path)
+            
+            if len(bold_teams) >= 2:
+                # Prendre les 2 premiers candidats comme équipes
+                match_name = f"{bold_teams[0]} - {bold_teams[1]}"
+                logger.info(f"✅ Match détecté (méthode gras): {match_name}")
+                return {"match_name": match_name, "bookmaker": bookmaker}
+            elif len(bold_teams) == 1:
+                # Un seul nom détecté, chercher le second dans le texte général
+                match_name = f"{bold_teams[0]} - ?"
+                logger.info(f"⚠️ Un seul nom détecté (méthode gras): {bold_teams[0]}")
+        
+        # Extraire toutes les lignes du texte (méthode classique si Parions Sport échoue ou autre bookmaker)
         lines = all_text.split('\n')
         lines = [line.strip() for line in lines if line.strip()]
         
