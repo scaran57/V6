@@ -196,7 +196,10 @@ def extract_bold_team_names_parionssport(image_path: str):
             if alpha_count > len(clean_line) * 0.7 and clean_line[0].isupper():
                 team_candidates.append(clean_line)
         
-        logger.info(f"✓ Candidats trouvés: {team_candidates}")
+        if team_candidates:
+            logger.info(f"✅ Candidats trouvés ({len(team_candidates)}): {team_candidates}")
+        else:
+            logger.warning(f"⚠️ Aucun candidat trouvé. Texte brut extrait: {text[:500]}")
         
         return team_candidates
         
