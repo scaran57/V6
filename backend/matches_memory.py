@@ -140,7 +140,7 @@ def clear_all_matches():
     logger.info("🧹 Mémoire complètement effacée")
 
 # --- 🔑 GÉNÉRATION D'ID UNIQUE ---
-def generate_match_id(match_name, bookmaker, date=None):
+def generate_match_id(match_name, bookmaker, date=None, image_hash=None):
     """
     Génère un identifiant unique pour un match.
     
@@ -148,6 +148,7 @@ def generate_match_id(match_name, bookmaker, date=None):
         match_name: Nom du match (ex: "PSG - Lyon")
         bookmaker: Nom du bookmaker
         date: Date (optionnel, utilise aujourd'hui par défaut)
+        image_hash: Hash MD5 de l'image (optionnel, pour garantir l'unicité)
     
     Returns:
         str: ID unique du match
@@ -158,6 +159,10 @@ def generate_match_id(match_name, bookmaker, date=None):
     # Nettoyer le nom du match (enlever espaces, tirets, etc.)
     clean_name = match_name.replace(" ", "").replace("-", "").lower()
     clean_bookmaker = bookmaker.replace(" ", "").lower()
+    
+    # Si un hash d'image est fourni, l'utiliser pour garantir l'unicité
+    if image_hash:
+        return f"{clean_name}_{clean_bookmaker}_{image_hash[:8]}"
     
     return f"{clean_name}_{clean_bookmaker}_{date}"
 
