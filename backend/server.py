@@ -192,9 +192,26 @@ async def analyze(
         # Obtenir la diffExpected pour le calcul
         diff_expected = get_diff_expected()
         
-        # Prédire le score avec le nouvel algorithme
+        # Prédire le score avec l'algorithme choisi
         logger.info(f"🧮 Calcul des probabilités avec diffExpected={diff_expected}...")
-        result = calculate_probabilities(scores, diff_expected)
+        
+        if use_combined_algo:
+            # Extraire les noms d'équipes du match_name si possible
+            teamA_name, teamB_name = None, None
+            if " - " in match_name and match_name != "Match non détecté":
+                parts = match_name.split(" - ")
+                if len(parts) == 2:
+                    teamA_name, teamB_name = parts[0].strip(), parts[1].strip()
+            
+            result = calculate_probabilities_v2(
+                scores, 
+                diff_expected, 
+                use_combined=True,
+                teamA_name=teamA_name,
+                teamB_name=teamB_name
+            )
+        else:
+            result = calculate_probabilities(scores, diff_expected)
         
         # Nettoyer le fichier temporaire
         os.remove(file_path)
