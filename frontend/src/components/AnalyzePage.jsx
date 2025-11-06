@@ -188,7 +188,10 @@ export default function AnalyzePage() {
             </div>
 
             {/* Informations du match */}
-            {result.matchName && result.matchName !== "Match non détecté" && (
+            {result.matchName && 
+             result.matchName !== "Match non détecté" && 
+             !result.matchName.startsWith("League -") &&
+             !result.matchName.includes("CANAI") && (
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-4 border border-indigo-200">
                 <div className="flex items-center space-x-2 mb-2">
                   <span className="text-lg">⚽</span>
