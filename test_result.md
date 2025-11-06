@@ -338,6 +338,53 @@ frontend:
         agent: "main"
         comment: "Frontend UI for uploading images and displaying prediction results"
 
+  - task: "Système de routage avec Mode Production et Mode Test"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/AppRouter.js, /app/frontend/src/TestMode.js, /app/frontend/src/components/AnalyzePage.jsx, /app/frontend/src/index.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: |
+          ✅ SYSTÈME DE ROUTAGE ET MODE TEST COMPLET
+          
+          Frontend changes:
+          1. Créé AppRouter.js avec navigation entre deux modes :
+             - Mode Production : Application principale (App.js)
+             - Mode Test : Page d'analyse avec contrôles de cache (AnalyzePage.jsx)
+          
+          2. Créé TestMode.js comme wrapper avec bandeau d'avertissement
+          
+          3. Créé AnalyzePage.jsx avec fonctionnalités avancées :
+             - Upload d'image
+             - Switch pour désactiver le cache (force nouveau calcul OCR + prédiction)
+             - Bouton pour vider complètement le cache
+             - Badges indiquant la source (cache vs nouveau calcul)
+             - Affichage complet des résultats (match, bookmaker, Top 3, confiance)
+             - Section technique dépliable avec métadonnées
+          
+          4. Mis à jour index.js pour utiliser AppRouter au lieu de App
+          
+          5. Navigation testée avec succès :
+             - Navbar persistante avec boutons Mode Production / Mode Test
+             - Basculement fluide entre les modes sans rechargement
+             - Mode Production affiché par défaut
+             - Design cohérent avec l'application existante
+          
+          Documentation créée:
+          - /app/DOCUMENTATION.md : Guide utilisateur complet
+          - /app/README_ROUTING.md : Documentation technique pour développeurs
+          
+          Tests visuels réalisés:
+          ✅ Mode Production accessible et fonctionnel
+          ✅ Mode Test accessible avec bandeau jaune
+          ✅ Navigation bidirectionnelle fonctionnelle
+          ✅ Design responsive et cohérent
+          ✅ Tous les contrôles du cache opérationnels
+
 metadata:
   created_by: "main_agent"
   version: "1.1"
