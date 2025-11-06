@@ -12,6 +12,7 @@ import uuid
 from datetime import datetime, timezone
 import shutil
 import subprocess
+import hashlib
 
 # Import des modules de prédiction de score
 from ocr_engine import extract_odds, extract_match_info
