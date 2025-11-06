@@ -164,7 +164,7 @@ def extract_bold_team_names_parionssport(image_path: str):
             'match', 'jour', 'journée', 'tour', 'phase', 'groupe', 'poule',
             'parions', 'sport', 'fdj', 'pmu', 'cote', 'cotes', 'score', 'exact',
             'stats', 'statistiques', 'live', 'direct', 'résultat', 'but', 'buts',
-            'the', 'and', 'vs', 'versus'
+            'the', 'and', 'vs', 'versus', 'pari', 'paris', 'mesure', 'sur'
         }
         
         # Filtrer les lignes qui ressemblent à des noms d'équipes
