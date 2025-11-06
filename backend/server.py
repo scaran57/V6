@@ -599,6 +599,26 @@ async def diagnostic_last_analysis():
             status_code=500
         )
 
+@api_router.delete("/admin/clear-analysis-cache")
+async def admin_clear_analysis_cache():
+    """
+    🗑️ [ADMIN] Vide complètement le cache des analyses (matches_memory).
+    Utile pour forcer de nouveaux calculs sur tous les matchs.
+    """
+    try:
+        clear_all_matches()
+        return {
+            "success": True,
+            "message": "Cache d'analyse vidé avec succès",
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Erreur lors du vidage du cache: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
 @api_router.get("/diagnostic/system-status")
 async def diagnostic_system_status():
     """
