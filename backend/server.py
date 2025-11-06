@@ -203,6 +203,7 @@ async def analyze(
         top3 = [{"score": s, "probability": p} for s, p in sorted_probs[:3]]
         
         # Sauvegarder dans la mémoire (seulement si cache activé)
+        debug_message = ""
         if not disable_cache:
             saved_result = analyze_match_stable(
                 match_id=match_id,
@@ -213,9 +214,11 @@ async def analyze(
                 bookmaker=bookmaker,
                 match_name=match_name
             )
-            logger.info(f"💾 Résultat sauvegardé en mémoire")
+            logger.info(f"💾 Résultat sauvegardé dans le cache pour les prochaines utilisations")
+            debug_message = "Nouveau calcul effectué (OCR + prédiction) et sauvegardé dans le cache"
         else:
-            logger.info(f"⚠️ Cache désactivé - résultat non sauvegardé")
+            logger.info(f"⚠️ Cache désactivé - résultat NON sauvegardé (sera recalculé à chaque fois)")
+            debug_message = "Nouveau calcul effectué (OCR + prédiction) mais NON sauvegardé - sera recalculé à chaque analyse"
         
         return JSONResponse({
             "success": True,
@@ -228,7 +231,8 @@ async def analyze(
             "mostProbableScore": result['mostProbableScore'],
             "probabilities": result['probabilities'],
             "confidence": result.get('confidence', 0.0),
-            "top3": top3
+            "top3": top3,
+            "debug": debug_message
         })
         
     except Exception as e:
