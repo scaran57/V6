@@ -323,10 +323,23 @@ def extract_match_info(image_path: str):
             logger.info("🎯 Bookmaker Parions Sport détecté - Utilisation extraction spécialisée (texte gras)")
             bold_teams = extract_bold_team_names_parionssport(image_path)
             
+            # Vérifier si un candidat contient déjà les deux équipes séparées par "-"
+            for candidate in bold_teams:
+                if " - " in candidate or " -" in candidate or "- " in candidate:
+                    # Splitter sur le tiret
+                    parts = re.split(r'\s*-\s*', candidate)
+                    if len(parts) == 2:
+                        team1 = parts[0].strip()
+                        team2 = parts[1].strip()
+                        if len(team1) >= 2 and len(team2) >= 2:
+                            match_name = f"{team1} - {team2}"
+                            logger.info(f"✅ Match détecté (ligne complète avec tiret): {match_name}")
+                            return {"match_name": match_name, "bookmaker": bookmaker}
+            
             if len(bold_teams) >= 2:
                 # Prendre les 2 premiers candidats comme équipes
                 match_name = f"{bold_teams[0]} - {bold_teams[1]}"
-                logger.info(f"✅ Match détecté (méthode gras): {match_name}")
+                logger.info(f"✅ Match détecté (méthode gras - 2 lignes): {match_name}")
                 return {"match_name": match_name, "bookmaker": bookmaker}
             elif len(bold_teams) == 1:
                 # Un seul nom détecté, chercher le second dans le texte général
