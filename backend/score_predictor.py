@@ -2,13 +2,22 @@
 Module de calcul des probabilités de scores
 Basé sur l'algorithme original avec pondération Poisson et correction adaptative des nuls
 + Apprentissage par équipe avec historique des 5 derniers matchs
++ NOUVEAU: Algorithme combiné Poisson + ImpliedOdds avec smoothing de voisinage
 """
 import math
 import logging
 import json
 import os
+from collections import defaultdict
 
 logger = logging.getLogger(__name__)
+
+# ====== Paramètres calibrables pour l'algorithme combiné ======
+MAX_GOALS = 5            # clamp goals per side (0..5)
+ALPHA = 1.0              # force de la gaussienne sur diff (avant: 0.4) -> augmenter pour +discrimination
+BLEND_BETA = 0.7         # poids Poisson vs ImpliedOdds (0..1). 0.7 = 70% Poisson, 30% odds
+EPS = 1e-9               # lissage pour éviter 0
+# ===============================================================
 
 
 # ============================================================================
