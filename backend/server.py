@@ -150,7 +150,7 @@ async def analyze(
         if not disable_cache:
             existing_result = get_match_result(match_id)
             if existing_result:
-                logger.info(f"🔍 Match {match_id} déjà en mémoire - résultat figé retourné")
+                logger.info(f"✅ CACHE HIT - Match {match_id} récupéré depuis le cache (pas de recalcul)")
                 os.remove(file_path)
                 
                 return JSONResponse({
@@ -164,10 +164,13 @@ async def analyze(
                     "probabilities": existing_result["probabilities"],
                     "confidence": existing_result["confidence"],
                     "top3": existing_result["top3"],
-                    "analyzedAt": existing_result.get("analyzed_at")
+                    "analyzedAt": existing_result.get("analyzed_at"),
+                    "debug": "Résultat récupéré du cache - OCR et calculs non effectués"
                 })
+            else:
+                logger.info(f"🆕 CACHE MISS - Nouveau match {match_id}, calcul complet requis")
         else:
-            logger.info(f"🔄 Cache désactivé - nouveau calcul forcé pour {match_id}")
+            logger.info(f"🔄 CACHE DÉSACTIVÉ - Nouveau calcul forcé pour {match_id} (OCR + prédiction)")
         
         # Extraire les cotes via OCR
         scores = extract_odds(file_path)
