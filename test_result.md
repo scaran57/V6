@@ -395,10 +395,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Match name and bookmaker extraction and display - TESTING COMPLETED ✅"
+    - "Système de routage avec Mode Production et Mode Test - COMPLETED ✅"
   stuck_tasks: []
   test_all: false
-  last_test_results: "All backend tests passed successfully - new match info extraction feature fully functional"
+  last_test_results: "Frontend routing system implemented and tested successfully - navigation between production and test modes working perfectly"
 
 agent_communication:
   - agent: "main"
