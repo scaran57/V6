@@ -285,7 +285,10 @@ function App() {
                 {/* Informations du Match et Bookmaker */}
                 {(result.matchName || result.bookmaker) && (
                   <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-4 border border-indigo-200">
-                    {result.matchName && result.matchName !== "Match non détecté" && (
+                    {result.matchName && 
+                     result.matchName !== "Match non détecté" && 
+                     !result.matchName.startsWith("League -") &&
+                     !result.matchName.includes("CANAI") && (
                       <div className="flex items-center space-x-2 mb-2">
                         <span className="text-lg">⚽</span>
                         <span className="text-sm font-semibold text-gray-700">Match:</span>
