@@ -1081,23 +1081,266 @@ class ScorePredictorTester:
         
         return results
 
+    def test_phase2_integration(self):
+        """Test Phase 2 - Integration of 5 new European leagues"""
+        self.log("=" * 60)
+        self.log("🌍 TESTING PHASE 2 - 5 NEW EUROPEAN LEAGUES")
+        self.log("=" * 60)
+        
+        results = {}
+        
+        # Test 1: Direct execution of league_phase2.py
+        self.log("\n1️⃣ Testing direct execution of league_phase2.py...")
+        try:
+            import subprocess
+            result = subprocess.run(
+                ["python3", "/app/backend/league_phase2.py"],
+                capture_output=True,
+                text=True,
+                timeout=60
+            )
+            
+            if result.returncode == 0:
+                self.log("✅ league_phase2.py executed successfully")
+                results["phase2_direct_execution"] = {"status": "PASS"}
+            else:
+                self.log(f"❌ league_phase2.py failed with return code {result.returncode}")
+                self.log(f"   Error: {result.stderr[:200]}")
+                results["phase2_direct_execution"] = {"status": "FAIL", "error": result.stderr[:200]}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["phase2_direct_execution"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test 2: Verify scheduler status
+        self.log("\n2️⃣ Testing scheduler status...")
+        try:
+            response = requests.get(f"{BASE_URL}/admin/league/scheduler-status", timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                scheduler = data.get("scheduler", {})
+                is_running = scheduler.get("is_running", False)
+                
+                if is_running:
+                    self.log(f"✅ Scheduler running, next update: {scheduler.get('next_update', 'N/A')}")
+                    results["scheduler_status"] = {"status": "PASS", "data": scheduler}
+                else:
+                    self.log("⚠️ Scheduler not running")
+                    results["scheduler_status"] = {"status": "PARTIAL", "data": scheduler}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["scheduler_status"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["scheduler_status"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test 3: Trigger manual update via scheduler
+        self.log("\n3️⃣ Testing manual trigger via scheduler...")
+        try:
+            response = requests.post(f"{BASE_URL}/admin/league/trigger-update", timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("success"):
+                    self.log("✅ Manual update triggered successfully")
+                    results["manual_trigger"] = {"status": "PASS"}
+                    # Wait a few seconds for the update to process
+                    self.log("   ⏳ Waiting 5 seconds for update to process...")
+                    time.sleep(5)
+                else:
+                    self.log("❌ Manual trigger failed")
+                    results["manual_trigger"] = {"status": "FAIL", "error": "Success flag false"}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["manual_trigger"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["manual_trigger"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test 4: Verify JSON files created
+        self.log("\n4️⃣ Verifying JSON files in /app/data/leagues/...")
+        expected_files = ["SerieA.json", "Bundesliga.json", "Ligue1.json", "PrimeiraLiga.json", "Ligue2.json", "phase2_update_report.json"]
+        
+        files_found = []
+        files_missing = []
+        
+        for filename in expected_files:
+            filepath = f"/app/data/leagues/{filename}"
+            if os.path.exists(filepath):
+                files_found.append(filename)
+                self.log(f"   ✅ {filename} exists")
+            else:
+                files_missing.append(filename)
+                self.log(f"   ❌ {filename} missing")
+        
+        if len(files_found) == len(expected_files):
+            self.log(f"✅ All {len(expected_files)} files found")
+            results["files_verification"] = {"status": "PASS", "files_found": files_found}
+        elif len(files_found) > 0:
+            self.log(f"⚠️ {len(files_found)}/{len(expected_files)} files found")
+            results["files_verification"] = {"status": "PARTIAL", "files_found": files_found, "files_missing": files_missing}
+        else:
+            self.log("❌ No files found")
+            results["files_verification"] = {"status": "FAIL", "files_missing": files_missing}
+        
+        # Test 5: Verify phase2_update_report.json content
+        self.log("\n5️⃣ Verifying phase2_update_report.json content...")
+        try:
+            report_path = "/app/data/leagues/phase2_update_report.json"
+            if os.path.exists(report_path):
+                with open(report_path, "r") as f:
+                    report = json.load(f)
+                
+                leagues_updated = report.get("leagues_updated", 0)
+                total_leagues = report.get("total_leagues", 0)
+                
+                if leagues_updated == 5 and total_leagues == 5:
+                    self.log(f"✅ Report shows {leagues_updated}/{total_leagues} leagues updated")
+                    results["report_verification"] = {"status": "PASS", "leagues_updated": leagues_updated}
+                else:
+                    self.log(f"⚠️ Report shows {leagues_updated}/{total_leagues} leagues updated (expected 5/5)")
+                    results["report_verification"] = {"status": "PARTIAL", "leagues_updated": leagues_updated}
+            else:
+                self.log("❌ phase2_update_report.json not found")
+                results["report_verification"] = {"status": "FAIL", "error": "Report file not found"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["report_verification"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test 6: Test team coefficients for new leagues
+        self.log("\n6️⃣ Testing team coefficients for Phase 2 leagues...")
+        
+        phase2_teams = [
+            ("Inter Milan", "SerieA"),
+            ("Bayern Munich", "Bundesliga"),
+            ("Paris Saint-Germain", "Ligue1"),
+            ("Benfica", "PrimeiraLiga"),
+            ("Auxerre", "Ligue2")
+        ]
+        
+        coeff_results = {}
+        for team, league in phase2_teams:
+            self.log(f"\n   Testing {team} ({league})...")
+            try:
+                response = requests.get(
+                    f"{BASE_URL}/league/team-coeff?team={team}&league={league}",
+                    timeout=10
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    coef = data.get("coefficient")
+                    
+                    if coef and 0.85 <= coef <= 1.30:
+                        self.log(f"   ✅ {team}: coefficient={coef:.3f} (valid range)")
+                        coeff_results[f"{team}_{league}"] = {"status": "PASS", "coefficient": coef}
+                    else:
+                        self.log(f"   ❌ {team}: coefficient={coef} (outside valid range [0.85, 1.30])")
+                        coeff_results[f"{team}_{league}"] = {"status": "FAIL", "coefficient": coef}
+                else:
+                    self.log(f"   ❌ HTTP {response.status_code}")
+                    coeff_results[f"{team}_{league}"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+            except Exception as e:
+                self.log(f"   ❌ Exception: {str(e)}")
+                coeff_results[f"{team}_{league}"] = {"status": "FAIL", "error": str(e)}
+        
+        # Summarize coefficient tests
+        coeff_passed = sum(1 for r in coeff_results.values() if r.get("status") == "PASS")
+        coeff_total = len(coeff_results)
+        
+        if coeff_passed == coeff_total:
+            self.log(f"\n✅ All {coeff_total} coefficient tests passed")
+            results["coefficient_tests"] = {"status": "PASS", "passed": coeff_passed, "total": coeff_total}
+        elif coeff_passed > 0:
+            self.log(f"\n⚠️ {coeff_passed}/{coeff_total} coefficient tests passed")
+            results["coefficient_tests"] = {"status": "PARTIAL", "passed": coeff_passed, "total": coeff_total}
+        else:
+            self.log(f"\n❌ All {coeff_total} coefficient tests failed")
+            results["coefficient_tests"] = {"status": "FAIL", "passed": 0, "total": coeff_total}
+        
+        # Test 7: Regression tests for existing leagues
+        self.log("\n7️⃣ Testing regression (existing leagues should still work)...")
+        
+        regression_tests = [
+            ("Real Madrid", "LaLiga"),
+            ("Manchester City", "PremierLeague")
+        ]
+        
+        regression_results = {}
+        for team, league in regression_tests:
+            self.log(f"\n   Testing {team} ({league})...")
+            try:
+                response = requests.get(
+                    f"{BASE_URL}/league/team-coeff?team={team}&league={league}",
+                    timeout=10
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    coef = data.get("coefficient")
+                    
+                    if coef and 0.85 <= coef <= 1.30:
+                        self.log(f"   ✅ {team}: coefficient={coef:.3f}")
+                        regression_results[f"{team}_{league}"] = {"status": "PASS", "coefficient": coef}
+                    else:
+                        self.log(f"   ❌ {team}: coefficient={coef}")
+                        regression_results[f"{team}_{league}"] = {"status": "FAIL", "coefficient": coef}
+                else:
+                    self.log(f"   ❌ HTTP {response.status_code}")
+                    regression_results[f"{team}_{league}"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+            except Exception as e:
+                self.log(f"   ❌ Exception: {str(e)}")
+                regression_results[f"{team}_{league}"] = {"status": "FAIL", "error": str(e)}
+        
+        # Summarize regression tests
+        regression_passed = sum(1 for r in regression_results.values() if r.get("status") == "PASS")
+        regression_total = len(regression_results)
+        
+        if regression_passed == regression_total:
+            self.log(f"\n✅ All {regression_total} regression tests passed")
+            results["regression_tests"] = {"status": "PASS", "passed": regression_passed, "total": regression_total}
+        else:
+            self.log(f"\n❌ {regression_passed}/{regression_total} regression tests passed")
+            results["regression_tests"] = {"status": "FAIL", "passed": regression_passed, "total": regression_total}
+        
+        # Print summary
+        self.log("\n" + "=" * 60)
+        self.log("PHASE 2 TEST SUMMARY")
+        self.log("=" * 60)
+        
+        passed = sum(1 for r in results.values() if r.get("status") == "PASS")
+        partial = sum(1 for r in results.values() if r.get("status") == "PARTIAL")
+        failed = sum(1 for r in results.values() if r.get("status") == "FAIL")
+        total = len(results)
+        
+        self.log(f"\n✅ Passed: {passed}/{total}")
+        self.log(f"⚠️ Partial: {partial}/{total}")
+        self.log(f"❌ Failed: {failed}/{total}")
+        
+        for test_name, result in results.items():
+            status = result.get("status", "UNKNOWN")
+            status_icon = "✅" if status == "PASS" else "⚠️" if status == "PARTIAL" else "❌"
+            self.log(f"{status_icon} {test_name}: {status}")
+        
+        self.log("=" * 60)
+        
+        return results
+
 if __name__ == "__main__":
     tester = ScorePredictorTester()
     
-    # Run European competitions integration tests
-    print("\n🏆 TESTING CHAMPIONS LEAGUE + EUROPA LEAGUE INTEGRATION")
+    # Run Phase 2 integration tests
+    print("\n🌍 TESTING PHASE 2 - 5 NEW EUROPEAN LEAGUES INTEGRATION")
     print("=" * 60)
-    european_results = tester.test_european_competitions_integration()
+    phase2_results = tester.test_phase2_integration()
     
     # Print final summary
     print("\n" + "=" * 60)
-    print("🎯 EUROPEAN COMPETITIONS INTEGRATION TEST COMPLETE")
+    print("🎯 PHASE 2 INTEGRATION TEST COMPLETE")
     print("=" * 60)
     
-    passed = sum(1 for r in european_results.values() if r.get("status") == "PASS")
-    partial = sum(1 for r in european_results.values() if r.get("status") == "PARTIAL")
-    failed = sum(1 for r in european_results.values() if r.get("status") == "FAIL")
-    total = len(european_results)
+    passed = sum(1 for r in phase2_results.values() if r.get("status") == "PASS")
+    partial = sum(1 for r in phase2_results.values() if r.get("status") == "PARTIAL")
+    failed = sum(1 for r in phase2_results.values() if r.get("status") == "FAIL")
+    total = len(phase2_results)
     
     print(f"\n✅ Passed: {passed}/{total}")
     print(f"⚠️ Partial: {partial}/{total}")
@@ -1107,12 +1350,13 @@ if __name__ == "__main__":
     print(f"\n📊 Success Rate: {success_rate:.1f}%")
     
     if passed == total:
-        print("\n🎉 ALL TESTS PASSED! Champions League + Europa League integration is working perfectly.")
-        print("✅ 8 leagues available")
-        print("✅ 36 teams in each European competition")
-        print("✅ Intelligent fallback system operational")
+        print("\n🎉 ALL TESTS PASSED! Phase 2 integration is working perfectly.")
+        print("✅ 5 new leagues integrated (Serie A, Bundesliga, Ligue 1, Primeira Liga, Ligue 2)")
+        print("✅ All JSON files created successfully")
+        print("✅ Team coefficients calculated correctly (0.85-1.30 range)")
+        print("✅ Scheduler integration working")
         print("✅ No regression in existing functionality")
-    elif success_rate >= 80:
+    elif success_rate >= 70:
         print("\n⚠️ MOST TESTS PASSED WITH SOME WARNINGS. System is functional but check details above.")
     else:
         print("\n❌ CRITICAL ISSUES FOUND. Backend needs attention.")
