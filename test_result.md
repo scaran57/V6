@@ -564,6 +564,55 @@ agent_communication:
              ✅ Red Star Belgrade (CL) → 1.05 (bonus européen)
           
           Le système est opérationnel et prêt pour utilisation.
+      - working: false
+        agent: "testing"
+        comment: |
+          ❌ CRITICAL ISSUE FOUND - DATA STRUCTURE MISMATCH
+          
+          TEST RESULTS: 6/7 tests passed (85.7% success rate)
+          
+          ✅ WORKING CORRECTLY:
+          1. league_phase2.py direct execution - Successfully scrapes and saves 5 leagues
+          2. Scheduler status - Running correctly, next update scheduled
+          3. Manual trigger - Successfully triggers Phase 1 + Phase 2 updates
+          4. File verification - All 6 files created (SerieA.json, Bundesliga.json, Ligue1.json, PrimeiraLiga.json, Ligue2.json, phase2_update_report.json)
+          5. Report verification - Shows 5/5 leagues updated successfully
+          6. Regression tests - Existing leagues (LaLiga, PremierLeague) still working
+          
+          ❌ CRITICAL ISSUE - DATA STRUCTURE INCOMPATIBILITY:
+          
+          Problem: Phase 2 JSON files use different field names than Phase 1:
+          - Phase 2 uses: {"team": "...", "position": 1, "coefficient": 1.3}
+          - Phase 1 uses: {"name": "...", "rank": 1, "points": 33}
+          
+          Impact:
+          - league_fetcher.load_positions() expects "name" and "rank" fields
+          - Phase 2 files use "team" and "position" fields
+          - Result: league_coeff.py cannot read Phase 2 league data
+          - All coefficient queries for Phase 2 teams return fallback (1.0) instead of calculated coefficients
+          
+          Evidence:
+          - Bayern Munich (Bundesliga): Returns coefficient=1.0 with source="fallback_error"
+          - Inter Milan (SerieA): Returns coefficient=1.0 with source="fallback_error"
+          - Paris Saint-Germain (Ligue1): Returns coefficient=1.0 with source="fallback_error"
+          
+          Expected behavior:
+          - Coefficients should be calculated based on team position (0.85-1.30 range)
+          - Top teams should have coefficients near 1.30
+          - Bottom teams should have coefficients near 0.85
+          
+          Root cause:
+          - league_phase2.py creates JSON with "team"/"position" fields
+          - league_fetcher.py expects "name"/"rank" fields
+          - No data format standardization between Phase 1 and Phase 2
+          
+          RECOMMENDATION:
+          Main agent must fix league_phase2.py to use consistent field names:
+          - Change "team" → "name"
+          - Change "position" → "rank"
+          - Optionally add "points" field (can be 0 or calculated)
+          
+          This is a HIGH PRIORITY issue that prevents Phase 2 leagues from being usable in the prediction algorithm.
       - working: true
         agent: "testing"
         comment: |
