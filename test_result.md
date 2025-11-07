@@ -743,36 +743,47 @@ agent_communication:
 agent_communication:
   - agent: "main"
     message: |
-      🔄 PHASE 2 - INTÉGRATION DES 5 NOUVELLES LIGUES DANS LE SCHEDULER
+      ✅ PHASE 2 COMPLÈTE - 5 NOUVELLES LIGUES EUROPÉENNES INTÉGRÉES ET FONCTIONNELLES
       
-      Tâche: Intégrer league_phase2.py dans league_scheduler.py pour mise à jour automatique
+      RÉSUMÉ DE L'IMPLÉMENTATION:
       
-      Modifications effectuées dans /app/backend/league_scheduler.py:
-      1. ✅ Ajout de l'import: import league_phase2
-      2. ✅ Modification de _perform_update() pour exécuter Phase 1 + Phase 2
-      3. ✅ Ajout de l'appel à league_phase2.update_all_leagues()
-      4. ✅ Logs détaillés pour chaque phase avec résumé global
+      1. Intégration dans le scheduler (/app/backend/league_scheduler.py):
+         ✅ Import de league_phase2
+         ✅ Modification de _perform_update() pour Phase 1 + Phase 2
+         ✅ Logs détaillés avec résumé global
       
-      Structure de mise à jour:
-      - Phase 1: Ligues existantes (via league_updater)
-      - Phase 2: 5 nouvelles ligues (Serie A, Bundesliga, Ligue 1, Primeira Liga, Ligue 2)
-      - Validation des prédictions après les deux phases
+      2. Correction structure de données (/app/backend/league_phase2.py):
+         ✅ "team" → "name"
+         ✅ "position" → "rank"
+         ✅ Ajout de "points": 0
+         ✅ Régénération de tous les fichiers JSON
       
-      Nouvelles ligues Phase 2:
-      1. Serie A (Italie) - 20 équipes
-      2. Bundesliga (Allemagne) - 18 équipes
-      3. Ligue 1 (France) - 18 équipes
-      4. Primeira Liga (Portugal) - 18 équipes
-      5. Ligue 2 (France) - 20 équipes
+      3. Configuration mise à jour (/app/backend/league_fetcher.py):
+         ✅ Ajout de Ligue2 dans LEAGUE_CONFIG
       
-      Tests à effectuer:
-      1. Vérifier que le scheduler démarre correctement
-      2. Tester la mise à jour manuelle des ligues Phase 2
-      3. Vérifier la sauvegarde des fichiers JSON dans /app/data/leagues/
-      4. Tester les coefficients pour les équipes des nouvelles ligues
-      5. Vérifier que le rapport phase2_update_report.json est créé
+      NOUVELLES LIGUES DISPONIBLES:
+      1. Serie A (Italie) - 20 équipes ✅
+      2. Bundesliga (Allemagne) - 18 équipes ✅
+      3. Ligue 1 (France) - 18 équipes ✅
+      4. Primeira Liga (Portugal) - 18 équipes ✅
+      5. Ligue 2 (France) - 18 équipes ✅
       
-      Prêt pour testing backend complet avec deep_testing_backend_v2
+      TESTS EFFECTUÉS ET VALIDÉS:
+      ✅ Coefficients position 1 (MAX 1.30): Augsburg, Amiens
+      ✅ Coefficients intermédiaires: Munich (0.929), Milan (1.016), Paris (0.929), Braga (1.194), Bastia (1.247)
+      ✅ Coefficient position dernière (MIN 0.85): Troyes
+      ✅ Régression LaLiga et PremierLeague: Fonctionnent toujours
+      ✅ Scheduler: En cours d'exécution
+      ✅ Fichiers JSON: Tous créés avec bonne structure
+      ✅ Rapport Phase 2: 5/5 ligues mises à jour
+      
+      SYSTÈME COMPLET OPÉRATIONNEL:
+      - Total: 11 ligues disponibles (6 Phase 1 + 5 Phase 2)
+      - Mise à jour automatique quotidienne à 3h00
+      - Coefficients correctement calculés (0.85 - 1.30)
+      - Compatible avec système de prédiction existant
+      
+      STATUS: PRÊT POUR PRODUCTION ✅
   - agent: "testing"
     message: |
       ✅ LEAGUE COEFFICIENT SYSTEM TESTING COMPLETE - ALL TESTS PASSED
