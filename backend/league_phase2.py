@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
 """
-Phase 2 - Intégration des ligues européennes manquantes
-Scraping et calcul des coefficients pour:
+Système unifié de gestion des ligues - Toutes les ligues (Phase 1 + Phase 2)
+Scraping et calcul des coefficients pour TOUTES les ligues:
+
+Phase 1 (Principales):
+- LaLiga (Espagne, 20 équipes)
+- PremierLeague (Angleterre, 20 équipes)
+- ChampionsLeague (Europe, 36 équipes)
+- EuropaLeague (Europe, 36 équipes)
+
+Phase 2 (Européennes):
 - Serie A (Italie, 20 équipes)
 - Bundesliga (Allemagne, 18 équipes)
 - Ligue 1 (France, 18 équipes)
 - Primeira Liga (Portugal, 18 équipes)
-- Ligue 2 (France, 20 équipes)
+- Ligue 2 (France, 18 équipes)
 """
 import os
 import json
