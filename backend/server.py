@@ -291,6 +291,8 @@ async def analyze(
             "fromMemory": False,
             "cacheDisabled": disable_cache,
             "algorithmUsed": algo_name,
+            "league": detected_league,
+            "leagueCoeffsApplied": result.get('league_coeffs_applied', False),
             "matchId": match_id,
             "matchName": match_name,
             "bookmaker": bookmaker,
