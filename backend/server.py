@@ -959,6 +959,121 @@ async def api_trigger_manual_update():
             status_code=500
         )
 
+# ============================================================================
+# VALIDATION DES PRÉDICTIONS
+# ============================================================================
+
+@api_router.get("/validation/status")
+async def api_validation_status():
+    """Récupère le dernier rapport de validation"""
+    try:
+        report = prediction_validator.get_latest_report()
+        return {"success": True, **report}
+    except Exception as e:
+        logger.error(f"Erreur récupération rapport validation: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+@api_router.post("/validation/run")
+async def api_run_validation(days: int = 7):
+    """
+    Exécute une validation des prédictions
+    
+    Args:
+        days: Nombre de jours à analyser (défaut: 7)
+    """
+    try:
+        report = prediction_validator.validate_predictions(days_back=days)
+        return {"success": True, **report}
+    except Exception as e:
+        logger.error(f"Erreur exécution validation: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+@api_router.get("/validation/history")
+async def api_validation_history(limit: int = 30):
+    """
+    Récupère l'historique des validations
+    
+    Args:
+        limit: Nombre maximum d'entrées (défaut: 30)
+    """
+    try:
+        history = prediction_validator.get_validation_history(limit=limit)
+        return {
+            "success": True,
+            "count": len(history),
+            "history": history
+        }
+    except Exception as e:
+        logger.error(f"Erreur récupération historique: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+@api_router.post("/validation/add-prediction")
+async def api_add_prediction(
+    match_id: str,
+    home_team: str,
+    away_team: str,
+    predicted_score: str,
+    confidence: float = None,
+    league: str = None
+):
+    """Enregistre une nouvelle prédiction"""
+    try:
+        prediction_validator.add_prediction(
+            match_id=match_id,
+            home_team=home_team,
+            away_team=away_team,
+            predicted_score=predicted_score,
+            confidence=confidence,
+            league=league
+        )
+        return {
+            "success": True,
+            "message": "Prédiction enregistrée"
+        }
+    except Exception as e:
+        logger.error(f"Erreur enregistrement prédiction: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+@api_router.post("/validation/add-result")
+async def api_add_result(
+    match_id: str,
+    final_score: str,
+    home_team: str = None,
+    away_team: str = None,
+    league: str = None
+):
+    """Enregistre le résultat réel d'un match"""
+    try:
+        prediction_validator.add_result(
+            match_id=match_id,
+            final_score=final_score,
+            home_team=home_team,
+            away_team=away_team,
+            league=league
+        )
+        return {
+            "success": True,
+            "message": "Résultat enregistré"
+        }
+    except Exception as e:
+        logger.error(f"Erreur enregistrement résultat: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
 
 # Include the router in the main app
 app.include_router(api_router)
