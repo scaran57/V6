@@ -1,185 +1,80 @@
 {
   "league": "EuropaLeague",
-  "updated": "2025-11-07T10:14:06.217160Z",
+  "updated": "2025-11-07T12:09:32.702808Z",
   "teams": [
     {
-      "name": "AS Roma",
+      "name": "Manchester United",
       "rank": 1,
       "points": 0
     },
     {
-      "name": "Liverpool",
+      "name": "Olympiacos",
       "rank": 2,
       "points": 0
     },
     {
-      "name": "Villarreal",
+      "name": "Atalanta",
       "rank": 3,
       "points": 0
     },
     {
-      "name": "Sevilla",
+      "name": "Romania",
       "rank": 4,
       "points": 0
     },
     {
-      "name": "West Ham United",
+      "name": "Roma",
       "rank": 5,
       "points": 0
     },
     {
-      "name": "Atalanta",
+      "name": "Lazio",
       "rank": 6,
       "points": 0
     },
     {
-      "name": "Bayer Leverkusen",
+      "name": "Porto",
       "rank": 7,
       "points": 0
     },
     {
-      "name": "Brighton & Hove Albion",
+      "name": "Slavia Prague",
       "rank": 8,
       "points": 0
     },
     {
-      "name": "Rangers",
+      "name": "Union Saint-Gilloise",
       "rank": 9,
       "points": 0
     },
     {
-      "name": "Sporting CP",
+      "name": "Rangers",
       "rank": 10,
       "points": 0
     },
     {
-      "name": "Ajax",
+      "name": "FCSB",
       "rank": 11,
       "points": 0
     },
     {
-      "name": "Olympiacos",
+      "name": "Ajax",
       "rank": 12,
       "points": 0
     },
     {
-      "name": "Feyenoord",
+      "name": "Slavia",
       "rank": 13,
       "points": 0
     },
     {
-      "name": "Real Betis",
+      "name": "Man. United",
       "rank": 14,
       "points": 0
     },
     {
-      "name": "Toulouse",
+      "name": "Union of European Football Associations",
       "rank": 15,
-      "points": 0
-    },
-    {
-      "name": "Slavia Prague",
-      "rank": 16,
-      "points": 0
-    },
-    {
-      "name": "Rennes",
-      "rank": 17,
-      "points": 0
-    },
-    {
-      "name": "Union Saint-Gilloise",
-      "rank": 18,
-      "points": 0
-    },
-    {
-      "name": "Sparta Prague",
-      "rank": 19,
-      "points": 0
-    },
-    {
-      "name": "Marseille",
-      "rank": 20,
-      "points": 0
-    },
-    {
-      "name": "PAOK",
-      "rank": 21,
-      "points": 0
-    },
-    {
-      "name": "Sheriff Tiraspol",
-      "rank": 22,
-      "points": 0
-    },
-    {
-      "name": "Sturm Graz",
-      "rank": 23,
-      "points": 0
-    },
-    {
-      "name": "Rakow Czestochowa",
-      "rank": 24,
-      "points": 0
-    },
-    {
-      "name": "Aris Limassol",
-      "rank": 25,
-      "points": 0
-    },
-    {
-      "name": "Servette",
-      "rank": 26,
-      "points": 0
-    },
-    {
-      "name": "Molde",
-      "rank": 27,
-      "points": 0
-    },
-    {
-      "name": "Qarabag",
-      "rank": 28,
-      "points": 0
-    },
-    {
-      "name": "Hacken",
-      "rank": 29,
-      "points": 0
-    },
-    {
-      "name": "Aberdeen",
-      "rank": 30,
-      "points": 0
-    },
-    {
-      "name": "AEK Athens",
-      "rank": 31,
-      "points": 0
-    },
-    {
-      "name": "Maccabi Haifa",
-      "rank": 32,
-      "points": 0
-    },
-    {
-      "name": "Backa Topola",
-      "rank": 33,
-      "points": 0
-    },
-    {
-      "name": "Lugano",
-      "rank": 34,
-      "points": 0
-    },
-    {
-      "name": "Panathinaikos",
-      "rank": 35,
-      "points": 0
-    },
-    {
-      "name": "Galatasaray",
-      "rank": 36,
       "points": 0
     }
   ]
