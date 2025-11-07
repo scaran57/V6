@@ -28,6 +28,10 @@ from matches_memory import (
     generate_system_report
 )
 
+# Import des modules de classement de ligues
+import league_fetcher
+import league_coeff
+
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
