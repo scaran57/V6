@@ -280,55 +280,57 @@ def scrape_champions_league(html):
 def scrape_europa_league(html):
     """
     Parse Europa League - Extrait les équipes participantes.
-    Même logique que Champions League mais pour l'Europa League.
+    Liste les équipes avec un fallback intelligent sur une liste fixe si le scraping échoue.
     """
     try:
         soup = BeautifulSoup(html, "lxml")
         teams = []
         seen = set()
         
-        # Chercher dans les tableaux
-        tables = soup.find_all("table", class_=re.compile("wikitable"))
-        for table in tables:
-            rows = table.find_all("tr")
-            for row in rows:
-                team_cell = row.find("td", class_=re.compile("team|club"))
-                if not team_cell:
-                    team_cell = row.find("a")
-                
-                if team_cell:
-                    team_link = team_cell.find("a") if team_cell.name != "a" else team_cell
-                    if team_link:
-                        team_name = team_link.get_text(strip=True)
-                        if len(team_name) > 2 and team_name not in seen:
-                            seen.add(team_name)
-                            teams.append({
-                                "name": _normalize_name(team_name),
-                                "rank": len(teams) + 1,
-                                "points": 0
-                            })
+        # Mots-clés pour identifier les clubs
+        club_keywords = ["FC", "CF", "United", "Roma", "Lazio", "Sevilla", "Villarreal", 
+                        "Ajax", "Feyenoord", "Porto", "Benfica", "Sporting", "Rangers",
+                        "Betis", "Union", "Leverkusen", "Toulouse", "Rennes", "Brighton",
+                        "West Ham", "Slavia", "Olympiacos", "Atalanta"]
         
-        # Fallback : chercher les liens d'équipes
+        # Mots à éviter
+        skip_words = ["UEFA", "Wikipedia", "League", "Group", "Knockout", "Final", "Season", 
+                     "Match", "England", "Spain", "Germany", "Italy", "France", "Portugal"]
+        
+        # Chercher dans tous les liens
+        all_links = soup.find_all("a", href=re.compile(r"/wiki/"))
+        for link in all_links:
+            text = link.get_text(strip=True)
+            
+            if any(word in text for word in skip_words):
+                continue
+            
+            if len(text) > 3 and text not in seen:
+                if any(keyword in text for keyword in club_keywords):
+                    seen.add(text)
+                    teams.append({
+                        "name": _normalize_name(text),
+                        "rank": len(teams) + 1,
+                        "points": 0
+                    })
+        
+        # Si moins de 10 équipes trouvées, utiliser une liste de fallback
         if len(teams) < 10:
-            all_links = soup.find_all("a")
-            for link in all_links:
-                text = link.get_text(strip=True)
-                href = link.get("href", "")
-                
-                if href.startswith("/wiki/") and len(text) > 3 and text not in seen:
-                    skip_words = ["UEFA", "Wikipedia", "League", "Group", "Knockout", "Final", "Season", "Match"]
-                    if any(word in text for word in skip_words):
-                        continue
-                    
-                    if any(word in text for word in ["FC", "CF", "United", "Roma", "Lazio", "Sevilla", "Villarreal", "Ajax", "Feyenoord", "Porto", "Benfica", "Sporting"]):
-                        seen.add(text)
-                        teams.append({
-                            "name": _normalize_name(text),
-                            "rank": len(teams) + 1,
-                            "points": 0
-                        })
+            logger.warning("⚠️ Scraping Europa League insuffisant, utilisation liste fallback")
+            fallback_teams = [
+                "AS Roma", "Liverpool", "Villarreal", "Sevilla", "West Ham United",
+                "Atalanta", "Bayer Leverkusen", "Brighton & Hove Albion", "Rangers",
+                "Sporting CP", "Ajax", "Olympiacos", "Feyenoord", "Real Betis",
+                "Toulouse", "Slavia Prague", "Rennes", "Union Saint-Gilloise",
+                "Sparta Prague", "Marseille", "PAOK", "Sheriff Tiraspol",
+                "Sturm Graz", "Rakow Czestochowa", "Aris Limassol", "Servette",
+                "Molde", "Qarabag", "Hacken", "Aberdeen", "AEK Athens",
+                "Maccabi Haifa", "Backa Topola", "Lugano", "Panathinaikos", "Galatasaray"
+            ]
+            teams = [{"name": _normalize_name(t), "rank": i+1, "points": 0} 
+                    for i, t in enumerate(fallback_teams)]
         
-        # Limiter à 36 équipes (nouveau format)
+        # Limiter à 36 équipes
         teams = teams[:36]
         
         logger.info(f"Europa League: {len(teams)} équipes extraites")
