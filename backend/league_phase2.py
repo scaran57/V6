@@ -280,13 +280,13 @@ def fetch_standings(league_name, config):
 
 def update_all_leagues():
     """
-    Met à jour toutes les ligues de la Phase 2
+    Met à jour TOUTES les ligues (Phase 1 + Phase 2) de manière unifiée
     
     Returns:
-        dict: Rapport de mise à jour
+        dict: Rapport de mise à jour consolidé
     """
     logger.info("=" * 60)
-    logger.info("🔄 PHASE 2 - MISE À JOUR DES LIGUES EUROPÉENNES")
+    logger.info("🔄 SYSTÈME UNIFIÉ - MISE À JOUR DE TOUTES LES LIGUES")
     logger.info("=" * 60)
     
     report = {}
