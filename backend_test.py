@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 
 # Configuration
-BASE_URL = "https://betlearn-system.preview.emergentagent.com/api"
+BASE_URL = "https://sportpredictify.preview.emergentagent.com/api"
 BACKEND_DIR = "/app/backend"
 
 # Test images available in backend directory

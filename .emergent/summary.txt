@@ -1,63 +1,74 @@
 <analysis>
-The AI engineer iteratively developed a score prediction application, moving from basic OCR and prediction to a robust, feature-rich system. Initial efforts focused on improving OCR accuracy and integrating a sophisticated prediction algorithm. Key developments included an adaptive learning mechanism, team-based learning, and odds weighting, all leading to a confidence score and top-3 predictions displayed in the UI.
-
-Subsequent work centered on enhancing the UI with match and bookmaker information, which involved several refinements to the OCR logic to accurately extract and format this data. A significant phase addressed the fragility of learning data by implementing a secure, atomic, and append-only learning system to ensure data integrity and traceability. This included a reconstruction script. Most recently, the engineer added diagnostics and the ability to control and clear an analysis cache, and was in the process of integrating these cache controls into a new frontend component with routing.
+The trajectory chronicles the AI engineer's work on a score prediction application, initially focusing on frontend routing and documentation. Following user feedback, extensive debugging was performed on the analysis cache, leading to the crucial fix of incorporating an image hash into the  to ensure unique caching. After reverting to an older prediction algorithm due to uniformity issues with a new combined one, the focus shifted to enhancing OCR for match name extraction for Parions Sport. Iterative improvements involved targeting bold text near flags, and aggressive cleaning of OCR output. A brief regression led to reverting to a stable OCR version. The AI confirmed the learning system was operational despite initial file path confusion. Most recently, the AI engineer began integrating a comprehensive league coefficient system to adjust predictions based on team standings, setting up modules for fetching, calculating, and automatically updating league data. The current task is within this integration phase.
 </analysis>
 
 <product_requirements>
-The core product is a score prediction application for bookmaker images, aiming for robust OCR across diverse formats, filtering extraneous data, and integrating a dynamic prediction algorithm. It requires an adaptive learning mechanism ( with 60/40 weighted average) and system stability. Recent advancements added team-based learning, odds weighting, and a final confidence score with top-3 predictions, all to be displayed clearly on the frontend, including interpretation and recommendations.
-
-User requests evolved to include:
-1.  Displaying match names and bookmaker information in the UI, positioned near the Top 3 Scores, in a clean and lightweight manner. This was refined to specifically extract *real team names* (excluding UI elements) and format them with a dash (e.g., Team A - Team B).
-2.  Addressing the observed discrepancy in the number of learning matches (10 found vs. >20 expected). This led to a requirement for a secured, atomic learning system with an append-only log to preserve history, prevent data corruption, and provide reconstruction capabilities.
-3.  Implementing a  endpoint and allowing users to deactivate the analysis cache for testing purposes, ensuring a full OCR odds reload before calculation, and providing a UI to control these features.
+The core product is a score prediction application for bookmaker images, requiring robust OCR across diverse formats, filtering extraneous data, and integrating a dynamic prediction algorithm. It features adaptive learning, team-based learning, odds weighting, and displays a confidence score with top-3 predictions. User requests included:
+1.  Displaying match names and bookmaker information in a clean UI, specifically extracting real team names. This evolved into supporting manual match name input due to OCR limitations.
+2.  Implementing a secure, atomic learning system with an append-only log for data integrity and traceability.
+3.  Developing a  endpoint, enabling cache deactivation for testing, and providing a UI for these cache controls.
+4.  Integrating a league coefficient system to dynamically adjust prediction probabilities based on teams' current league standings, with automatic daily updates.
 </product_requirements>
 
 <key_technical_concepts>
-- **FastAPI & React:** Backend API and frontend UI.
-- **PyTesseract & OpenCV:** OCR and image preprocessing.
-- **Adaptive Learning:**  adjustment (60/40 weighted average).
-- **Team-based Learning:** Historical team performance tracking.
-- **Odds Weighting:** Probability refinement based on odds.
-- **Atomic File Operations & Append-only Log:** Secure, traceable data management.
-- **Analysis Cache:** Store/retrieve past analysis results.
+-   **FastAPI & React:** Backend API and frontend UI.
+-   **PyTesseract & OpenCV:** OCR and image preprocessing.
+-   **Adaptive Learning:**  adjustment (60/40 weighted average).
+-   **Atomic File Operations & Append-only Log:** Secure learning data.
+-   **Analysis Cache:** Stores past analysis results, now with image hashing.
+-   **League Coefficient System:** Adjusts predictions based on team rankings.
 </key_technical_concepts>
 
 <code_architecture>
-The application uses a FastAPI backend and a React frontend, managed by Docker and Supervisor.
+The application features a FastAPI backend and a React frontend, managed via Docker and Supervisor.
 
 
 
 -   
-    -   **Importance**: Main FastAPI entry point, defining API routes.
-    -   **Changes**: Integrated match/bookmaker extraction, analysis cache () with  parameter, and new endpoints for cache management, system reporting (), and diagnostics. Updated  to use  for secure learning events and  to read  from the new system.
+    -   **Importance**: Main FastAPI entry point.
+    -   **Changes**: Integrated cache control, system reporting, diagnostics, updated  to use , added an OCR  to  for unique cache keys. Modified  to include  parameter and to pass team names and league info to the predictor, returning coefficient details. Added new API routes (, ) for league data management.
 -   
     -   **Importance**: Handles OCR from images.
-    -   **Changes**: Heavily refined to robustly extract match names and bookmakers, including filtering UI elements and standardizing formatting (e.g., Team A - Team B).
--    (NEW)
-    -   **Importance**: Implements a secure, atomic learning system with an append-only log (), managed updates for , and  (for  and schema version).
--    (NEW)
-    -   **Importance**: Immutable, append-only log, serving as the definitive source of truth for all learning events.
+    -   **Changes**: Refined to extract match names and bookmakers. Introduced  for specialized OCR on Parions Sport images (targeting bold text near flags). Implemented aggressive text cleaning and improved logic for splitting team names. Reverted to a stable version after an experimental change broke extraction.
 -   
-    -   **Importance**: Main React component for user interaction.
-    -   **Changes**: Modified to display extracted  and  (with filtering for Bookmaker inconnu) near the Top 3 Scores.
+    -   **Importance**: Implements a secure, atomic learning system.
+    -   **Changes**: Used for append-only logging of learning events and updating  and .
+-   
+    -   **Importance**: Core prediction logic.
+    -   **Changes**: Integrated a  function as an alternative algorithm. Modified  to accept and apply  and  (from league system) to  and  during Poisson calculation.
+-    (NEW/Replaced)
+    -   **Importance**: Scrapes official league standings from websites.
+    -   **Changes**: Initially based on Wikipedia, later replaced with a more robust version to scrape LaLiga and Premier League official sites, saving data to .
+-    (NEW/Replaced)
+    -   **Importance**: Calculates and retrieves team coefficients based on league standings.
+    -   **Changes**: Initially simple, replaced with a version that computes normalized coefficients (0.85-1.3) from scraped data and caches them in . Added  utility function.
 -    (NEW)
-    -   **Importance**: A new React component that provides a UI for analyzing images with a toggle to disable the analysis cache and a button to clear it.
+    -   **Importance**: Orchestrates fetching and computing coefficients for all leagues.
+-    (NEW)
+    -   **Importance**: Manages automatic daily updates of league data in a separate thread.
+-   
+    -   **Importance**: Main entry point for the React app.
+    -   **Changes**: Modified to integrate  for managing different application modes.
+-   
+    -   **Importance**: Main React component.
+    -   **Changes**: Displayed extracted  and . Added client-side filtering for bad OCR match names. Implemented a manual input field for match names.
+-    (NEW)
+    -   **Importance**: Provides UI for analysis with cache control.
+    -   **Changes**: Added toggle to disable analysis cache and a button to clear it. Included client-side filtering for bad OCR match names and a manual input field for match names.
 -    (NEW) and  (NEW)
-    -   **Importance**: Introduced to manage routing and encapsulate the new  for a separate test mode or advanced analysis interface.
+    -   **Importance**: Manage routing for different application modes, encapsulating .
+
 </code_architecture>
 
 <pending_tasks>
--   Complete the frontend integration of  by configuring  and  to make it accessible.
--   Create comprehensive documentation explaining how to use the different frontend modes (main application vs. test mode with cache control features).
+-   Complete the integration of the automatic European league update system.
+-   Implement frontend components (toggle, dropdown, dynamic display) for the league coefficient system.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary, the AI engineer was integrating the user-requested cache control features into the frontend. This involved creating a new React component, , which contains a switch to  during analysis and a button to . The backend API ( and ) was already updated to support these functionalities.
-
-To avoid altering the existing  directly, the AI engineer decided to set up a new routing structure. This included creating a  component to potentially wrap the  and an  to manage navigation between different application modes or pages. The trajectory concludes with the AI having created these new files and planning to create documentation for them. The goal is to provide a dedicated section in the UI where users can explicitly control the analysis caching behavior for testing or specific use cases.
+Immediately before this summary, the AI engineer was in the middle of PHASE 2 – Intégration Automatique des Ligues Européennes for the league coefficient system. This phase involves implementing a scheduler for automatic daily updates of league standings and coefficients. The user provided updated code for , , , and . The AI engineer successfully updated  with the new scraping logic for official league websites. This includes supporting LaLiga and Premier League initially, with plans to add more. The updated  is responsible for making HTTP requests to official league websites, parsing HTML with Beautiful Soup, and saving the extracted team standings into JSON files within . The overall goal of this current work is to ensure that the application's predictions are automatically adjusted based on the real-time performance of teams in their respective leagues, making the predictions more accurate and dynamic.
 </current_work>
 
 <optional_next_step>
-Create documentation for  and , explaining how to access and utilize different application modes.
+Continue implementing the automatic league update system by integrating , , and .
 </optional_next_step>
