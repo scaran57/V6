@@ -1,0 +1,26 @@
+{
+  "league": "PremierLeague",
+  "updated": "2025-11-07T00:00:00Z",
+  "teams": [
+    {"name": "Manchester City", "rank": 1, "points": 28},
+    {"name": "Liverpool", "rank": 2, "points": 27},
+    {"name": "Arsenal", "rank": 3, "points": 27},
+    {"name": "Aston Villa", "rank": 4, "points": 25},
+    {"name": "Tottenham", "rank": 5, "points": 23},
+    {"name": "Manchester United", "rank": 6, "points": 20},
+    {"name": "Newcastle United", "rank": 7, "points": 19},
+    {"name": "Brighton", "rank": 8, "points": 18},
+    {"name": "West Ham", "rank": 9, "points": 17},
+    {"name": "Chelsea", "rank": 10, "points": 16},
+    {"name": "Brentford", "rank": 11, "points": 16},
+    {"name": "Wolves", "rank": 12, "points": 15},
+    {"name": "Crystal Palace", "rank": 13, "points": 14},
+    {"name": "Fulham", "rank": 14, "points": 13},
+    {"name": "Bournemouth", "rank": 15, "points": 12},
+    {"name": "Nottingham Forest", "rank": 16, "points": 11},
+    {"name": "Everton", "rank": 17, "points": 10},
+    {"name": "Luton Town", "rank": 18, "points": 9},
+    {"name": "Burnley", "rank": 19, "points": 7},
+    {"name": "Sheffield United", "rank": 20, "points": 5}
+  ]
+}
