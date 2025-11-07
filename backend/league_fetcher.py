@@ -52,6 +52,11 @@ LEAGUE_CONFIG = {
         "method": "scrape_primeira_liga",
         "fallback_file": f"{DATA_DIR}/PrimeiraLiga.json"
     },
+    "Ligue2": {
+        "url": "https://en.wikipedia.org/wiki/2025–26_Ligue_2",
+        "method": "scrape_ligue2",
+        "fallback_file": f"{DATA_DIR}/Ligue2.json"
+    },
     "ChampionsLeague": {
         "url": "https://en.wikipedia.org/wiki/2024–25_UEFA_Champions_League",
         "method": "scrape_champions_league",
