@@ -192,26 +192,58 @@ def scrape_primeira_liga(html):
     logger.warning("Primeira Liga parser pas encore implémenté")
     return []
 
+def load_league_data(league_name):
+    """Charge les données d'une ligue depuis son fichier JSON"""
+    config = LEAGUE_CONFIG.get(league_name)
+    if not config:
+        return None
+    
+    filepath = config["fallback_file"]
+    if not os.path.exists(filepath):
+        return None
+    
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return None
+
+def save_league_data(league_name, data):
+    """Sauvegarde les données d'une ligue dans son fichier JSON"""
+    config = LEAGUE_CONFIG.get(league_name)
+    if not config:
+        return False
+    
+    filepath = config["fallback_file"]
+    
+    # Format standardisé
+    output = {
+        "league": league_name,
+        "updated": datetime.now().isoformat() + "Z",
+        "teams": data
+    }
+    
+    try:
+        _save_json(filepath, output)
+        return True
+    except Exception as e:
+        logger.error(f"Erreur sauvegarde {league_name}: {e}")
+        return False
+
 def load_positions():
-    """Charge tous les classements"""
-    return _load_json(POSITIONS_FILE)
-
-def load_meta():
-    """Charge les métadonnées (dernière mise à jour, TTL)"""
-    meta = _load_json(METADATA_FILE)
-    if "fetched_at" not in meta:
-        meta["fetched_at"] = {}
-    if "ttl" not in meta:
-        meta["ttl"] = DEFAULT_TTL
-    return meta
-
-def save_positions(obj):
-    """Sauvegarde tous les classements"""
-    _save_json(POSITIONS_FILE, obj)
-
-def save_meta(meta):
-    """Sauvegarde les métadonnées"""
-    _save_json(METADATA_FILE, meta)
+    """Charge tous les classements (format compatible ancien système)"""
+    all_standings = {}
+    
+    for league_name in LEAGUE_CONFIG.keys():
+        data = load_league_data(league_name)
+        if data and "teams" in data:
+            # Convertir au format ancien : {team_name: rank}
+            standings = {}
+            for team in data["teams"]:
+                standings[team["name"]] = team["rank"]
+            all_standings[league_name] = standings
+    
+    return all_standings
 
 def update_league(league_name, force=False):
     """
