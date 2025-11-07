@@ -649,33 +649,36 @@ agent_communication:
 agent_communication:
   - agent: "main"
     message: |
-      ✅ SYSTÈME DE COEFFICIENTS DE LIGUE INTÉGRÉ
+      🔄 PHASE 2 - INTÉGRATION DES 5 NOUVELLES LIGUES DANS LE SCHEDULER
       
-      Implémentation complète du système de coefficients de ligue:
+      Tâche: Intégrer league_phase2.py dans league_scheduler.py pour mise à jour automatique
       
-      Backend:
-      1. ✅ Corrigé league_fetcher.py (ajout imports, configuration)
-      2. ✅ Créé league_updater.py (orchestration mises à jour)
-      3. ✅ Créé league_scheduler.py (mises à jour automatiques quotidiennes)
-      4. ✅ Intégré scheduler dans server.py (démarrage auto)
-      5. ✅ Ajouté endpoints API pour gestion des ligues
-      6. ✅ Vérifié intégration dans score_predictor.py
+      Modifications effectuées dans /app/backend/league_scheduler.py:
+      1. ✅ Ajout de l'import: import league_phase2
+      2. ✅ Modification de _perform_update() pour exécuter Phase 1 + Phase 2
+      3. ✅ Ajout de l'appel à league_phase2.update_all_leagues()
+      4. ✅ Logs détaillés pour chaque phase avec résumé global
       
-      Mise à jour initiale effectuée:
-      - LaLiga: 20 équipes ✅
-      - PremierLeague: 20 équipes ✅
-      - Autres ligues: placeholder (à implémenter)
+      Structure de mise à jour:
+      - Phase 1: Ligues existantes (via league_updater)
+      - Phase 2: 5 nouvelles ligues (Serie A, Bundesliga, Ligue 1, Primeira Liga, Ligue 2)
+      - Validation des prédictions après les deux phases
       
-      Prêt pour testing backend:
-      - Tester /api/admin/league/scheduler-status
-      - Tester /api/league/team-coeff
-      - Tester /api/analyze avec league=LaLiga
-      - Vérifier que les coefficients sont appliqués
+      Nouvelles ligues Phase 2:
+      1. Serie A (Italie) - 20 équipes
+      2. Bundesliga (Allemagne) - 18 équipes
+      3. Ligue 1 (France) - 18 équipes
+      4. Primeira Liga (Portugal) - 18 équipes
+      5. Ligue 2 (France) - 20 équipes
       
-      Frontend à implémenter:
-      - Toggle pour activer/désactiver coefficients
-      - Dropdown pour sélectionner la ligue
-      - Affichage des coefficients dans l'UI
+      Tests à effectuer:
+      1. Vérifier que le scheduler démarre correctement
+      2. Tester la mise à jour manuelle des ligues Phase 2
+      3. Vérifier la sauvegarde des fichiers JSON dans /app/data/leagues/
+      4. Tester les coefficients pour les équipes des nouvelles ligues
+      5. Vérifier que le rapport phase2_update_report.json est créé
+      
+      Prêt pour testing backend complet avec deep_testing_backend_v2
   - agent: "testing"
     message: |
       ✅ LEAGUE COEFFICIENT SYSTEM TESTING COMPLETE - ALL TESTS PASSED
