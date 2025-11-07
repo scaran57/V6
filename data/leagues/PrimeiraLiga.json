@@ -1,95 +1,113 @@
 {
   "league": "PrimeiraLiga",
-  "updated": "2025-11-07T16:02:57.898372Z",
+  "updated": "2025-11-07T16:07:09.943367Z",
   "teams": [
     {
-      "position": 1,
-      "team": "Alverca do Ribatejo",
+      "rank": 1,
+      "name": "Alverca do Ribatejo",
+      "points": 0,
       "coefficient": 1.3
     },
     {
-      "position": 2,
-      "team": "Arouca, Portugal",
+      "rank": 2,
+      "name": "Arouca, Portugal",
+      "points": 0,
       "coefficient": 1.274
     },
     {
-      "position": 3,
-      "team": "Aves",
+      "rank": 3,
+      "name": "Aves",
+      "points": 0,
       "coefficient": 1.247
     },
     {
-      "position": 4,
-      "team": "Lisbon",
+      "rank": 4,
+      "name": "Lisbon",
+      "points": 0,
       "coefficient": 1.221
     },
     {
-      "position": 5,
-      "team": "Braga",
+      "rank": 5,
+      "name": "Braga",
+      "points": 0,
       "coefficient": 1.194
     },
     {
-      "position": 6,
-      "team": "Lisbon",
+      "rank": 6,
+      "name": "Lisbon",
+      "points": 0,
       "coefficient": 1.168
     },
     {
-      "position": 7,
-      "team": "Estoril",
+      "rank": 7,
+      "name": "Estoril",
+      "points": 0,
       "coefficient": 1.141
     },
     {
-      "position": 8,
-      "team": "Amadora",
+      "rank": 8,
+      "name": "Amadora",
+      "points": 0,
       "coefficient": 1.115
     },
     {
-      "position": 9,
-      "team": "Vila Nova de Famalicao",
+      "rank": 9,
+      "name": "Vila Nova de Famalicao",
+      "points": 0,
       "coefficient": 1.088
     },
     {
-      "position": 10,
-      "team": "Barcelos, Portugal",
+      "rank": 10,
+      "name": "Barcelos, Portugal",
+      "points": 0,
       "coefficient": 1.062
     },
     {
-      "position": 11,
-      "team": "Moreira de Conegos",
+      "rank": 11,
+      "name": "Moreira de Conegos",
+      "points": 0,
       "coefficient": 1.035
     },
     {
-      "position": 12,
-      "team": "Funchal",
+      "rank": 12,
+      "name": "Funchal",
+      "points": 0,
       "coefficient": 1.009
     },
     {
-      "position": 13,
-      "team": "Porto",
+      "rank": 13,
+      "name": "Porto",
+      "points": 0,
       "coefficient": 0.982
     },
     {
-      "position": 14,
-      "team": "Vila do Conde",
+      "rank": 14,
+      "name": "Vila do Conde",
+      "points": 0,
       "coefficient": 0.956
     },
     {
-      "position": 15,
-      "team": "Ponta Delgada",
+      "rank": 15,
+      "name": "Ponta Delgada",
+      "points": 0,
       "coefficient": 0.929
     },
     {
-      "position": 16,
-      "team": "Lisbon",
+      "rank": 16,
+      "name": "Lisbon",
+      "points": 0,
       "coefficient": 0.903
     },
     {
-      "position": 17,
-      "team": "Tondela",
+      "rank": 17,
+      "name": "Tondela",
+      "points": 0,
       "coefficient": 0.876
     },
     {
-      "position": 18,
-      "team": "Guimaraes",
+      "rank": 18,
+      "name": "Guimaraes",
+      "points": 0,
       "coefficient": 0.85
     }
   ]
