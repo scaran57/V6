@@ -1,185 +1,140 @@
 {
   "league": "ChampionsLeague",
-  "updated": "2025-11-07T10:11:15.932452Z",
+  "updated": "2025-11-07T10:13:43.406542Z",
   "teams": [
     {
-      "name": "England",
+      "name": "Inter Milan",
       "rank": 1,
       "points": 0
     },
     {
-      "name": "Spain",
+      "name": "Borussia Dortmund",
       "rank": 2,
       "points": 0
     },
     {
-      "name": "Germany",
+      "name": "Barcelona",
       "rank": 3,
       "points": 0
     },
     {
-      "name": "Italy",
+      "name": "2025 FIFA Intercontinental Cup final",
       "rank": 4,
       "points": 0
     },
     {
-      "name": "France",
+      "name": "Real Madrid",
       "rank": 5,
       "points": 0
     },
     {
-      "name": "Netherlands",
+      "name": "Arsenal",
       "rank": 6,
       "points": 0
     },
     {
-      "name": "Portugal",
+      "name": "Romania",
       "rank": 7,
       "points": 0
     },
     {
-      "name": "Belgium",
+      "name": "Benfica",
       "rank": 8,
       "points": 0
     },
     {
-      "name": "Scotland",
+      "name": "Manchester City",
       "rank": 9,
       "points": 0
     },
     {
-      "name": "Austria",
+      "name": "Liverpool",
       "rank": 10,
       "points": 0
     },
     {
-      "name": "Serbia",
+      "name": "Atletico Madrid",
       "rank": 11,
       "points": 0
     },
     {
-      "name": "Turkey",
+      "name": "Bayer Leverkusen",
       "rank": 12,
       "points": 0
     },
     {
-      "name": "Switzerland",
+      "name": "Bayern Munich",
       "rank": 13,
       "points": 0
     },
     {
-      "name": "Ukraine",
+      "name": "RB Leipzig",
       "rank": 14,
       "points": 0
     },
     {
-      "name": "Czech Republic",
+      "name": "Milan",
       "rank": 15,
       "points": 0
     },
     {
-      "name": "Norway",
+      "name": "Juventus",
       "rank": 16,
       "points": 0
     },
     {
-      "name": "Denmark",
+      "name": "Sporting CP",
       "rank": 17,
       "points": 0
     },
     {
-      "name": "Russia",
+      "name": "Celtic",
       "rank": 18,
       "points": 0
     },
     {
-      "name": "Croatia",
+      "name": "Rangers",
       "rank": 19,
       "points": 0
     },
     {
-      "name": "Greece",
+      "name": "FCSB",
       "rank": 20,
       "points": 0
     },
     {
-      "name": "Israel",
+      "name": "Man. City",
       "rank": 21,
       "points": 0
     },
     {
-      "name": "Cyprus",
+      "name": "Leverkusen",
       "rank": 22,
       "points": 0
     },
     {
-      "name": "Sweden",
+      "name": "Bayern",
       "rank": 23,
       "points": 0
     },
     {
-      "name": "Poland",
+      "name": "Dortmund",
       "rank": 24,
       "points": 0
     },
     {
-      "name": "Hungary",
+      "name": "Leipzig",
       "rank": 25,
       "points": 0
     },
     {
-      "name": "Romania",
+      "name": "2007 Roma–Manchester United conflict",
       "rank": 26,
       "points": 0
     },
     {
-      "name": "Bulgaria",
+      "name": "Under-20 Intercontinental Cup",
       "rank": 27,
-      "points": 0
-    },
-    {
-      "name": "Slovakia",
-      "rank": 28,
-      "points": 0
-    },
-    {
-      "name": "Azerbaijan",
-      "rank": 29,
-      "points": 0
-    },
-    {
-      "name": "Kazakhstan",
-      "rank": 30,
-      "points": 0
-    },
-    {
-      "name": "Slovenia",
-      "rank": 31,
-      "points": 0
-    },
-    {
-      "name": "Moldova",
-      "rank": 32,
-      "points": 0
-    },
-    {
-      "name": "Kosovo",
-      "rank": 33,
-      "points": 0
-    },
-    {
-      "name": "Liechtenstein",
-      "rank": 34,
-      "points": 0
-    },
-    {
-      "name": "Latvia",
-      "rank": 35,
-      "points": 0
-    },
-    {
-      "name": "Republic of Ireland",
-      "rank": 36,
       "points": 0
     }
   ]
