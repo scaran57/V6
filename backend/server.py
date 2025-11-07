@@ -31,6 +31,7 @@ from matches_memory import (
 # Import des modules de classement de ligues
 import league_fetcher
 import league_coeff
+import league_scheduler
 
 
 ROOT_DIR = Path(__file__).parent
