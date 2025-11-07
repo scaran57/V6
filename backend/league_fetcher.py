@@ -1,53 +1,28 @@
 # /app/backend/league_fetcher.py
 """
-Récupération automatique des classements de ligues depuis les sites officiels.
-Système de cache avec TTL de 24h et fallback sur anciennes données si échec.
+Récupération automatique des classements de ligues depuis Wikipedia.
+Système robuste avec parsing standard des tableaux Wikipedia.
 """
 import requests
 from bs4 import BeautifulSoup
-import json, os, time, unicodedata, re
-from datetime import datetime, timedelta, timezone
+import json
+import os
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
 
+LEAGUE_SOURCES = {
+    "LaLiga": "https://en.wikipedia.org/wiki/2025–26_La_Liga",
+    "PremierLeague": "https://en.wikipedia.org/wiki/2025–26_Premier_League",
+    "SerieA": "https://en.wikipedia.org/wiki/2025–26_Serie_A",
+    "Ligue1": "https://en.wikipedia.org/wiki/2025–26_Ligue_1",
+    "Bundesliga": "https://en.wikipedia.org/wiki/2025–26_Bundesliga",
+    "PrimeiraLiga": "https://en.wikipedia.org/wiki/2025–26_Primeira_Liga"
+}
+
 DATA_DIR = "/app/data/leagues"
 os.makedirs(DATA_DIR, exist_ok=True)
-DEFAULT_TTL = 24 * 3600  # 24 heures
-
-# Configuration des ligues avec leurs sources officielles
-LEAGUE_CONFIG = {
-    "LaLiga": {
-        "url": "https://www.laliga.com/en-GB/laliga-easports/standing",
-        "method": "scrape_laliga",
-        "fallback_file": os.path.join(DATA_DIR, "LaLiga.json")
-    },
-    "PremierLeague": {
-        "url": "https://www.premierleague.com/tables",
-        "method": "scrape_premier_league",
-        "fallback_file": os.path.join(DATA_DIR, "PremierLeague.json")
-    },
-    "SerieA": {
-        "url": "https://www.legaseriea.it/en/serie-a/standings",
-        "method": "scrape_serie_a",
-        "fallback_file": os.path.join(DATA_DIR, "SerieA.json")
-    },
-    "Ligue1": {
-        "url": "https://www.ligue1.com/classement",
-        "method": "scrape_ligue1",
-        "fallback_file": os.path.join(DATA_DIR, "Ligue1.json")
-    },
-    "Bundesliga": {
-        "url": "https://www.bundesliga.com/en/bundesliga/table",
-        "method": "scrape_bundesliga",
-        "fallback_file": os.path.join(DATA_DIR, "Bundesliga.json")
-    },
-    "PrimeiraLiga": {
-        "url": "https://www.ligaportugal.pt/en/liga/classification/",
-        "method": "scrape_primeira_liga",
-        "fallback_file": os.path.join(DATA_DIR, "PrimeiraLiga.json")
-    }
-}
 
 def _save_json(path, obj):
     """Sauvegarde atomique JSON"""
