@@ -34,6 +34,10 @@ export default function MatchAnalyzer() {
   const [awaySource, setAwaySource] = useState("");
 
   const [message, setMessage] = useState("");
+  
+  // États pour la validation prédictive
+  const [validationReport, setValidationReport] = useState(null);
+  const [validationStatus, setValidationStatus] = useState("");
 
   useEffect(() => {
     fetchLeagues();
