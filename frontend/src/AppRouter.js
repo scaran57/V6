@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import App from "./App";
 import TestMode from "./TestMode";
+import MatchAnalyzer from "./components/MatchAnalyzer";
 
 function AppRouter() {
-  const [mode, setMode] = useState("production"); // "production" ou "test"
+  const [mode, setMode] = useState("production"); // "production", "test", ou "analyzer"
 
   return (
     <div>
@@ -32,13 +33,23 @@ function AppRouter() {
             >
               🧪 Mode Test
             </button>
+            <button
+              onClick={() => setMode("analyzer")}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                mode === "analyzer"
+                  ? "bg-purple-600 text-white"
+                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
+            >
+              🏆 Analyzer UEFA
+            </button>
           </div>
         </div>
       </nav>
 
       {/* Contenu selon le mode */}
       <div>
-        {mode === "production" ? <App /> : <TestMode />}
+        {mode === "production" ? <App /> : mode === "test" ? <TestMode /> : <MatchAnalyzer />}
       </div>
     </div>
   );
