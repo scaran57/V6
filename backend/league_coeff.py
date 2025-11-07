@@ -214,29 +214,86 @@ def clear_cache():
         logger.error(f"❌ Erreur vidage cache: {e}")
         return False
 
-def get_team_coeff(team_name, league_name=None):
+def lookup_in_all_leagues(team_name):
     """
-    Fonction utilitaire pour récupérer le coefficient d'une équipe.
-    Fallback sur 1.0 si équipe ou ligue introuvable.
+    Recherche une équipe dans toutes les ligues nationales disponibles.
+    Retourne le coefficient trouvé dans la première ligue où l'équipe existe.
     
     Args:
         team_name: Nom de l'équipe
-        league_name: Nom de la ligue (optionnel, auto-détecté si None)
     
     Returns:
-        float: Coefficient entre MIN_COEF et MAX_COEF, ou 1.0 si non trouvé
+        tuple: (coefficient, source_league) ou (None, None) si non trouvé
+    """
+    # Ligues nationales prioritaires (ordre de recherche)
+    national_leagues = ["LaLiga", "PremierLeague", "SerieA", "Ligue1", "Bundesliga", "PrimeiraLiga"]
+    
+    for league in national_leagues:
+        try:
+            pos = get_team_position(team_name, league)
+            if pos:
+                coef = team_coef_from_position_linear(team_name, league)
+                logger.info(f"🔍 {team_name} trouvée dans {league} → coeff={coef:.3f}")
+                return coef, league
+        except Exception as e:
+            continue
+    
+    return None, None
+
+def get_team_coeff(team_name, league_name=None):
+    """
+    Fonction utilitaire pour récupérer le coefficient d'une équipe avec système de fallback intelligent.
+    
+    Logique de recherche:
+    1. Si ligue spécifiée et équipe trouvée → utiliser ce coefficient
+    2. Si ligue = ChampionsLeague/EuropaLeague et équipe non trouvée:
+       a. Chercher dans toutes les ligues nationales
+       b. Si trouvée → utiliser le coefficient de la ligue nationale
+       c. Si non trouvée → appliquer bonus européen (1.05)
+    3. Sinon → fallback standard (1.0)
+    
+    Args:
+        team_name: Nom de l'équipe
+        league_name: Nom de la ligue (optionnel)
+    
+    Returns:
+        dict: {"coefficient": float, "source": str}
     """
     if not team_name:
-        return FALLBACK_COEF
+        return {"coefficient": FALLBACK_COEF, "source": "fallback_no_team"}
     
     # Si pas de ligue spécifiée, on retourne le fallback
     if not league_name:
         logger.debug(f"⚠️ Pas de ligue spécifiée pour {team_name}, coefficient = {FALLBACK_COEF}")
-        return FALLBACK_COEF
+        return {"coefficient": FALLBACK_COEF, "source": "fallback_no_league"}
     
+    # Cas 1: Ligue spécifiée (non européenne), recherche directe
+    if league_name not in ["ChampionsLeague", "EuropaLeague"]:
+        try:
+            coef = team_coef_from_position_linear(team_name, league_name)
+            return {"coefficient": coef, "source": league_name}
+        except Exception as e:
+            logger.warning(f"⚠️ Erreur calcul coeff {team_name} dans {league_name}: {e}")
+            return {"coefficient": FALLBACK_COEF, "source": "fallback_error"}
+    
+    # Cas 2: Compétition européenne - Recherche multi-ligues
+    logger.info(f"🏆 Recherche {team_name} pour {league_name}...")
+    
+    # D'abord, chercher dans la ligue européenne elle-même
     try:
         coef = team_coef_from_position_linear(team_name, league_name)
-        return coef
-    except Exception as e:
-        logger.warning(f"⚠️ Erreur calcul coeff {team_name}: {e}")
-        return FALLBACK_COEF
+        return {"coefficient": coef, "source": league_name}
+    except:
+        pass
+    
+    # Sinon, chercher dans toutes les ligues nationales
+    coef, source_league = lookup_in_all_leagues(team_name)
+    
+    if coef is not None:
+        logger.info(f"✅ {team_name} trouvée dans {source_league} → coeff={coef:.3f}")
+        return {"coefficient": coef, "source": source_league}
+    
+    # Dernière option: Bonus européen pour clubs non répertoriés
+    european_bonus = 1.05
+    logger.info(f"🌍 {team_name} non trouvée dans les ligues nationales → bonus européen={european_bonus}")
+    return {"coefficient": european_bonus, "source": "european_fallback"}
