@@ -32,6 +32,7 @@ from matches_memory import (
 import league_fetcher
 import league_coeff
 import league_scheduler
+import prediction_validator
 
 
 ROOT_DIR = Path(__file__).parent
