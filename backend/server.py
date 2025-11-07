@@ -208,26 +208,55 @@ async def analyze(
         # Obtenir la diffExpected pour le calcul
         diff_expected = get_diff_expected()
         
+        # Extraire les noms d'équipes du match_name
+        home_team, away_team = None, None
+        if " - " in match_name and match_name != "Match non détecté":
+            parts = match_name.split(" - ")
+            if len(parts) == 2:
+                home_team, away_team = parts[0].strip(), parts[1].strip()
+        
+        # Auto-détection de la ligue si non spécifiée
+        detected_league = league
+        if not detected_league and home_team:
+            # Mapper automatiquement selon les noms d'équipes
+            # (Simple heuristique - peut être amélioré)
+            spanish_teams = ["Real Madrid", "Barcelona", "Atletico Madrid", "Valencia", "Sevilla", "Villarreal", 
+                           "Athletic Bilbao", "Real Sociedad", "Betis", "Getafe", "Granada", "Alaves",
+                           "Girona", "Mallorca", "Osasuna", "Rayo Vallecano", "Celta Vigo", "Cadiz", "Almeria", "Las Palmas"]
+            
+            english_teams = ["Manchester City", "Liverpool", "Arsenal", "Aston Villa", "Tottenham", 
+                           "Manchester United", "Newcastle", "Brighton", "West Ham", "Chelsea", "Brentford",
+                           "Wolves", "Crystal Palace", "Fulham", "Bournemouth", "Nottingham", "Everton", 
+                           "Luton", "Burnley", "Sheffield"]
+            
+            if any(team in home_team for team in spanish_teams):
+                detected_league = "LaLiga"
+                logger.info(f"🔍 Ligue auto-détectée: LaLiga (équipe: {home_team})")
+            elif any(team in home_team for team in english_teams):
+                detected_league = "PremierLeague"
+                logger.info(f"🔍 Ligue auto-détectée: PremierLeague (équipe: {home_team})")
+        
         # Prédire le score avec l'algorithme choisi
-        logger.info(f"🧮 Calcul des probabilités avec diffExpected={diff_expected}...")
+        use_league_coeff = not disable_league_coeff
+        logger.info(f"🧮 Calcul des probabilités avec diffExpected={diff_expected}, league={detected_league}, use_league_coeff={use_league_coeff}...")
         
         if use_combined_algo:
-            # Extraire les noms d'équipes du match_name si possible
-            teamA_name, teamB_name = None, None
-            if " - " in match_name and match_name != "Match non détecté":
-                parts = match_name.split(" - ")
-                if len(parts) == 2:
-                    teamA_name, teamB_name = parts[0].strip(), parts[1].strip()
-            
             result = calculate_probabilities_v2(
                 scores, 
                 diff_expected, 
                 use_combined=True,
-                teamA_name=teamA_name,
-                teamB_name=teamB_name
+                teamA_name=home_team,
+                teamB_name=away_team
             )
         else:
-            result = calculate_probabilities(scores, diff_expected)
+            result = calculate_probabilities(
+                scores, 
+                diff_expected,
+                home_team=home_team,
+                away_team=away_team,
+                league=detected_league,
+                use_league_coeff=use_league_coeff
+            )
         
         # Nettoyer le fichier temporaire
         os.remove(file_path)
