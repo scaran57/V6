@@ -325,7 +325,7 @@ def _fallback_to_cache(league_name, cached_data):
 def update_all(leagues=None, force=False):
     """Met à jour tous les classements (ou une liste spécifique)"""
     if leagues is None:
-        leagues = list(WIKI_MAP.keys())
+        leagues = list(LEAGUE_CONFIG.keys())
     
     result = {}
     for lg in leagues:
@@ -336,6 +336,9 @@ def update_all(leagues=None, force=False):
             result[lg] = {}
     
     return result
+
+# Ajout import manquant
+from datetime import timezone
 
 def get_team_position(team_name, league_name):
     """
