@@ -146,13 +146,40 @@ class LeagueScheduler:
             logger.info("🔄 DÉBUT DE LA MISE À JOUR AUTOMATIQUE DES LIGUES")
             logger.info("=" * 60)
             
+            # Mise à jour des ligues Phase 1 (LaLiga, PremierLeague, etc.)
             results = league_updater.update_all_leagues(force=False)
+            
+            logger.info("=" * 60)
+            logger.info("✅ PHASE 1 TERMINÉE")
+            logger.info(f"📊 Résumé Phase 1: {results['summary']['successful']}/{results['summary']['total']} ligues réussies")
+            logger.info("=" * 60)
+            
+            # Mise à jour des ligues Phase 2 (Serie A, Bundesliga, Ligue 1, Primeira Liga, Ligue 2)
+            logger.info("")
+            logger.info("=" * 60)
+            logger.info("🔄 PHASE 2 - LIGUES EUROPÉENNES")
+            logger.info("=" * 60)
+            
+            phase2_results = league_phase2.update_all_leagues()
+            
+            logger.info("=" * 60)
+            logger.info("✅ PHASE 2 TERMINÉE")
+            logger.info(f"📊 Résumé Phase 2: {phase2_results['leagues_updated']}/{phase2_results['total_leagues']} ligues réussies")
+            logger.info("=" * 60)
             
             self.last_update = datetime.now()
             
+            # Résumé global
+            total_phase1 = results['summary']['successful']
+            total_phase2 = phase2_results['leagues_updated']
+            total_leagues = results['summary']['total'] + phase2_results['total_leagues']
+            
+            logger.info("")
             logger.info("=" * 60)
-            logger.info("✅ MISE À JOUR AUTOMATIQUE TERMINÉE")
-            logger.info(f"📊 Résumé: {results['summary']['successful']}/{results['summary']['total']} ligues réussies")
+            logger.info("✅ MISE À JOUR AUTOMATIQUE COMPLÈTE")
+            logger.info(f"📊 Total: {total_phase1 + total_phase2}/{total_leagues} ligues mises à jour")
+            logger.info(f"   - Phase 1: {total_phase1}/{results['summary']['total']}")
+            logger.info(f"   - Phase 2: {total_phase2}/{phase2_results['total_leagues']}")
             logger.info(f"🕐 Prochaine mise à jour: demain à {self.update_time.hour:02d}:{self.update_time.minute:02d}")
             logger.info("=" * 60)
             
