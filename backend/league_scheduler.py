@@ -10,8 +10,7 @@ from datetime import datetime, time as dt_time
 import sys
 sys.path.insert(0, '/app/backend')
 
-import league_updater
-import league_phase2
+import league_unified
 
 logger = logging.getLogger(__name__)
 
