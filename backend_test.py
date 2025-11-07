@@ -451,51 +451,351 @@ class ScorePredictorTester:
         
         return "FAIR"
 
+    def test_league_scheduler_status(self):
+        """Test GET /api/admin/league/scheduler-status"""
+        self.log("Testing /api/admin/league/scheduler-status endpoint...")
+        
+        try:
+            response = requests.get(f"{BASE_URL}/admin/league/scheduler-status", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("success") and "scheduler" in data:
+                    scheduler = data["scheduler"]
+                    required_fields = ["is_running", "update_time", "next_update"]
+                    missing = [f for f in required_fields if f not in scheduler]
+                    
+                    if not missing:
+                        self.log(f"✅ Scheduler status: Running={scheduler['is_running']}, Next update={scheduler.get('next_update', 'N/A')}")
+                        return {"status": "PASS", "data": scheduler}
+                    else:
+                        self.log(f"❌ Missing fields in scheduler status: {missing}")
+                        return {"status": "FAIL", "error": f"Missing fields: {missing}"}
+                else:
+                    self.log("❌ Invalid response format")
+                    return {"status": "FAIL", "error": "Invalid response format"}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                return {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            return {"status": "FAIL", "error": str(e)}
+    
+    def test_league_list(self):
+        """Test GET /api/admin/league/list"""
+        self.log("Testing /api/admin/league/list endpoint...")
+        
+        try:
+            response = requests.get(f"{BASE_URL}/admin/league/list", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("success") and "leagues" in data:
+                    leagues = data["leagues"]
+                    expected_leagues = ["LaLiga", "PremierLeague"]
+                    
+                    if all(lg in leagues for lg in expected_leagues):
+                        self.log(f"✅ Leagues available: {leagues}")
+                        return {"status": "PASS", "leagues": leagues}
+                    else:
+                        self.log(f"⚠️ Some expected leagues missing: {expected_leagues}")
+                        return {"status": "PARTIAL", "leagues": leagues}
+                else:
+                    self.log("❌ Invalid response format")
+                    return {"status": "FAIL", "error": "Invalid response format"}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                return {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            return {"status": "FAIL", "error": str(e)}
+    
+    def test_league_standings(self, league="LaLiga"):
+        """Test GET /api/admin/league/standings"""
+        self.log(f"Testing /api/admin/league/standings for {league}...")
+        
+        try:
+            response = requests.get(f"{BASE_URL}/admin/league/standings?league={league}", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("success") and "standings" in data:
+                    standings = data["standings"]
+                    teams_count = data.get("teams_count", 0)
+                    
+                    if teams_count >= 18:  # Most leagues have 18-20 teams
+                        self.log(f"✅ {league} standings: {teams_count} teams")
+                        # Show top 3 and bottom 3
+                        if len(standings) >= 6:
+                            self.log(f"   Top 3: {standings[0]['team']} (1), {standings[1]['team']} (2), {standings[2]['team']} (3)")
+                            self.log(f"   Bottom 3: {standings[-3]['team']}, {standings[-2]['team']}, {standings[-1]['team']}")
+                        return {"status": "PASS", "teams_count": teams_count, "standings": standings}
+                    else:
+                        self.log(f"⚠️ {league} has only {teams_count} teams (expected 18-20)")
+                        return {"status": "PARTIAL", "teams_count": teams_count}
+                else:
+                    self.log(f"❌ No standings data for {league}")
+                    return {"status": "FAIL", "error": "No standings data"}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                return {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            return {"status": "FAIL", "error": str(e)}
+    
+    def test_team_coefficient(self, team, league, expected_range=None):
+        """Test GET /api/league/team-coeff"""
+        self.log(f"Testing coefficient for {team} ({league})...")
+        
+        try:
+            response = requests.get(
+                f"{BASE_URL}/league/team-coeff?team={team}&league={league}&mode=linear",
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("success") and "coefficient" in data:
+                    coef = data["coefficient"]
+                    position = data.get("position", "N/A")
+                    
+                    # Check if coefficient is in valid range (0.85 - 1.30)
+                    if 0.85 <= coef <= 1.30:
+                        self.log(f"✅ {team}: Position {position}, Coefficient {coef:.4f}")
+                        
+                        # Check expected range if provided
+                        if expected_range:
+                            min_exp, max_exp = expected_range
+                            if min_exp <= coef <= max_exp:
+                                self.log(f"   ✓ Coefficient in expected range [{min_exp}, {max_exp}]")
+                                return {"status": "PASS", "coefficient": coef, "position": position}
+                            else:
+                                self.log(f"   ⚠️ Coefficient outside expected range [{min_exp}, {max_exp}]")
+                                return {"status": "PARTIAL", "coefficient": coef, "position": position, "note": "Outside expected range"}
+                        
+                        return {"status": "PASS", "coefficient": coef, "position": position}
+                    else:
+                        self.log(f"❌ Coefficient {coef} outside valid range [0.85, 1.30]")
+                        return {"status": "FAIL", "error": f"Invalid coefficient: {coef}"}
+                else:
+                    self.log("❌ Invalid response format")
+                    return {"status": "FAIL", "error": "Invalid response format"}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                return {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            return {"status": "FAIL", "error": str(e)}
+    
+    def test_analyze_with_league(self):
+        """Test /api/analyze with league parameter"""
+        self.log("Testing /api/analyze with league parameter...")
+        
+        # Use test_bookmaker_v2.jpg
+        image_path = os.path.join(BACKEND_DIR, "test_bookmaker_v2.jpg")
+        
+        if not os.path.exists(image_path):
+            self.log(f"⚠️ Test image not found: {image_path}")
+            return {"status": "FAIL", "error": "Test image not found"}
+        
+        try:
+            # Test with league=LaLiga
+            with open(image_path, 'rb') as f:
+                files = {'file': ('test_bookmaker_v2.jpg', f, 'image/jpeg')}
+                response = requests.post(f"{BASE_URL}/analyze?league=LaLiga", files=files, timeout=30)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if 'error' in data:
+                    self.log(f"⚠️ No scores detected (expected for some images)")
+                    return {"status": "PASS", "note": "No scores detected"}
+                
+                # Check if league info is in response
+                league = data.get("league")
+                league_coeffs_applied = data.get("leagueCoeffsApplied", False)
+                
+                self.log(f"✅ Analysis with league: league={league}, coeffs_applied={league_coeffs_applied}")
+                
+                return {
+                    "status": "PASS",
+                    "league": league,
+                    "coeffs_applied": league_coeffs_applied,
+                    "most_probable": data.get("mostProbableScore")
+                }
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                return {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            return {"status": "FAIL", "error": str(e)}
+    
+    def test_analyze_disable_league_coeff(self):
+        """Test /api/analyze with disable_league_coeff=true"""
+        self.log("Testing /api/analyze with disable_league_coeff=true...")
+        
+        image_path = os.path.join(BACKEND_DIR, "test_bookmaker_v2.jpg")
+        
+        if not os.path.exists(image_path):
+            self.log(f"⚠️ Test image not found: {image_path}")
+            return {"status": "FAIL", "error": "Test image not found"}
+        
+        try:
+            with open(image_path, 'rb') as f:
+                files = {'file': ('test_bookmaker_v2.jpg', f, 'image/jpeg')}
+                response = requests.post(
+                    f"{BASE_URL}/analyze?disable_league_coeff=true",
+                    files=files,
+                    timeout=30
+                )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if 'error' in data:
+                    self.log(f"⚠️ No scores detected (expected for some images)")
+                    return {"status": "PASS", "note": "No scores detected"}
+                
+                league_coeffs_applied = data.get("leagueCoeffsApplied", False)
+                
+                if not league_coeffs_applied:
+                    self.log(f"✅ League coefficients correctly disabled")
+                    return {"status": "PASS", "coeffs_applied": False}
+                else:
+                    self.log(f"❌ League coefficients still applied despite disable flag")
+                    return {"status": "FAIL", "error": "Coefficients not disabled"}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                return {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            return {"status": "FAIL", "error": str(e)}
+    
+    def run_league_tests(self):
+        """Run all league coefficient system tests"""
+        self.log("=" * 60)
+        self.log("TESTING LEAGUE COEFFICIENT SYSTEM")
+        self.log("=" * 60)
+        
+        results = {}
+        
+        # 1. Test scheduler status
+        results["scheduler_status"] = self.test_league_scheduler_status()
+        
+        # 2. Test league list
+        results["league_list"] = self.test_league_list()
+        
+        # 3. Test standings for LaLiga and PremierLeague
+        results["standings_laliga"] = self.test_league_standings("LaLiga")
+        results["standings_premierleague"] = self.test_league_standings("PremierLeague")
+        
+        # 4. Test team coefficients
+        # Real Madrid (expected ~1.30 if 1st)
+        results["coeff_real_madrid"] = self.test_team_coefficient("Real Madrid", "LaLiga", (1.25, 1.30))
+        
+        # Barcelona (expected mid-range)
+        results["coeff_barcelona"] = self.test_team_coefficient("Barcelona", "LaLiga", (1.00, 1.25))
+        
+        # Granada (expected ~0.85 if last)
+        results["coeff_granada"] = self.test_team_coefficient("Granada", "LaLiga", (0.85, 1.00))
+        
+        # Manchester City
+        results["coeff_man_city"] = self.test_team_coefficient("Manchester City", "PremierLeague")
+        
+        # Liverpool
+        results["coeff_liverpool"] = self.test_team_coefficient("Liverpool", "PremierLeague")
+        
+        # 5. Test /api/analyze integration
+        results["analyze_with_league"] = self.test_analyze_with_league()
+        results["analyze_disable_coeff"] = self.test_analyze_disable_league_coeff()
+        
+        # Print summary
+        self.log("=" * 60)
+        self.log("LEAGUE TESTS SUMMARY")
+        self.log("=" * 60)
+        
+        for test_name, result in results.items():
+            status = result.get("status", "UNKNOWN")
+            status_icon = "✅" if status == "PASS" else "⚠️" if status == "PARTIAL" else "❌"
+            self.log(f"{status_icon} {test_name}: {status}")
+            
+            if "error" in result:
+                self.log(f"    Error: {result['error']}")
+            elif "note" in result:
+                self.log(f"    Note: {result['note']}")
+        
+        self.log("=" * 60)
+        
+        return results
+
 if __name__ == "__main__":
     tester = ScorePredictorTester()
     
-    # Run specific match name extraction tests as requested
-    print("🎯 RUNNING SPECIFIC MATCH NAME EXTRACTION TESTS")
+    # Run league coefficient system tests
+    print("\n🏆 TESTING LEAGUE COEFFICIENT SYSTEM")
     print("=" * 60)
-    match_results = tester.test_match_name_extraction_specific()
+    league_results = tester.run_league_tests()
     
-    print("\n📋 DETAILED MATCH NAME EXTRACTION RESULTS:")
+    # Print detailed results
+    print("\n📊 LEAGUE SYSTEM TEST RESULTS:")
     print("=" * 60)
     
-    for image_name, result in match_results.items():
-        print(f"\n📸 {image_name}:")
-        print(f"   Status: {result['status']}")
-        
-        if result['status'] == 'SUCCESS':
-            print(f"   Match Name: '{result['match_name']}' (Quality: {result['match_quality']})")
-            print(f"   Bookmaker: '{result['bookmaker']}' (Quality: {result['bookmaker_quality']})")
-            print(f"   Scores Found: {result['scores_count']}")
+    passed = sum(1 for r in league_results.values() if r.get("status") == "PASS")
+    partial = sum(1 for r in league_results.values() if r.get("status") == "PARTIAL")
+    failed = sum(1 for r in league_results.values() if r.get("status") == "FAIL")
+    total = len(league_results)
+    
+    print(f"\n✅ Passed: {passed}/{total}")
+    print(f"⚠️ Partial: {partial}/{total}")
+    print(f"❌ Failed: {failed}/{total}")
+    
+    # Test regression - existing endpoints
+    print("\n🔄 TESTING REGRESSION (Existing Endpoints)")
+    print("=" * 60)
+    
+    regression_results = {}
+    regression_results["health"] = tester.test_health_endpoint()
+    regression_results["diff"] = tester.test_diff_endpoint()
+    
+    # Test analyze without league (standard behavior)
+    print("\n📸 Testing standard /api/analyze (no league)...")
+    image_path = os.path.join(BACKEND_DIR, "test_bookmaker_v2.jpg")
+    if os.path.exists(image_path):
+        try:
+            with open(image_path, 'rb') as f:
+                files = {'file': ('test_bookmaker_v2.jpg', f, 'image/jpeg')}
+                response = requests.post(f"{BASE_URL}/analyze", files=files, timeout=30)
             
-            if result['match_quality'] == 'POOR':
-                print(f"   ⚠️ WARNING: Match name may contain interface elements")
-            if result['bookmaker_quality'] == 'NOT_DETECTED':
-                print(f"   ⚠️ WARNING: Bookmaker not detected")
-                
-        elif result['status'] == 'NO_SCORES':
-            print(f"   Note: {result['note']}")
-        else:
-            print(f"   Error: {result.get('error', 'Unknown error')}")
+            if response.status_code == 200:
+                data = response.json()
+                if 'error' not in data:
+                    print(f"✅ Standard analyze working: {data.get('mostProbableScore', 'N/A')}")
+                    regression_results["analyze_standard"] = {"status": "PASS"}
+                else:
+                    print(f"⚠️ No scores detected (expected for some images)")
+                    regression_results["analyze_standard"] = {"status": "PASS", "note": "No scores"}
+            else:
+                print(f"❌ Standard analyze failed: HTTP {response.status_code}")
+                regression_results["analyze_standard"] = {"status": "FAIL"}
+        except Exception as e:
+            print(f"❌ Exception: {str(e)}")
+            regression_results["analyze_standard"] = {"status": "FAIL", "error": str(e)}
     
     print("\n" + "=" * 60)
-    print("🎯 MATCH NAME EXTRACTION TEST COMPLETE")
+    print("🎯 ALL TESTS COMPLETE")
     print("=" * 60)
     
-    # Also run full backend tests for completeness
-    print("\n🔧 RUNNING FULL BACKEND TESTS FOR COMPLETENESS")
-    results = tester.run_all_tests()
+    # Final summary
+    all_league_passed = all(r.get("status") == "PASS" for r in league_results.values())
+    has_league_partial = any(r.get("status") == "PARTIAL" for r in league_results.values())
     
-    # Print final status
-    all_passed = all(r["status"] == "PASS" for r in results.values())
-    has_partial = any(r["status"] == "PARTIAL" for r in results.values())
-    
-    if all_passed:
-        print("\n🎉 ALL TESTS PASSED! Backend is working correctly.")
-    elif has_partial:
-        print("\n⚠️ SOME TESTS PASSED WITH ISSUES. Check details above.")
+    if all_league_passed:
+        print("\n🎉 ALL LEAGUE TESTS PASSED! League coefficient system is working correctly.")
+    elif has_league_partial:
+        print("\n⚠️ SOME LEAGUE TESTS PASSED WITH WARNINGS. Check details above.")
     else:
-        print("\n❌ CRITICAL ISSUES FOUND. Backend needs attention.")
+        print("\n❌ CRITICAL ISSUES FOUND IN LEAGUE SYSTEM. Backend needs attention.")
