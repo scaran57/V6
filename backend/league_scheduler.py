@@ -117,17 +117,30 @@ class LeagueScheduler:
     def _perform_initial_update(self):
         """Effectue une mise à jour initiale au démarrage (si nécessaire)"""
         try:
-            logger.info("🚀 Vérification des données de ligues au démarrage...")
+            logger.info("🚀 Vérification des données de ligues au démarrage (système unifié)...")
             
-            # Vérifier si les données sont récentes (moins de 24h)
+            # Vérifier si le rapport global existe et est récent
+            import os
+            report_path = "/app/data/leagues/global_update_report.json"
+            
             needs_update = False
-            
-            for league in league_updater.get_available_leagues():
-                info = league_updater.get_league_info(league)
-                if not info or not info.get("has_data"):
+            if not os.path.exists(report_path):
+                logger.info("⚠️ Aucun rapport global trouvé")
+                needs_update = True
+            else:
+                import json
+                try:
+                    with open(report_path, 'r') as f:
+                        report = json.load(f)
+                        leagues_updated = report.get('leagues_updated', 0)
+                        total_leagues = report.get('total_leagues', 0)
+                        
+                        if leagues_updated < total_leagues:
+                            logger.info(f"⚠️ Seulement {leagues_updated}/{total_leagues} ligues à jour")
+                            needs_update = True
+                except Exception as e:
+                    logger.warning(f"⚠️ Erreur lecture rapport: {e}")
                     needs_update = True
-                    logger.info(f"⚠️ Pas de données pour {league}")
-                    break
             
             if needs_update:
                 logger.info("🔄 Mise à jour initiale nécessaire...")
