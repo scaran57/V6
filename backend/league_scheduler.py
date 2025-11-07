@@ -11,6 +11,7 @@ import sys
 sys.path.insert(0, '/app/backend')
 
 import league_updater
+import league_phase2
 
 logger = logging.getLogger(__name__)
 
