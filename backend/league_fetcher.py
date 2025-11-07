@@ -7,10 +7,15 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import os
-from datetime import datetime
+import re
+import unicodedata
+from datetime import datetime, timezone
 import logging
 
 logger = logging.getLogger(__name__)
+
+# Configuration TTL (Time To Live) pour le cache
+DEFAULT_TTL = 24 * 3600  # 24 heures en secondes
 
 LEAGUE_SOURCES = {
     "LaLiga": "https://en.wikipedia.org/wiki/2025–26_La_Liga",
