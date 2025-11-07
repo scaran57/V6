@@ -51,6 +51,16 @@ LEAGUE_CONFIG = {
         "url": "https://en.wikipedia.org/wiki/2025–26_Primeira_Liga",
         "method": "scrape_primeira_liga",
         "fallback_file": f"{DATA_DIR}/PrimeiraLiga.json"
+    },
+    "ChampionsLeague": {
+        "url": "https://en.wikipedia.org/wiki/2024–25_UEFA_Champions_League",
+        "method": "scrape_champions_league",
+        "fallback_file": f"{DATA_DIR}/ChampionsLeague.json"
+    },
+    "EuropaLeague": {
+        "url": "https://en.wikipedia.org/wiki/2024–25_UEFA_Europa_League",
+        "method": "scrape_europa_league",
+        "fallback_file": f"{DATA_DIR}/EuropaLeague.json"
     }
 }
 
