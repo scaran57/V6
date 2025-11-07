@@ -339,23 +339,23 @@ def update_all_leagues():
                 "message": str(e)
             }
     
-    # Sauvegarder le rapport
+    # Sauvegarder le rapport consolidé
     timestamp = datetime.utcnow().isoformat()
     summary = {
         "timestamp": timestamp,
-        "phase": "Phase 2 - European Leagues",
+        "phase": "Unified System - All Leagues (Phase 1 + Phase 2)",
         "leagues_updated": len([r for r in report.values() if "✅" in r["status"]]),
         "total_leagues": len(LEAGUES),
         "report": report
     }
     
-    report_path = os.path.join(DATA_DIR, "phase2_update_report.json")
+    report_path = os.path.join(DATA_DIR, "global_update_report.json")
     with open(report_path, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
     
     logger.info("=" * 60)
-    logger.info(f"✅ Phase 2 complete: {summary['leagues_updated']}/{summary['total_leagues']} ligues mises à jour")
-    logger.info(f"📊 Rapport: {report_path}")
+    logger.info(f"✅ Système unifié complet: {summary['leagues_updated']}/{summary['total_leagues']} ligues mises à jour")
+    logger.info(f"📊 Rapport consolidé: {report_path}")
     logger.info("=" * 60)
     
     return summary
