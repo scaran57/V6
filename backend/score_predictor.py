@@ -3,6 +3,7 @@ Module de calcul des probabilités de scores
 Basé sur l'algorithme original avec pondération Poisson et correction adaptative des nuls
 + Apprentissage par équipe avec historique des 5 derniers matchs
 + NOUVEAU: Algorithme combiné Poisson + ImpliedOdds avec smoothing de voisinage
++ NOUVEAU: Intégration coefficient de classement de ligue
 """
 import math
 import logging
@@ -11,6 +12,14 @@ import os
 from collections import defaultdict
 
 logger = logging.getLogger(__name__)
+
+# Import du système de coefficient de ligue
+try:
+    import league_coeff
+    LEAGUE_COEFF_AVAILABLE = True
+except ImportError:
+    LEAGUE_COEFF_AVAILABLE = False
+    logger.warning("⚠️ Module league_coeff non disponible")
 
 # ====== Paramètres calibrables pour l'algorithme combiné ======
 MAX_GOALS = 5            # clamp goals per side (0..5)
