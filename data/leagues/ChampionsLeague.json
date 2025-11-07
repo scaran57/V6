@@ -1,79 +1,79 @@
 {
   "league": "ChampionsLeague",
-  "updated": "2025-11-07T10:13:43.406542Z",
+  "updated": "2025-11-07T10:14:06.217147Z",
   "teams": [
     {
-      "name": "Inter Milan",
+      "name": "Real Madrid",
       "rank": 1,
       "points": 0
     },
     {
-      "name": "Borussia Dortmund",
+      "name": "Manchester City",
       "rank": 2,
       "points": 0
     },
     {
-      "name": "Barcelona",
+      "name": "Bayern Munich",
       "rank": 3,
       "points": 0
     },
     {
-      "name": "2025 FIFA Intercontinental Cup final",
+      "name": "Paris Saint-Germain",
       "rank": 4,
       "points": 0
     },
     {
-      "name": "Real Madrid",
+      "name": "Inter Milan",
       "rank": 5,
       "points": 0
     },
     {
-      "name": "Arsenal",
+      "name": "Barcelona",
       "rank": 6,
       "points": 0
     },
     {
-      "name": "Romania",
+      "name": "Atletico Madrid",
       "rank": 7,
       "points": 0
     },
     {
-      "name": "Benfica",
+      "name": "RB Leipzig",
       "rank": 8,
       "points": 0
     },
     {
-      "name": "Manchester City",
+      "name": "Borussia Dortmund",
       "rank": 9,
       "points": 0
     },
     {
-      "name": "Liverpool",
+      "name": "Chelsea",
       "rank": 10,
       "points": 0
     },
     {
-      "name": "Atletico Madrid",
+      "name": "Liverpool",
       "rank": 11,
       "points": 0
     },
     {
-      "name": "Bayer Leverkusen",
+      "name": "Arsenal",
       "rank": 12,
       "points": 0
     },
     {
-      "name": "Bayern Munich",
+      "name": "Napoli",
       "rank": 13,
       "points": 0
     },
     {
-      "name": "RB Leipzig",
+      "name": "Benfica",
       "rank": 14,
       "points": 0
     },
     {
-      "name": "Milan",
+      "name": "Porto",
       "rank": 15,
       "points": 0
     },
@@ -83,58 +83,103 @@
       "points": 0
     },
     {
-      "name": "Sporting CP",
+      "name": "AC Milan",
       "rank": 17,
       "points": 0
     },
     {
-      "name": "Celtic",
+      "name": "Sevilla",
       "rank": 18,
       "points": 0
     },
     {
-      "name": "Rangers",
+      "name": "Manchester United",
       "rank": 19,
       "points": 0
     },
     {
-      "name": "FCSB",
+      "name": "Ajax",
       "rank": 20,
       "points": 0
     },
     {
-      "name": "Man. City",
+      "name": "Celtic",
       "rank": 21,
       "points": 0
     },
     {
-      "name": "Leverkusen",
+      "name": "Shakhtar Donetsk",
       "rank": 22,
       "points": 0
     },
     {
-      "name": "Bayern",
+      "name": "PSV Eindhoven",
       "rank": 23,
       "points": 0
     },
     {
-      "name": "Dortmund",
+      "name": "Sporting CP",
       "rank": 24,
       "points": 0
     },
     {
-      "name": "Leipzig",
+      "name": "Red Star Belgrade",
       "rank": 25,
       "points": 0
     },
     {
-      "name": "2007 Roma–Manchester United conflict",
+      "name": "Galatasaray",
       "rank": 26,
       "points": 0
     },
     {
-      "name": "Under-20 Intercontinental Cup",
+      "name": "Young Boys",
       "rank": 27,
+      "points": 0
+    },
+    {
+      "name": "Braga",
+      "rank": 28,
+      "points": 0
+    },
+    {
+      "name": "Union Berlin",
+      "rank": 29,
+      "points": 0
+    },
+    {
+      "name": "Real Sociedad",
+      "rank": 30,
+      "points": 0
+    },
+    {
+      "name": "Lens",
+      "rank": 31,
+      "points": 0
+    },
+    {
+      "name": "Copenhagen",
+      "rank": 32,
+      "points": 0
+    },
+    {
+      "name": "Newcastle United",
+      "rank": 33,
+      "points": 0
+    },
+    {
+      "name": "Feyenoord",
+      "rank": 34,
+      "points": 0
+    },
+    {
+      "name": "Salzburg",
+      "rank": 35,
+      "points": 0
+    },
+    {
+      "name": "Antwerp",
+      "rank": 36,
       "points": 0
     }
   ]
