@@ -177,12 +177,13 @@ def fetch_standings(league_name, config):
         if not found or not teams:
             raise ValueError(f"No valid standing table found (found {len(teams)} teams)")
         
-        # Créer la structure finale
+        # Créer la structure finale (format compatible avec Phase 1)
         result = []
         for pos, team_name in enumerate(teams, start=1):
             result.append({
-                "position": pos,
-                "team": team_name
+                "rank": pos,
+                "name": team_name,
+                "points": 0  # Points non disponibles pour Phase 2, utiliser 0
             })
         
         logger.info(f"✅ {league_name}: {len(result)} teams fetched")
