@@ -372,4 +372,4 @@ if __name__ == "__main__":
     r = update_all(force=True)
     for k, v in r.items():
         print(f"  {k}: {len(v)} équipes")
-    print(f"✅ Sauvegardé dans {POSITIONS_FILE}")
+    print(f"✅ Sauvegardé dans {DATA_DIR}")
