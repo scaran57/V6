@@ -490,9 +490,9 @@ agent_communication:
 
   - task: "Phase 2 - Intégration de 5 nouvelles ligues européennes (Serie A, Bundesliga, Ligue 1, Primeira Liga, Ligue 2)"
     implemented: true
-    working: false
-    file: "/app/backend/league_phase2.py, /app/backend/league_scheduler.py"
-    stuck_count: 1
+    working: true
+    file: "/app/backend/league_phase2.py, /app/backend/league_scheduler.py, /app/backend/league_fetcher.py"
+    stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
