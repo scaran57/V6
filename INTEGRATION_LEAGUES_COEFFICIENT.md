@@ -304,19 +304,19 @@ tail -f /var/log/supervisor/backend.*.log | grep -E "(League|Scheduler|Coefficie
 
 ### Test 1: Ligues Disponibles
 ```bash
-curl https://sportpredictify.preview.emergentagent.com/api/admin/league/list
+curl https://matchpredictor-31.preview.emergentagent.com/api/admin/league/list
 # Attendu: 8 ligues
 ```
 
 ### Test 2: Coefficient avec Fallback
 ```bash
-curl "https://sportpredictify.preview.emergentagent.com/api/league/team-coeff?team=Real%20Madrid&league=ChampionsLeague"
+curl "https://matchpredictor-31.preview.emergentagent.com/api/league/team-coeff?team=Real%20Madrid&league=ChampionsLeague"
 # Attendu: coefficient ~1.30, source: LaLiga
 ```
 
 ### Test 3: Bonus Européen
 ```bash
-curl "https://sportpredictify.preview.emergentagent.com/api/league/team-coeff?team=Galatasaray&league=ChampionsLeague"
+curl "https://matchpredictor-31.preview.emergentagent.com/api/league/team-coeff?team=Galatasaray&league=ChampionsLeague"
 # Attendu: coefficient 1.05, source: european_fallback
 ```
 

@@ -1,74 +1,86 @@
 <analysis>
-The trajectory chronicles the AI engineer's work on a score prediction application, initially focusing on frontend routing and documentation. Following user feedback, extensive debugging was performed on the analysis cache, leading to the crucial fix of incorporating an image hash into the  to ensure unique caching. After reverting to an older prediction algorithm due to uniformity issues with a new combined one, the focus shifted to enhancing OCR for match name extraction for Parions Sport. Iterative improvements involved targeting bold text near flags, and aggressive cleaning of OCR output. A brief regression led to reverting to a stable OCR version. The AI confirmed the learning system was operational despite initial file path confusion. Most recently, the AI engineer began integrating a comprehensive league coefficient system to adjust predictions based on team standings, setting up modules for fetching, calculating, and automatically updating league data. The current task is within this integration phase.
+The trajectory details the evolution of a score prediction application, initially a basic MVP, into a more robust system. The AI engineer started by addressing core functionalities such as frontend routing, improving OCR, and fixing a critical cache uniqueness bug by incorporating an image hash. A major development phase focused on integrating a comprehensive league coefficient system, involving scraping league data, calculating team coefficients, and scheduling automatic updates. This also included extending the system to European competitions like Champions League and Europa League with intelligent fallback mechanisms. Subsequently, a prediction validation system was implemented to continuously assess model accuracy. The frontend was updated with dedicated UI components for both league coefficients and prediction validation. The work culminated in a thorough system audit and stabilization phase. The current work involves integrating additional European leagues, which is ongoing.
 </analysis>
 
 <product_requirements>
-The core product is a score prediction application for bookmaker images, requiring robust OCR across diverse formats, filtering extraneous data, and integrating a dynamic prediction algorithm. It features adaptive learning, team-based learning, odds weighting, and displays a confidence score with top-3 predictions. User requests included:
-1.  Displaying match names and bookmaker information in a clean UI, specifically extracting real team names. This evolved into supporting manual match name input due to OCR limitations.
-2.  Implementing a secure, atomic learning system with an append-only log for data integrity and traceability.
-3.  Developing a  endpoint, enabling cache deactivation for testing, and providing a UI for these cache controls.
-4.  Integrating a league coefficient system to dynamically adjust prediction probabilities based on teams' current league standings, with automatic daily updates.
+The application's primary goal is to provide accurate score predictions from bookmaker images, necessitating robust OCR, adaptable prediction algorithms, and dynamic learning. The user explicitly requested:
+1.  Clear display of extracted match names and bookmaker information in the UI, evolving to include manual match name input due to OCR limitations.
+2.  A secure, atomic learning system with an append-only log for data integrity.
+3.  A  endpoint, with UI controls to deactivate and clear the analysis cache. The cache itself needed a fix to ensure uniqueness using an .
+4.  Integration of a league coefficient system to dynamically adjust prediction probabilities based on team standings. This required automatic daily updates and later expanded to include Champions League and Europa League with fallback logic for unclassified teams.
+5.  Development of a prediction validation system to continuously monitor and report on the model's accuracy, with a dedicated frontend display.
+6.  A full system audit to ensure stability and comprehensive documentation.
+7.  Integration of additional European leagues (Serie A, Bundesliga, Ligue 1, Primeira Liga, Ligue 2) with automatic scraping and coefficient calculation.
 </product_requirements>
 
 <key_technical_concepts>
--   **FastAPI & React:** Backend API and frontend UI.
--   **PyTesseract & OpenCV:** OCR and image preprocessing.
--   **Adaptive Learning:**  adjustment (60/40 weighted average).
--   **Atomic File Operations & Append-only Log:** Secure learning data.
--   **Analysis Cache:** Stores past analysis results, now with image hashing.
--   **League Coefficient System:** Adjusts predictions based on team rankings.
+-   **FastAPI & React:** Core backend and frontend frameworks.
+-   **PyTesseract & OpenCV:** For OCR and image processing.
+-   **Adaptive Learning:**  adjustment for model refinement.
+-   **Atomic File Operations:** Ensures data integrity for learning events.
+-   **Analysis Cache:** Stores processed match data, now with  for uniqueness.
+-   **League Coefficient System:** Dynamic adjustment of prediction odds based on team performance/standings.
+-   **Prediction Validation:** System to measure model accuracy over time.
+-   **Beautiful Soup & Requests:** Web scraping for league data.
+-   **APScheduler:** Manages backend tasks like daily league updates.
 </key_technical_concepts>
 
 <code_architecture>
-The application features a FastAPI backend and a React frontend, managed via Docker and Supervisor.
-
+The application comprises a FastAPI backend and a React frontend, orchestrated via Docker and Supervisor.
 
 
 -   
-    -   **Importance**: Main FastAPI entry point.
-    -   **Changes**: Integrated cache control, system reporting, diagnostics, updated  to use , added an OCR  to  for unique cache keys. Modified  to include  parameter and to pass team names and league info to the predictor, returning coefficient details. Added new API routes (, ) for league data management.
+    -   **Importance**: Central FastAPI application.
+    -   **Changes**: Integrated  and  routes for league management; added scheduler startup/management; updated  to handle league coefficients; integrated prediction validation routes ().
 -   
     -   **Importance**: Handles OCR from images.
-    -   **Changes**: Refined to extract match names and bookmakers. Introduced  for specialized OCR on Parions Sport images (targeting bold text near flags). Implemented aggressive text cleaning and improved logic for splitting team names. Reverted to a stable version after an experimental change broke extraction.
+    -   **Changes**: Refined for Parions Sport (bold text, aggressive cleaning), then reverted to a stable version.
 -   
-    -   **Importance**: Implements a secure, atomic learning system.
-    -   **Changes**: Used for append-only logging of learning events and updating  and .
+    -   **Importance**: Contains core prediction logic.
+    -   **Changes**: Modified  to incorporate  and  from the league system.
 -   
-    -   **Importance**: Core prediction logic.
-    -   **Changes**: Integrated a  function as an alternative algorithm. Modified  to accept and apply  and  (from league system) to  and  during Poisson calculation.
--    (NEW/Replaced)
-    -   **Importance**: Scrapes official league standings from websites.
-    -   **Changes**: Initially based on Wikipedia, later replaced with a more robust version to scrape LaLiga and Premier League official sites, saving data to .
--    (NEW/Replaced)
-    -   **Importance**: Calculates and retrieves team coefficients based on league standings.
-    -   **Changes**: Initially simple, replaced with a version that computes normalized coefficients (0.85-1.3) from scraped data and caches them in . Added  utility function.
--    (NEW)
-    -   **Importance**: Orchestrates fetching and computing coefficients for all leagues.
--    (NEW)
-    -   **Importance**: Manages automatic daily updates of league data in a separate thread.
+    -   **Importance**: Scrapes league standings.
+    -   **Changes**: Updated to scrape official LaLiga/Premier League sites; later extended to include Champions League and Europa League, and refined parsers.
 -   
-    -   **Importance**: Main entry point for the React app.
-    -   **Changes**: Modified to integrate  for managing different application modes.
+    -   **Importance**: Calculates and retrieves team coefficients.
+    -   **Changes**: Enhanced to compute normalized coefficients (0.85-1.3) and implemented a fallback system for European teams not found in national leagues.
+-    (Created)
+    -   **Importance**: Orchestrates fetching and computing coefficients for all configured leagues.
+-    (Created)
+    -   **Importance**: Manages automatic daily updates of league data and prediction validation in a background thread.
+    -   **Changes**: Integrated  from  and  from .
+-    (Created)
+    -   **Importance**: Provides a comprehensive health check and audit report of the entire application.
+-    (Created)
+    -   **Importance**: Calculates model accuracy metrics (accuracy, MAE, RMSE) based on historical predictions and results.
+-    (Created)
+    -   **Importance**: Dedicated module for fetching and processing additional European leagues (Serie A, Bundesliga, etc.).
 -   
-    -   **Importance**: Main React component.
-    -   **Changes**: Displayed extracted  and . Added client-side filtering for bad OCR match names. Implemented a manual input field for match names.
--    (NEW)
-    -   **Importance**: Provides UI for analysis with cache control.
-    -   **Changes**: Added toggle to disable analysis cache and a button to clear it. Included client-side filtering for bad OCR match names and a manual input field for match names.
--    (NEW) and  (NEW)
-    -   **Importance**: Manage routing for different application modes, encapsulating .
-
+    -   **Importance**: Manages frontend navigation.
+    -   **Changes**: Added a new route for the  component, accessible via Analyzer UEFA.
+-    (Created)
+    -   **Importance**: Frontend UI for match analysis.
+    -   **Changes**: Implemented to display league selection, manual team input, cache controls, league coefficient display, and integrated the prediction validation section with metrics.
 </code_architecture>
 
 <pending_tasks>
--   Complete the integration of the automatic European league update system.
--   Implement frontend components (toggle, dropdown, dynamic display) for the league coefficient system.
+-   Integrate the  module into the existing  to automatically update the newly added European leagues.
+-   Test the full functionality of the Phase 2 league integration to ensure data fetching, coefficient calculation, and daily updates work as expected for all new leagues.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary, the AI engineer was in the middle of PHASE 2 – Intégration Automatique des Ligues Européennes for the league coefficient system. This phase involves implementing a scheduler for automatic daily updates of league standings and coefficients. The user provided updated code for , , , and . The AI engineer successfully updated  with the new scraping logic for official league websites. This includes supporting LaLiga and Premier League initially, with plans to add more. The updated  is responsible for making HTTP requests to official league websites, parsing HTML with Beautiful Soup, and saving the extracted team standings into JSON files within . The overall goal of this current work is to ensure that the application's predictions are automatically adjusted based on the real-time performance of teams in their respective leagues, making the predictions more accurate and dynamic.
+Immediately before this summary request, the AI engineer was working on Phase 2 – Intégration Complète des Ligues Manquantes. This involves adding five new European leagues (Serie A, Bundesliga, Ligue 1, Primeira Liga, Ligue 2) to the system. The user provided a complete Python module, , which includes logic for:
+-   Defining the new leagues and their Wikipedia URLs.
+-   Fetching standings using web scraping (Beautiful Soup).
+-   Implementing a fallback mechanism to use cached data if scraping fails.
+-   Calculating team coefficients using the established formula ().
+-   Saving the processed data to  files in .
+-   Generating a summary report of the update.
+
+The AI engineer has successfully created the  file based on the user's provided code (Chat Message 262). The next step in this phase is to integrate this new module into the main  to ensure these leagues are updated automatically.
 </current_work>
 
 <optional_next_step>
-Continue implementing the automatic league update system by integrating , , and .
+Integrate  from  into .
 </optional_next_step>
+
