@@ -48,7 +48,7 @@ app = FastAPI(title="Score Predictor API")
 # Installer Tesseract au démarrage de l'app
 @app.on_event("startup")
 async def startup_event():
-    """Installation automatique de Tesseract au démarrage"""
+    """Installation automatique de Tesseract et démarrage du scheduler au démarrage"""
     try:
         result = subprocess.run(['which', 'tesseract'], 
                               capture_output=True, text=True, timeout=5)
@@ -65,6 +65,15 @@ async def startup_event():
             logger.info("✅ Tesseract installé automatiquement")
     except Exception as e:
         logger.error(f"❌ Erreur installation Tesseract: {e}")
+    
+    # Démarrer le planificateur de mises à jour automatiques des ligues
+    try:
+        logger.info("🔄 Démarrage du planificateur de mises à jour des ligues...")
+        league_scheduler.start_scheduler()
+        status = league_scheduler.get_scheduler_status()
+        logger.info(f"✅ Planificateur démarré: mise à jour quotidienne à {status['update_time']}")
+    except Exception as e:
+        logger.error(f"❌ Erreur démarrage planificateur: {e}")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
