@@ -6,7 +6,7 @@ Système de cache avec TTL de 24h et fallback sur anciennes données si échec.
 import requests
 from bs4 import BeautifulSoup
 import json, os, time, unicodedata, re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import logging
 
 logger = logging.getLogger(__name__)
