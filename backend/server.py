@@ -902,6 +902,36 @@ async def api_clear_coeff_cache():
             status_code=500
         )
 
+@api_router.get("/admin/league/scheduler-status")
+async def api_get_scheduler_status():
+    """Récupère le statut du planificateur automatique"""
+    try:
+        status = league_scheduler.get_scheduler_status()
+        return {
+            "success": True,
+            "scheduler": status
+        }
+    except Exception as e:
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+@api_router.post("/admin/league/trigger-update")
+async def api_trigger_manual_update():
+    """Déclenche une mise à jour manuelle immédiate de toutes les ligues"""
+    try:
+        league_scheduler.trigger_manual_update()
+        return {
+            "success": True,
+            "message": "Mise à jour manuelle déclenchée en arrière-plan"
+        }
+    except Exception as e:
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
 
 # Include the router in the main app
 app.include_router(api_router)
