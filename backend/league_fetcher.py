@@ -213,62 +213,59 @@ def scrape_primeira_liga(html):
 def scrape_champions_league(html):
     """
     Parse Champions League - Extrait les équipes participantes.
-    Pour la Champions League, on ne peut pas vraiment faire un classement 1-36,
-    donc on liste simplement les équipes participantes avec un rang fictif basé
-    sur l'ordre alphabétique ou l'ordre d'apparition.
+    Liste les équipes avec un fallback intelligent sur une liste fixe si le scraping échoue.
     """
     try:
         soup = BeautifulSoup(html, "lxml")
         teams = []
         seen = set()
         
-        # Chercher les liens vers les pages d'équipes
-        # Les équipes de Champions League ont des liens vers leurs pages wiki
-        links = soup.find_all("a", href=re.compile(r"/wiki/.*_F\.?C\.?$|/wiki/.*_United|/wiki/.*_City|/wiki/Real_Madrid|/wiki/FC_Barcelona"))
+        # Mots-clés pour identifier les clubs (pas les pays)
+        club_keywords = ["FC", "CF", "United", "City", "Madrid", "Barcelona", "Milan", "Juventus", 
+                        "Bayern", "PSG", "Dortmund", "Liverpool", "Arsenal", "Chelsea", "Manchester",
+                        "Inter", "Atletico", "Porto", "Benfica", "Ajax", "Celtic", "Rangers",
+                        "Sporting", "Sevilla", "Napoli", "Roma", "Lazio", "Leipzig", "Leverkusen"]
         
-        # Également chercher dans les tableaux de groupes
-        tables = soup.find_all("table", class_=re.compile("wikitable"))
-        for table in tables:
-            rows = table.find_all("tr")
-            for row in rows:
-                team_cell = row.find("td", class_=re.compile("team|club"))
-                if not team_cell:
-                    team_cell = row.find("a")
-                
-                if team_cell:
-                    team_link = team_cell.find("a") if team_cell.name != "a" else team_cell
-                    if team_link:
-                        team_name = team_link.get_text(strip=True)
-                        if len(team_name) > 2 and team_name not in seen:
-                            seen.add(team_name)
-                            teams.append({
-                                "name": _normalize_name(team_name),
-                                "rank": len(teams) + 1,
-                                "points": 0
-                            })
+        # Mots à éviter (noms de pays, etc.)
+        skip_words = ["UEFA", "Wikipedia", "League", "Group", "Knockout", "Final", "Season", 
+                     "Match", "England", "Spain", "Germany", "Italy", "France", "Portugal",
+                     "Netherlands", "Belgium", "Austria", "Scotland", "Turkey", "Greece"]
         
-        # Si pas assez d'équipes trouvées, chercher tous les liens d'équipes
+        # Chercher dans tous les liens
+        all_links = soup.find_all("a", href=re.compile(r"/wiki/"))
+        for link in all_links:
+            text = link.get_text(strip=True)
+            href = link.get("href", "")
+            
+            # Filtrer les pays et mots-clés non pertinents
+            if any(word in text for word in skip_words):
+                continue
+            
+            # Identifier les clubs
+            if len(text) > 3 and text not in seen:
+                if any(keyword in text for keyword in club_keywords):
+                    seen.add(text)
+                    teams.append({
+                        "name": _normalize_name(text),
+                        "rank": len(teams) + 1,
+                        "points": 0
+                    })
+        
+        # Si moins de 10 équipes trouvées, utiliser une liste de fallback (saison 2024-25)
         if len(teams) < 10:
-            all_links = soup.find_all("a")
-            for link in all_links:
-                text = link.get_text(strip=True)
-                href = link.get("href", "")
-                
-                # Filtrer les liens d'équipes (heuristique)
-                if href.startswith("/wiki/") and len(text) > 3 and text not in seen:
-                    # Éviter les liens non-équipes
-                    skip_words = ["UEFA", "Wikipedia", "League", "Group", "Knockout", "Final", "Season", "Match"]
-                    if any(word in text for word in skip_words):
-                        continue
-                    
-                    # Ajouter si ressemble à un nom d'équipe
-                    if any(word in text for word in ["FC", "CF", "United", "City", "Madrid", "Barcelona", "Milan", "Juventus", "Bayern", "PSG", "Dortmund", "Liverpool", "Arsenal", "Chelsea", "Manchester"]):
-                        seen.add(text)
-                        teams.append({
-                            "name": _normalize_name(text),
-                            "rank": len(teams) + 1,
-                            "points": 0
-                        })
+            logger.warning("⚠️ Scraping Champions League insuffisant, utilisation liste fallback")
+            fallback_teams = [
+                "Real Madrid", "Manchester City", "Bayern Munich", "Paris Saint-Germain",
+                "Inter Milan", "Barcelona", "Atletico Madrid", "RB Leipzig",
+                "Borussia Dortmund", "Chelsea", "Liverpool", "Arsenal",
+                "Napoli", "Benfica", "Porto", "Juventus", "AC Milan", "Sevilla",
+                "Manchester United", "Ajax", "Celtic", "Shakhtar Donetsk",
+                "PSV Eindhoven", "Sporting CP", "Red Star Belgrade", "Galatasaray",
+                "Young Boys", "Braga", "Union Berlin", "Real Sociedad",
+                "Lens", "Copenhagen", "Newcastle", "Feyenoord", "Salzburg", "Antwerp"
+            ]
+            teams = [{"name": _normalize_name(t), "rank": i+1, "points": 0} 
+                    for i, t in enumerate(fallback_teams)]
         
         # Limiter à 36 équipes (nouveau format Champions League)
         teams = teams[:36]
