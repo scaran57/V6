@@ -213,3 +213,30 @@ def clear_cache():
     except Exception as e:
         logger.error(f"❌ Erreur vidage cache: {e}")
         return False
+
+def get_team_coeff(team_name, league_name=None):
+    """
+    Fonction utilitaire pour récupérer le coefficient d'une équipe.
+    Fallback sur 1.0 si équipe ou ligue introuvable.
+    
+    Args:
+        team_name: Nom de l'équipe
+        league_name: Nom de la ligue (optionnel, auto-détecté si None)
+    
+    Returns:
+        float: Coefficient entre MIN_COEF et MAX_COEF, ou 1.0 si non trouvé
+    """
+    if not team_name:
+        return FALLBACK_COEF
+    
+    # Si pas de ligue spécifiée, on retourne le fallback
+    if not league_name:
+        logger.debug(f"⚠️ Pas de ligue spécifiée pour {team_name}, coefficient = {FALLBACK_COEF}")
+        return FALLBACK_COEF
+    
+    try:
+        coef = team_coef_from_position_linear(team_name, league_name)
+        return coef
+    except Exception as e:
+        logger.warning(f"⚠️ Erreur calcul coeff {team_name}: {e}")
+        return FALLBACK_COEF
