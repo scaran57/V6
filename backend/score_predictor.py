@@ -192,7 +192,8 @@ def calculate_confidence(probabilities: dict, best_score: str) -> float:
     return confidence
 
 
-def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False):
+def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False, 
+                          home_team=None, away_team=None, league=None, use_league_coeff=True):
     """
     Calcule les probabilités corrigées de chaque score selon l'algorithme original
     avec pondération Poisson simplifiée et ajustement adaptatif des matchs nuls.
@@ -201,13 +202,18 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False):
         scores: dict {score: odds} ou list [{"score": "X-Y", "odds": Z}]
         diff_expected: différence de buts attendue (défaut: 2)
         use_odds_weighting: Appliquer la pondération par cote AVANT le calcul (défaut: False)
+        home_team: Nom équipe domicile (pour coefficient ligue)
+        away_team: Nom équipe extérieur (pour coefficient ligue)
+        league: Nom de la ligue (LaLiga, PremierLeague, etc.)
+        use_league_coeff: Appliquer les coefficients de classement (défaut: True)
     
     Returns:
-        dict avec mostProbableScore et probabilities
+        dict avec mostProbableScore, probabilities, et league_coeffs_applied
         
     Note:
         Si use_odds_weighting=True, les scores seront prépondérés selon les cotes
         bookmaker avant d'appliquer l'algorithme Poisson et la correction des nuls.
+        Si use_league_coeff=True, les probabilités seront ajustées selon le classement.
     """
     
     # 🧩 Étape 1 : Vérification et normalisation des données
