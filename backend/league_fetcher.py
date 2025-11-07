@@ -77,60 +77,119 @@ def _normalize_name(name):
     name = re.sub(r"\s+", " ", name)
     return name.strip()
 
-def _parse_wikipedia_table(html):
-    """Parse le tableau de classement Wikipedia"""
-    soup = BeautifulSoup(html, "lxml")
-    tables = soup.find_all("table", {"class": "wikitable"})
-    
-    for table in tables:
-        headers = [th.get_text(strip=True).lower() for th in table.find_all("th")]
-        header_text = " ".join(headers)
+def scrape_laliga(html):
+    """Parse le classement LaLiga officiel"""
+    try:
+        soup = BeautifulSoup(html, "lxml")
+        teams = []
         
-        # Vérifier que c'est bien un tableau de classement
-        if ("pos" in header_text or "position" in header_text) and ("team" in header_text or "club" in header_text):
-            rows = table.find_all("tr")
-            results = []
+        # LaLiga utilise une structure avec des divs/tables spécifiques
+        # Chercher les lignes du classement
+        rows = soup.find_all("tr", class_=re.compile("standing.*|table-row.*"))
+        
+        if not rows:
+            # Fallback : chercher toute table avec des données de classement
+            tables = soup.find_all("table")
+            for table in tables:
+                rows = table.find_all("tr")
+                break
+        
+        for i, row in enumerate(rows, 1):
+            cols = row.find_all(["td", "th"])
+            if len(cols) < 3:
+                continue
             
-            for row in rows[1:]:
-                cols = row.find_all(["th", "td"])
-                if not cols:
-                    continue
-                
-                texts = [c.get_text(" ", strip=True) for c in cols]
-                
-                # Trouver la position
-                pos = None
-                for t in texts:
-                    t_clean = t.strip()
-                    if re.match(r"^\d+$", t_clean):
-                        pos = int(t_clean)
+            # Extraire le nom de l'équipe (généralement dans un <a> ou <span>)
+            team_name = None
+            for col in cols:
+                link = col.find("a")
+                if link:
+                    text = link.get_text(strip=True)
+                    if len(text) > 2 and not text.isdigit():
+                        team_name = text
                         break
                 
-                # Trouver le nom d'équipe (chercher un lien)
-                team_cell = None
-                for c in cols:
-                    a = c.find("a")
-                    if a and a.get_text(strip=True):
-                        team_cell = a.get_text(strip=True)
+                span = col.find("span", class_=re.compile("team.*|club.*"))
+                if span:
+                    text = span.get_text(strip=True)
+                    if len(text) > 2:
+                        team_name = text
                         break
-                
-                if not team_cell:
-                    if len(texts) >= 2:
-                        team_cell = texts[1]
-                    elif texts:
-                        team_cell = texts[0]
-                
-                if team_cell:
-                    team = _normalize_name(team_cell)
-                else:
-                    team = None
-                
-                if pos and team:
-                    results.append((pos, team))
             
-            if results:
-                return results
-    
+            if team_name:
+                teams.append({
+                    "name": _normalize_name(team_name),
+                    "rank": i,
+                    "points": 0  # Les points peuvent être extraits si besoin
+                })
+                
+                if len(teams) >= 20:  # LaLiga a 20 équipes
+                    break
+        
+        return teams
+    except Exception as e:
+        logger.error(f"Erreur parsing LaLiga: {e}")
+        return []
+
+def scrape_premier_league(html):
+    """Parse le classement Premier League officiel"""
+    try:
+        soup = BeautifulSoup(html, "lxml")
+        teams = []
+        
+        # Premier League utilise des classes spécifiques
+        rows = soup.find_all("tr", class_=re.compile("table__row.*"))
+        
+        if not rows:
+            # Fallback
+            tables = soup.find_all("table")
+            for table in tables:
+                tbody = table.find("tbody")
+                if tbody:
+                    rows = tbody.find_all("tr")
+                    break
+        
+        for i, row in enumerate(rows, 1):
+            # Chercher le nom de l'équipe
+            team_cell = row.find("td", class_=re.compile("team.*"))
+            if not team_cell:
+                team_cell = row.find("span", class_=re.compile("team.*|long.*"))
+            
+            if team_cell:
+                team_name = team_cell.get_text(strip=True)
+                if len(team_name) > 2:
+                    teams.append({
+                        "name": _normalize_name(team_name),
+                        "rank": i,
+                        "points": 0
+                    })
+                    
+                    if len(teams) >= 20:
+                        break
+        
+        return teams
+    except Exception as e:
+        logger.error(f"Erreur parsing Premier League: {e}")
+        return []
+
+def scrape_serie_a(html):
+    """Parse Serie A (placeholder - à implémenter phase 2)"""
+    logger.warning("Serie A parser pas encore implémenté")
+    return []
+
+def scrape_ligue1(html):
+    """Parse Ligue 1 (placeholder - à implémenter phase 2)"""
+    logger.warning("Ligue 1 parser pas encore implémenté")
+    return []
+
+def scrape_bundesliga(html):
+    """Parse Bundesliga (placeholder - à implémenter phase 2)"""
+    logger.warning("Bundesliga parser pas encore implémenté")
+    return []
+
+def scrape_primeira_liga(html):
+    """Parse Primeira Liga (placeholder - à implémenter phase 2)"""
+    logger.warning("Primeira Liga parser pas encore implémenté")
     return []
 
 def load_positions():
