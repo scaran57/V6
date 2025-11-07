@@ -7,6 +7,7 @@ Tests the new score_predictor.py integration and all endpoints
 import requests
 import json
 import os
+import time
 from pathlib import Path
 
 # Configuration
