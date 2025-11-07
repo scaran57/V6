@@ -2543,5 +2543,55 @@
       }
     ],
     "analyzed_at": "2025-11-06T22:12:48.613523"
+  },
+  "matchnondétecté_bookmakerinconnu_d59ac346": {
+    "match_id": "matchnondétecté_bookmakerinconnu_d59ac346",
+    "match_name": "Match non détecté",
+    "bookmaker": "Bookmaker inconnu",
+    "extracted_scores": [
+      {
+        "score": "2-0",
+        "odds": 8.0
+      },
+      {
+        "score": "2-1",
+        "odds": 7.5
+      },
+      {
+        "score": "1-1",
+        "odds": 5.0
+      },
+      {
+        "score": "0-0",
+        "odds": 9.0
+      },
+      {
+        "score": "Autre",
+        "odds": 12.0
+      }
+    ],
+    "probabilities": {
+      "2-0": 17.72,
+      "2-1": 26.55,
+      "1-1": 25.14,
+      "0-0": 13.97,
+      "Autre": 16.63
+    },
+    "confidence": 0.198,
+    "top3": [
+      {
+        "score": "2-1",
+        "probability": 26.55
+      },
+      {
+        "score": "1-1",
+        "probability": 25.14
+      },
+      {
+        "score": "2-0",
+        "probability": 17.72
+      }
+    ],
+    "analyzed_at": "2025-11-07T09:58:22.245437"
   }
 }
