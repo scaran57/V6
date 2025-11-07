@@ -732,13 +732,362 @@ class ScorePredictorTester:
         
         return results
 
+    def test_european_competitions_integration(self):
+        """Test Champions League and Europa League integration with intelligent fallback"""
+        self.log("=" * 60)
+        self.log("TESTING EUROPEAN COMPETITIONS INTEGRATION")
+        self.log("=" * 60)
+        
+        results = {}
+        
+        # Test 1: Verify 8 leagues are available (including ChampionsLeague and EuropaLeague)
+        self.log("\n1️⃣ Testing league list (should have 8 leagues)...")
+        try:
+            response = requests.get(f"{BASE_URL}/admin/league/list", timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                leagues = data.get("leagues", [])
+                
+                expected_leagues = ["LaLiga", "PremierLeague", "SerieA", "Ligue1", "Bundesliga", 
+                                   "PrimeiraLiga", "ChampionsLeague", "EuropaLeague"]
+                
+                if len(leagues) == 8 and all(lg in leagues for lg in expected_leagues):
+                    self.log(f"✅ All 8 leagues available: {leagues}")
+                    results["league_list"] = {"status": "PASS", "leagues": leagues}
+                else:
+                    self.log(f"❌ Expected 8 leagues, got {len(leagues)}: {leagues}")
+                    results["league_list"] = {"status": "FAIL", "leagues": leagues}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["league_list"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["league_list"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test 2: Champions League standings (36 teams)
+        self.log("\n2️⃣ Testing Champions League standings (should have 36 teams)...")
+        try:
+            response = requests.get(f"{BASE_URL}/admin/league/standings?league=ChampionsLeague", timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                standings = data.get("standings", [])
+                teams_count = len(standings)
+                
+                if teams_count == 36:
+                    self.log(f"✅ Champions League: {teams_count} teams")
+                    # Show some teams
+                    sample_teams = [standings[i]["team"] for i in range(min(5, len(standings)))]
+                    self.log(f"   Sample teams: {', '.join(sample_teams)}")
+                    results["champions_standings"] = {"status": "PASS", "teams_count": teams_count}
+                else:
+                    self.log(f"⚠️ Expected 36 teams, got {teams_count}")
+                    results["champions_standings"] = {"status": "PARTIAL", "teams_count": teams_count}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["champions_standings"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["champions_standings"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test 3: Europa League standings (36 teams)
+        self.log("\n3️⃣ Testing Europa League standings (should have 36 teams)...")
+        try:
+            response = requests.get(f"{BASE_URL}/admin/league/standings?league=EuropaLeague", timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                standings = data.get("standings", [])
+                teams_count = len(standings)
+                
+                if teams_count == 36:
+                    self.log(f"✅ Europa League: {teams_count} teams")
+                    sample_teams = [standings[i]["team"] for i in range(min(5, len(standings)))]
+                    self.log(f"   Sample teams: {', '.join(sample_teams)}")
+                    results["europa_standings"] = {"status": "PASS", "teams_count": teams_count}
+                else:
+                    self.log(f"⚠️ Expected 36 teams, got {teams_count}")
+                    results["europa_standings"] = {"status": "PARTIAL", "teams_count": teams_count}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["europa_standings"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["europa_standings"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test 4: Intelligent Fallback - Teams in national leagues
+        self.log("\n4️⃣ Testing intelligent fallback for teams in national leagues...")
+        
+        # Test Real Madrid (should find in LaLiga)
+        self.log("\n   Testing Real Madrid (Champions League → should find in LaLiga)...")
+        try:
+            response = requests.get(
+                f"{BASE_URL}/league/team-coeff?team=Real Madrid&league=ChampionsLeague",
+                timeout=10
+            )
+            if response.status_code == 200:
+                data = response.json()
+                coef = data.get("coefficient")
+                source = data.get("source")
+                
+                if source == "LaLiga" and 1.25 <= coef <= 1.30:
+                    self.log(f"✅ Real Madrid: coeff={coef:.4f}, source={source}")
+                    results["fallback_real_madrid"] = {"status": "PASS", "coefficient": coef, "source": source}
+                else:
+                    self.log(f"⚠️ Real Madrid: coeff={coef}, source={source} (expected LaLiga)")
+                    results["fallback_real_madrid"] = {"status": "PARTIAL", "coefficient": coef, "source": source}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["fallback_real_madrid"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["fallback_real_madrid"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test Barcelona (should find in LaLiga)
+        self.log("\n   Testing Barcelona (Champions League → should find in LaLiga)...")
+        try:
+            response = requests.get(
+                f"{BASE_URL}/league/team-coeff?team=Barcelona&league=ChampionsLeague",
+                timeout=10
+            )
+            if response.status_code == 200:
+                data = response.json()
+                coef = data.get("coefficient")
+                source = data.get("source")
+                
+                if source == "LaLiga" and 1.0 <= coef <= 1.30:
+                    self.log(f"✅ Barcelona: coeff={coef:.4f}, source={source}")
+                    results["fallback_barcelona"] = {"status": "PASS", "coefficient": coef, "source": source}
+                else:
+                    self.log(f"⚠️ Barcelona: coeff={coef}, source={source}")
+                    results["fallback_barcelona"] = {"status": "PARTIAL", "coefficient": coef, "source": source}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["fallback_barcelona"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["fallback_barcelona"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test Manchester City (should find in PremierLeague)
+        self.log("\n   Testing Manchester City (Champions League → should find in PremierLeague)...")
+        try:
+            response = requests.get(
+                f"{BASE_URL}/league/team-coeff?team=Manchester City&league=ChampionsLeague",
+                timeout=10
+            )
+            if response.status_code == 200:
+                data = response.json()
+                coef = data.get("coefficient")
+                source = data.get("source")
+                
+                if source == "PremierLeague" and 1.25 <= coef <= 1.30:
+                    self.log(f"✅ Manchester City: coeff={coef:.4f}, source={source}")
+                    results["fallback_man_city"] = {"status": "PASS", "coefficient": coef, "source": source}
+                else:
+                    self.log(f"⚠️ Manchester City: coeff={coef}, source={source}")
+                    results["fallback_man_city"] = {"status": "PARTIAL", "coefficient": coef, "source": source}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["fallback_man_city"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["fallback_man_city"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test Liverpool (should find in PremierLeague)
+        self.log("\n   Testing Liverpool (Champions League → should find in PremierLeague)...")
+        try:
+            response = requests.get(
+                f"{BASE_URL}/league/team-coeff?team=Liverpool&league=ChampionsLeague",
+                timeout=10
+            )
+            if response.status_code == 200:
+                data = response.json()
+                coef = data.get("coefficient")
+                source = data.get("source")
+                
+                if source == "PremierLeague" and 1.0 <= coef <= 1.30:
+                    self.log(f"✅ Liverpool: coeff={coef:.4f}, source={source}")
+                    results["fallback_liverpool"] = {"status": "PASS", "coefficient": coef, "source": source}
+                else:
+                    self.log(f"⚠️ Liverpool: coeff={coef}, source={source}")
+                    results["fallback_liverpool"] = {"status": "PARTIAL", "coefficient": coef, "source": source}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["fallback_liverpool"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["fallback_liverpool"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test 5: Intelligent Fallback - Foreign teams (European bonus)
+        self.log("\n5️⃣ Testing intelligent fallback for foreign teams (European bonus)...")
+        
+        # Test Galatasaray (not in national leagues → should get 1.05)
+        self.log("\n   Testing Galatasaray (Champions League → not in national leagues)...")
+        try:
+            response = requests.get(
+                f"{BASE_URL}/league/team-coeff?team=Galatasaray&league=ChampionsLeague",
+                timeout=10
+            )
+            if response.status_code == 200:
+                data = response.json()
+                coef = data.get("coefficient")
+                source = data.get("source")
+                
+                if source == "european_fallback" and coef == 1.05:
+                    self.log(f"✅ Galatasaray: coeff={coef}, source={source}")
+                    results["fallback_galatasaray"] = {"status": "PASS", "coefficient": coef, "source": source}
+                else:
+                    self.log(f"⚠️ Galatasaray: coeff={coef}, source={source} (expected european_fallback, 1.05)")
+                    results["fallback_galatasaray"] = {"status": "PARTIAL", "coefficient": coef, "source": source}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["fallback_galatasaray"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["fallback_galatasaray"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test Red Star Belgrade (not in national leagues → should get 1.05)
+        self.log("\n   Testing Red Star Belgrade (Champions League → not in national leagues)...")
+        try:
+            response = requests.get(
+                f"{BASE_URL}/league/team-coeff?team=Red Star Belgrade&league=ChampionsLeague",
+                timeout=10
+            )
+            if response.status_code == 200:
+                data = response.json()
+                coef = data.get("coefficient")
+                source = data.get("source")
+                
+                if source == "european_fallback" and coef == 1.05:
+                    self.log(f"✅ Red Star Belgrade: coeff={coef}, source={source}")
+                    results["fallback_red_star"] = {"status": "PASS", "coefficient": coef, "source": source}
+                else:
+                    self.log(f"⚠️ Red Star Belgrade: coeff={coef}, source={source}")
+                    results["fallback_red_star"] = {"status": "PARTIAL", "coefficient": coef, "source": source}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["fallback_red_star"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["fallback_red_star"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test Olympiacos (Europa League → not in national leagues → should get 1.05)
+        self.log("\n   Testing Olympiacos (Europa League → not in national leagues)...")
+        try:
+            response = requests.get(
+                f"{BASE_URL}/league/team-coeff?team=Olympiacos&league=EuropaLeague",
+                timeout=10
+            )
+            if response.status_code == 200:
+                data = response.json()
+                coef = data.get("coefficient")
+                source = data.get("source")
+                
+                if source == "european_fallback" and coef == 1.05:
+                    self.log(f"✅ Olympiacos: coeff={coef}, source={source}")
+                    results["fallback_olympiacos"] = {"status": "PASS", "coefficient": coef, "source": source}
+                else:
+                    self.log(f"⚠️ Olympiacos: coeff={coef}, source={source}")
+                    results["fallback_olympiacos"] = {"status": "PARTIAL", "coefficient": coef, "source": source}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["fallback_olympiacos"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["fallback_olympiacos"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test 6: Regression tests
+        self.log("\n6️⃣ Testing regression (existing functionality)...")
+        
+        # Test health endpoint
+        self.log("\n   Testing /api/health...")
+        try:
+            response = requests.get(f"{BASE_URL}/health", timeout=10)
+            if response.status_code == 200:
+                self.log("✅ Health endpoint working")
+                results["regression_health"] = {"status": "PASS"}
+            else:
+                self.log(f"❌ Health endpoint failed: HTTP {response.status_code}")
+                results["regression_health"] = {"status": "FAIL"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["regression_health"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test scheduler status (should now handle 8 leagues)
+        self.log("\n   Testing scheduler status (should handle 8 leagues)...")
+        try:
+            response = requests.get(f"{BASE_URL}/admin/league/scheduler-status", timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                scheduler = data.get("scheduler", {})
+                is_running = scheduler.get("is_running", False)
+                
+                if is_running:
+                    self.log(f"✅ Scheduler running, next update: {scheduler.get('next_update', 'N/A')}")
+                    results["regression_scheduler"] = {"status": "PASS"}
+                else:
+                    self.log("⚠️ Scheduler not running")
+                    results["regression_scheduler"] = {"status": "PARTIAL"}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["regression_scheduler"] = {"status": "FAIL"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["regression_scheduler"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test direct LaLiga query (should still work)
+        self.log("\n   Testing direct LaLiga query (regression)...")
+        try:
+            response = requests.get(
+                f"{BASE_URL}/league/team-coeff?team=Real Madrid&league=LaLiga",
+                timeout=10
+            )
+            if response.status_code == 200:
+                data = response.json()
+                coef = data.get("coefficient")
+                source = data.get("source")
+                
+                if source == "LaLiga" and 1.0 <= coef <= 1.30:
+                    self.log(f"✅ Direct LaLiga query working: coeff={coef:.4f}")
+                    results["regression_laliga"] = {"status": "PASS"}
+                else:
+                    self.log(f"⚠️ Unexpected result: coeff={coef}, source={source}")
+                    results["regression_laliga"] = {"status": "PARTIAL"}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                results["regression_laliga"] = {"status": "FAIL"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["regression_laliga"] = {"status": "FAIL", "error": str(e)}
+        
+        # Print summary
+        self.log("\n" + "=" * 60)
+        self.log("EUROPEAN COMPETITIONS TEST SUMMARY")
+        self.log("=" * 60)
+        
+        passed = sum(1 for r in results.values() if r.get("status") == "PASS")
+        partial = sum(1 for r in results.values() if r.get("status") == "PARTIAL")
+        failed = sum(1 for r in results.values() if r.get("status") == "FAIL")
+        total = len(results)
+        
+        self.log(f"\n✅ Passed: {passed}/{total}")
+        self.log(f"⚠️ Partial: {partial}/{total}")
+        self.log(f"❌ Failed: {failed}/{total}")
+        
+        for test_name, result in results.items():
+            status = result.get("status", "UNKNOWN")
+            status_icon = "✅" if status == "PASS" else "⚠️" if status == "PARTIAL" else "❌"
+            self.log(f"{status_icon} {test_name}: {status}")
+        
+        self.log("=" * 60)
+        
+        return results
+
 if __name__ == "__main__":
     tester = ScorePredictorTester()
     
-    # Run league coefficient system tests
-    print("\n🏆 TESTING LEAGUE COEFFICIENT SYSTEM")
+    # Run European competitions integration tests
+    print("\n🏆 TESTING CHAMPIONS LEAGUE + EUROPA LEAGUE INTEGRATION")
     print("=" * 60)
-    league_results = tester.run_league_tests()
+    european_results = tester.test_european_competitions_integration()
     
     # Print detailed results
     print("\n📊 LEAGUE SYSTEM TEST RESULTS:")
