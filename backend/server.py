@@ -858,7 +858,12 @@ async def api_get_team_coeff(
     mode: str = Query("linear", regex="^(linear|exponential)$")
 ):
     """
-    Calcule le coefficient d'une équipe selon son classement.
+    Calcule le coefficient d'une équipe selon son classement avec système de fallback intelligent.
+    
+    Pour les compétitions européennes (ChampionsLeague, EuropaLeague):
+    - Cherche d'abord dans les ligues nationales
+    - Si trouvé, retourne le coefficient de la ligue nationale
+    - Sinon, retourne un bonus européen (1.05)
     
     Args:
         team: Nom de l'équipe
@@ -866,12 +871,22 @@ async def api_get_team_coeff(
         mode: linear ou exponential
     """
     try:
-        if mode == "exponential":
-            coef = league_coeff.team_coef_from_position_exponential(team, league)
-        else:
-            coef = league_coeff.team_coef_from_position_linear(team, league)
+        # Utiliser get_team_coeff qui gère le fallback intelligent
+        result = league_coeff.get_team_coeff(team, league)
         
-        pos = league_fetcher.get_team_position(team, league)
+        if isinstance(result, dict):
+            coef = result["coefficient"]
+            source = result["source"]
+        else:
+            coef = result
+            source = league
+        
+        # Essayer de récupérer la position si dans une ligue avec classement
+        pos = None
+        try:
+            pos = league_fetcher.get_team_position(team, source if source != "european_fallback" else league)
+        except:
+            pass
         
         return {
             "success": True,
@@ -879,9 +894,12 @@ async def api_get_team_coeff(
             "league": league,
             "position": pos,
             "coefficient": coef,
-            "mode": mode
+            "source": source,
+            "mode": mode,
+            "note": "Source indique d'où provient le coefficient (ligue nationale ou fallback)"
         }
     except Exception as e:
+        logger.error(f"Erreur calcul coefficient: {e}")
         return JSONResponse(
             {"success": False, "error": str(e)},
             status_code=500
