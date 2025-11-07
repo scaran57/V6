@@ -367,15 +367,15 @@ if __name__ == "__main__":
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
     
-    print("🚀 Démarrage de la Phase 2 - Intégration des ligues européennes")
+    print("🚀 Démarrage du Système Unifié - Mise à jour de TOUTES les ligues")
     print()
     
     summary = update_all_leagues()
     
     print()
-    print("📊 RÉSUMÉ:")
+    print("📊 RÉSUMÉ CONSOLIDÉ:")
     for league, info in summary["report"].items():
         print(f"  {league}: {info['status']} ({info['teams_count']} équipes)")
     
     print()
-    print(f"✅ Rapport sauvegardé: {DATA_DIR}/phase2_update_report.json")
+    print(f"✅ Rapport consolidé sauvegardé: {DATA_DIR}/global_update_report.json")
