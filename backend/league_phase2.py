@@ -23,8 +23,63 @@ logger = logging.getLogger(__name__)
 DATA_DIR = "/app/data/leagues"
 os.makedirs(DATA_DIR, exist_ok=True)
 
-# Configuration des ligues Phase 2
+# Configuration unifiée de TOUTES les ligues (Phase 1 + Phase 2)
 LEAGUES = {
+    # === PHASE 1 - Ligues principales ===
+    "LaLiga": {
+        "url": "https://en.wikipedia.org/wiki/2025–26_La_Liga",
+        "expected_teams": 20,
+        "fallback_teams": [
+            "Real Madrid", "Barcelona", "Atletico Madrid", "Real Sociedad",
+            "Real Betis", "Villarreal", "Athletic Bilbao", "Valencia",
+            "Osasuna", "Girona", "Sevilla", "Getafe",
+            "Rayo Vallecano", "Celta Vigo", "Las Palmas", "Mallorca",
+            "Alaves", "Cadiz", "Granada", "Almeria"
+        ]
+    },
+    "PremierLeague": {
+        "url": "https://en.wikipedia.org/wiki/2025–26_Premier_League",
+        "expected_teams": 20,
+        "fallback_teams": [
+            "Manchester City", "Liverpool", "Arsenal", "Aston Villa",
+            "Tottenham Hotspur", "Chelsea", "Newcastle United", "Manchester United",
+            "West Ham United", "Crystal Palace", "Brighton", "Bournemouth",
+            "Fulham", "Wolves", "Everton", "Brentford",
+            "Nottingham Forest", "Luton Town", "Burnley", "Sheffield United"
+        ]
+    },
+    "ChampionsLeague": {
+        "url": "https://en.wikipedia.org/wiki/2024–25_UEFA_Champions_League",
+        "expected_teams": 36,
+        "fallback_teams": [
+            "Real Madrid", "Manchester City", "Bayern Munich", "Paris Saint-Germain",
+            "Inter Milan", "Borussia Dortmund", "Barcelona", "RB Leipzig",
+            "Atletico Madrid", "Porto", "Arsenal", "Shakhtar Donetsk",
+            "Napoli", "Benfica", "PSV Eindhoven", "Lazio",
+            "Feyenoord", "Celtic", "Red Star Belgrade", "Young Boys",
+            "Salzburg", "Union Berlin", "Braga", "Real Sociedad",
+            "Galatasaray", "Copenhagen", "Manchester United", "Lens",
+            "Sevilla", "Newcastle United", "AC Milan", "Liverpool",
+            "Sporting CP", "Club Brugge", "Antwerp", "Crvena Zvezda"
+        ]
+    },
+    "EuropaLeague": {
+        "url": "https://en.wikipedia.org/wiki/2024–25_UEFA_Europa_League",
+        "expected_teams": 36,
+        "fallback_teams": [
+            "Liverpool", "West Ham United", "Brighton", "AS Roma",
+            "Villarreal", "Slavia Praha", "Qarabag", "Bayer Leverkusen",
+            "Sparta Praha", "Rangers", "Atalanta", "Marseille",
+            "Sporting CP", "Benfica", "Ajax", "Freiburg",
+            "Rennes", "AEK Athens", "Sturm Graz", "Rakow",
+            "Molde", "Servette", "Sheriff Tiraspol", "Union SG",
+            "PAOK", "BetIS", "Toulouse", "Olympiakos",
+            "TSC", "Aris Limassol", "Fiorentina", "Club Brugge",
+            "Maccabi Haifa", "Panathinaikos", "Aberdeen", "HJK Helsinki"
+        ]
+    },
+    
+    # === PHASE 2 - Ligues européennes ===
     "SerieA": {
         "url": "https://en.wikipedia.org/wiki/2025–26_Serie_A",
         "expected_teams": 20,
