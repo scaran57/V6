@@ -36,3 +36,4 @@
 {"ts": 1762467123.451756, "iso": "2025-11-06T22:12:03.451756Z", "match_id": "learn_1762467123", "home": "Unknown", "away": "Unknown", "predicted": "4-0", "real": "3-4", "agent_id": "api_learn_endpoint", "schema_version": 2}
 {"ts": 1762467182.357432, "iso": "2025-11-06T22:13:02.357432Z", "match_id": "learn_1762467182", "home": "Unknown", "away": "Unknown", "predicted": "3-1", "real": "2-0", "agent_id": "api_learn_endpoint", "schema_version": 2}
 {"ts": 1762467216.649469, "iso": "2025-11-06T22:13:36.649469Z", "match_id": "learn_1762467216", "home": "Unknown", "away": "Unknown", "predicted": "3-2", "real": "0-0", "agent_id": "api_learn_endpoint", "schema_version": 2}
+{"ts": 1762516167.2267978, "iso": "2025-11-07T11:49:27.226798Z", "match_id": "learn_1762516167", "home": "Unknown", "away": "Unknown", "predicted": "2-1", "real": "1-1", "agent_id": "api_learn_endpoint", "schema_version": 2}
