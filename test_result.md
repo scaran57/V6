@@ -479,10 +479,10 @@ agent_communication:
       RECOMMANDATION: L'algorithme fonctionne mais nécessite des ajustements pour mieux extraire les noms de matchs des vraies images de bookmakers. Les éléments d'interface sont parfois inclus dans l'extraction.
   test_priority: "high_first"
 
-  - task: "Système de coefficients de ligue"
+  - task: "Système de coefficients de ligue + Champions League + Europa League"
     implemented: true
     working: true
-    file: "/app/backend/league_fetcher.py, /app/backend/league_coeff.py, /app/backend/league_updater.py, /app/backend/league_scheduler.py, /app/backend/server.py"
+    file: "/app/backend/league_fetcher.py, /app/backend/league_coeff.py, /app/backend/league_updater.py, /app/backend/league_scheduler.py, /app/backend/server.py, /app/backend/score_predictor.py"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
