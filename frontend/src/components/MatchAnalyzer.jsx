@@ -525,6 +525,138 @@ export default function MatchAnalyzer() {
           </div>
         )}
       </div>
+
+      {/* === Section Validation Prédictive === */}
+      <div className="mt-6 p-6 rounded-2xl bg-gradient-to-br from-purple-900/50 to-indigo-900/50 backdrop-blur shadow-2xl border border-purple-700/50">
+        <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center gap-2">
+          <span>📊</span>
+          <span>Validation Prédictive</span>
+          <span className="text-sm font-normal text-gray-400">(7 derniers jours)</span>
+        </h3>
+
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+          <button
+            onClick={async () => {
+              setValidationStatus("⏳ Calcul en cours...");
+              try {
+                const res = await axios.post(`${API_BASE}/api/validation/run?days=7`);
+                if (res.data.success) {
+                  setValidationReport(res.data);
+                  setValidationStatus("✅ Rapport mis à jour");
+                } else {
+                  setValidationStatus("⚠️ Aucune donnée disponible");
+                }
+              } catch (err) {
+                console.error("Erreur validation:", err);
+                setValidationStatus("❌ Erreur lors de la validation");
+              }
+            }}
+            className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transform hover:scale-105 transition-all"
+          >
+            🔄 Vérifier la Précision
+          </button>
+
+          <span className="text-sm text-gray-300 bg-gray-800/50 px-4 py-2 rounded-lg">
+            {validationStatus || "Chargement..."}
+          </span>
+        </div>
+
+        {validationReport && validationReport.status !== "no_report" && validationReport.status !== "no_data" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Précision Exacte */}
+            <div className="bg-gradient-to-br from-green-900/30 to-emerald-900/30 border border-green-700/50 p-4 rounded-xl">
+              <div className="text-xs text-green-400 mb-1">Précision Exacte</div>
+              <div className="text-3xl font-bold text-white">
+                {validationReport.accuracy ? (validationReport.accuracy * 100).toFixed(1) : 0}%
+              </div>
+              <div className="text-xs text-gray-400 mt-1">
+                {validationReport.correct_predictions || 0} / {validationReport.matches_tested || 0} scores exacts
+              </div>
+            </div>
+
+            {/* Précision Résultat (1X2) */}
+            <div className="bg-gradient-to-br from-blue-900/30 to-indigo-900/30 border border-blue-700/50 p-4 rounded-xl">
+              <div className="text-xs text-blue-400 mb-1">Résultat Correct (1X2)</div>
+              <div className="text-3xl font-bold text-white">
+                {validationReport.outcome_accuracy ? (validationReport.outcome_accuracy * 100).toFixed(1) : 0}%
+              </div>
+              <div className="text-xs text-gray-400 mt-1">
+                {validationReport.outcome_matches || 0} / {validationReport.matches_tested || 0} résultats
+              </div>
+            </div>
+
+            {/* MAE */}
+            <div className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 border border-purple-700/50 p-4 rounded-xl">
+              <div className="text-xs text-purple-400 mb-1">Erreur Moyenne (MAE)</div>
+              <div className="text-3xl font-bold text-white">
+                {validationReport.mae ? validationReport.mae.toFixed(2) : "0.00"}
+              </div>
+              <div className="text-xs text-gray-400 mt-1">
+                Mean Absolute Error
+              </div>
+            </div>
+
+            {/* RMSE */}
+            <div className="bg-gradient-to-br from-orange-900/30 to-red-900/30 border border-orange-700/50 p-4 rounded-xl">
+              <div className="text-xs text-orange-400 mb-1">RMSE</div>
+              <div className="text-3xl font-bold text-white">
+                {validationReport.rmse ? validationReport.rmse.toFixed(2) : "0.00"}
+              </div>
+              <div className="text-xs text-gray-400 mt-1">
+                Root Mean Square Error
+              </div>
+            </div>
+
+            {/* Matchs Testés */}
+            <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 p-4 rounded-xl">
+              <div className="text-xs text-gray-400 mb-1">Matchs Testés</div>
+              <div className="text-3xl font-bold text-white">
+                {validationReport.matches_tested || 0}
+              </div>
+              <div className="text-xs text-gray-400 mt-1">
+                Sur {validationReport.period_days || 7} jours
+              </div>
+            </div>
+
+            {/* Timestamp */}
+            <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 p-4 rounded-xl">
+              <div className="text-xs text-gray-400 mb-1">Dernière Mise à Jour</div>
+              <div className="text-sm font-semibold text-white">
+                {validationReport.timestamp 
+                  ? new Date(validationReport.timestamp).toLocaleString('fr-FR', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })
+                  : "N/A"}
+              </div>
+              <div className="text-xs text-gray-400 mt-1">
+                Format: JJ/MM/AAAA HH:MM
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-8 text-gray-400">
+            <div className="text-4xl mb-3">📊</div>
+            <div className="text-lg">Aucun rapport de validation disponible</div>
+            <div className="text-sm mt-2">
+              {validationReport?.message || "Cliquez sur 'Vérifier la Précision' pour générer un rapport"}
+            </div>
+          </div>
+        )}
+
+        {/* Légende */}
+        <div className="mt-6 pt-4 border-t border-gray-700">
+          <div className="text-xs text-gray-400 space-y-1">
+            <div><strong className="text-green-400">Précision Exacte:</strong> % de scores parfaitement prédits (ex: 2-1 → 2-1)</div>
+            <div><strong className="text-blue-400">Résultat (1X2):</strong> % de victoires/nuls/défaites correctement prédits</div>
+            <div><strong className="text-purple-400">MAE:</strong> Erreur moyenne sur les buts (plus c'est bas, mieux c'est)</div>
+            <div><strong className="text-orange-400">RMSE:</strong> Erreur quadratique (pénalise les grosses erreurs)</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
