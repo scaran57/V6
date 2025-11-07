@@ -337,9 +337,6 @@ def update_all(leagues=None, force=False):
     
     return result
 
-# Ajout import manquant
-from datetime import timezone
-
 def get_team_position(team_name, league_name):
     """
     Récupère la position d'une équipe dans une ligue.
