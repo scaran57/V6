@@ -395,9 +395,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Système de coefficients de ligue - COMPLETED ✅"
+    - "Phase 2 - Intégration des 5 nouvelles ligues européennes dans league_scheduler"
   stuck_tasks: []
   test_all: false
+  test_priority: "high_first"
   last_test_results: "League coefficient system fully tested and working - 10/11 tests passed (91% success rate). All endpoints operational, coefficient calculations accurate, integration with prediction algorithm successful."
 
 agent_communication:
