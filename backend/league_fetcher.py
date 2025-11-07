@@ -17,17 +17,45 @@ logger = logging.getLogger(__name__)
 # Configuration TTL (Time To Live) pour le cache
 DEFAULT_TTL = 24 * 3600  # 24 heures en secondes
 
-LEAGUE_SOURCES = {
-    "LaLiga": "https://en.wikipedia.org/wiki/2025–26_La_Liga",
-    "PremierLeague": "https://en.wikipedia.org/wiki/2025–26_Premier_League",
-    "SerieA": "https://en.wikipedia.org/wiki/2025–26_Serie_A",
-    "Ligue1": "https://en.wikipedia.org/wiki/2025–26_Ligue_1",
-    "Bundesliga": "https://en.wikipedia.org/wiki/2025–26_Bundesliga",
-    "PrimeiraLiga": "https://en.wikipedia.org/wiki/2025–26_Primeira_Liga"
-}
-
 DATA_DIR = "/app/data/leagues"
 os.makedirs(DATA_DIR, exist_ok=True)
+
+# Configuration des ligues avec leurs URLs et méthodes de parsing
+LEAGUE_CONFIG = {
+    "LaLiga": {
+        "url": "https://en.wikipedia.org/wiki/2025–26_La_Liga",
+        "method": "scrape_laliga",
+        "fallback_file": f"{DATA_DIR}/LaLiga.json"
+    },
+    "PremierLeague": {
+        "url": "https://en.wikipedia.org/wiki/2025–26_Premier_League",
+        "method": "scrape_premier_league",
+        "fallback_file": f"{DATA_DIR}/PremierLeague.json"
+    },
+    "SerieA": {
+        "url": "https://en.wikipedia.org/wiki/2025–26_Serie_A",
+        "method": "scrape_serie_a",
+        "fallback_file": f"{DATA_DIR}/SerieA.json"
+    },
+    "Ligue1": {
+        "url": "https://en.wikipedia.org/wiki/2025–26_Ligue_1",
+        "method": "scrape_ligue1",
+        "fallback_file": f"{DATA_DIR}/Ligue1.json"
+    },
+    "Bundesliga": {
+        "url": "https://en.wikipedia.org/wiki/2025–26_Bundesliga",
+        "method": "scrape_bundesliga",
+        "fallback_file": f"{DATA_DIR}/Bundesliga.json"
+    },
+    "PrimeiraLiga": {
+        "url": "https://en.wikipedia.org/wiki/2025–26_Primeira_Liga",
+        "method": "scrape_primeira_liga",
+        "fallback_file": f"{DATA_DIR}/PrimeiraLiga.json"
+    }
+}
+
+# Alias pour compatibilité avec server.py
+WIKI_MAP = LEAGUE_CONFIG
 
 def _save_json(path, obj):
     """Sauvegarde atomique JSON"""
