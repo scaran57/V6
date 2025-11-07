@@ -715,6 +715,148 @@ async def diagnostic_system_status():
             status_code=500
         )
 
+
+# ============================================================================
+# === ROUTES LEAGUE COEFFICIENT SYSTEM ===
+# ============================================================================
+
+@api_router.post("/admin/league/update")
+async def api_update_league(
+    league: str = Query(..., description="Nom de la ligue à mettre à jour"),
+    force: bool = Query(False, description="Forcer la mise à jour (ignorer le cache)")
+):
+    """
+    Met à jour le classement d'une ligue depuis Wikipedia.
+    
+    Ligues disponibles : LaLiga, PremierLeague, SerieA, Ligue1, Bundesliga, PrimeiraLiga
+    """
+    try:
+        data = league_fetcher.update_league(league, force=force)
+        sample = list(data.items())[:8]
+        
+        return {
+            "success": True,
+            "league": league,
+            "teams_count": len(data),
+            "sample": sample,
+            "message": f"Classement {league} mis à jour avec succès"
+        }
+    except Exception as e:
+        logger.error(f"Erreur update league {league}: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+@api_router.post("/admin/league/update-all")
+async def api_update_all_leagues(force: bool = Query(False)):
+    """
+    Met à jour tous les classements de toutes les ligues.
+    Peut prendre quelques secondes.
+    """
+    try:
+        res = league_fetcher.update_all(force=force)
+        summary = {k: len(v) for k, v in res.items()}
+        
+        return {
+            "success": True,
+            "updated": summary,
+            "message": "Tous les classements mis à jour"
+        }
+    except Exception as e:
+        logger.error(f"Erreur update all leagues: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+@api_router.get("/admin/league/list")
+async def api_list_leagues():
+    """Liste toutes les ligues disponibles"""
+    return {
+        "success": True,
+        "leagues": list(league_fetcher.WIKI_MAP.keys())
+    }
+
+@api_router.get("/admin/league/standings")
+async def api_get_standings(league: str = Query(...)):
+    """Récupère le classement complet d'une ligue"""
+    try:
+        data = league_fetcher.load_positions().get(league, {})
+        
+        if not data:
+            return {
+                "success": False,
+                "message": f"Aucun classement disponible pour {league}. Utilisez /admin/league/update d'abord."
+            }
+        
+        # Trier par position
+        sorted_teams = sorted(data.items(), key=lambda x: x[1])
+        
+        return {
+            "success": True,
+            "league": league,
+            "teams_count": len(data),
+            "standings": [{"team": team, "position": pos} for team, pos in sorted_teams]
+        }
+    except Exception as e:
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+@api_router.get("/league/team-coeff")
+async def api_get_team_coeff(
+    team: str = Query(...),
+    league: str = Query("LaLiga"),
+    mode: str = Query("linear", regex="^(linear|exponential)$")
+):
+    """
+    Calcule le coefficient d'une équipe selon son classement.
+    
+    Args:
+        team: Nom de l'équipe
+        league: Nom de la ligue
+        mode: linear ou exponential
+    """
+    try:
+        if mode == "exponential":
+            coef = league_coeff.team_coef_from_position_exponential(team, league)
+        else:
+            coef = league_coeff.team_coef_from_position_linear(team, league)
+        
+        pos = league_fetcher.get_team_position(team, league)
+        
+        return {
+            "success": True,
+            "team": team,
+            "league": league,
+            "position": pos,
+            "coefficient": coef,
+            "mode": mode
+        }
+    except Exception as e:
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+@api_router.post("/admin/league/clear-cache")
+async def api_clear_coeff_cache():
+    """Vide le cache des coefficients"""
+    try:
+        success = league_coeff.clear_cache()
+        if success:
+            return {"success": True, "message": "Cache des coefficients vidé"}
+        else:
+            return {"success": False, "message": "Erreur lors du vidage du cache"}
+    except Exception as e:
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
