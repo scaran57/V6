@@ -371,7 +371,8 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False,
     return {
         "mostProbableScore": most_probable,
         "probabilities": {k: round(v, 2) for k, v in final_probabilities.items()},
-        "confidence": round(confidence, 3)
+        "confidence": round(confidence, 3),
+        "league_coeffs_applied": league_coeffs_applied
     }
 
 
