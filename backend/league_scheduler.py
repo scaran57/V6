@@ -155,8 +155,39 @@ class LeagueScheduler:
             logger.info(f"🕐 Prochaine mise à jour: demain à {self.update_time.hour:02d}:{self.update_time.minute:02d}")
             logger.info("=" * 60)
             
+            # Exécuter la validation des prédictions après la mise à jour des ligues
+            self._run_validation()
+            
         except Exception as e:
             logger.error(f"❌ Erreur lors de la mise à jour automatique: {e}")
+    
+    def _run_validation(self):
+        """Exécute la validation des prédictions"""
+        try:
+            logger.info("=" * 60)
+            logger.info("🔍 DÉBUT DE LA VALIDATION DES PRÉDICTIONS")
+            logger.info("=" * 60)
+            
+            # Importer ici pour éviter les imports circulaires
+            sys.path.insert(0, '/app/backend')
+            import prediction_validator
+            
+            report = prediction_validator.validate_predictions(days_back=7)
+            
+            if report.get("status") == "success":
+                logger.info(f"✅ Validation terminée:")
+                logger.info(f"   📊 Matchs testés: {report.get('matches_tested', 0)}")
+                logger.info(f"   🎯 Précision exacte: {report.get('accuracy', 0):.1%}")
+                logger.info(f"   🎲 Précision résultat (1X2): {report.get('outcome_accuracy', 0):.1%}")
+                logger.info(f"   📈 MAE: {report.get('mae', 0):.2f}")
+                logger.info(f"   📉 RMSE: {report.get('rmse', 0):.2f}")
+            else:
+                logger.info(f"ℹ️ Validation: {report.get('message', 'Pas de données')}")
+            
+            logger.info("=" * 60)
+            
+        except Exception as e:
+            logger.error(f"❌ Erreur lors de la validation: {e}")
     
     def trigger_manual_update(self):
         """Déclenche une mise à jour manuelle immédiate (non-bloquant)"""
