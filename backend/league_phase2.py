@@ -243,7 +243,7 @@ def update_all_leagues():
             # Calculer les coefficients
             total_teams = len(teams)
             for team in teams:
-                team["coefficient"] = calculate_coefficient(team["position"], total_teams)
+                team["coefficient"] = calculate_coefficient(team["rank"], total_teams)
             
             # Sauvegarder
             out_path = os.path.join(DATA_DIR, f"{league_name}.json")
