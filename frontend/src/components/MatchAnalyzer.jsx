@@ -41,7 +41,20 @@ export default function MatchAnalyzer() {
 
   useEffect(() => {
     fetchLeagues();
+    fetchValidationReport();
   }, []);
+  
+  async function fetchValidationReport() {
+    try {
+      const res = await axios.get(`${API_BASE}/api/validation/status`);
+      if (res.data.success && res.data.status !== "no_report") {
+        setValidationReport(res.data);
+        setValidationStatus("Dernier rapport chargé");
+      }
+    } catch (err) {
+      console.error("fetchValidationReport", err);
+    }
+  }
 
   useEffect(() => {
     if (league) fetchStandings(league);
