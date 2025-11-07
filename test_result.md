@@ -869,3 +869,52 @@ agent_communication:
       - Utiliser l'application normalement en Mode Production
       - Tester l'algorithme et gérer le cache en Mode Test
       - Consulter la documentation complète pour comprendre les fonctionnalités
+  - agent: "testing"
+    message: |
+      ❌ PHASE 2 INTEGRATION - CRITICAL DATA STRUCTURE ISSUE FOUND
+      
+      SUMMARY: 6/7 tests passed (85.7%), but coefficient calculation is broken for Phase 2 leagues
+      
+      ✅ WHAT'S WORKING:
+      - league_phase2.py executes successfully and scrapes all 5 leagues
+      - Scheduler integration working (Phase 1 + Phase 2 both execute)
+      - All JSON files created correctly in /app/data/leagues/
+      - phase2_update_report.json shows 5/5 leagues updated
+      - No regression in existing Phase 1 leagues
+      
+      ❌ CRITICAL ISSUE - DATA STRUCTURE MISMATCH:
+      
+      Phase 2 JSON files use incompatible field names:
+      - Phase 2: {"team": "Bayern Munich", "position": 1, "coefficient": 1.3}
+      - Phase 1: {"name": "Real Madrid", "rank": 1, "points": 33}
+      
+      Impact: league_coeff.py cannot read Phase 2 data, returns fallback coefficient (1.0) for all Phase 2 teams
+      
+      REQUIRED FIX:
+      Update /app/backend/league_phase2.py line 183-186 to use consistent field names:
+      
+      Current code:
+      ```python
+      result.append({
+          "position": pos,
+          "team": team_name
+      })
+      ```
+      
+      Should be:
+      ```python
+      result.append({
+          "rank": pos,
+          "name": team_name,
+          "points": 0  # Optional, can calculate or leave as 0
+      })
+      ```
+      
+      Also update line 244 where coefficient is added:
+      ```python
+      team["coefficient"] = calculate_coefficient(team["rank"], total_teams)
+      ```
+      
+      After fix, re-run league_phase2.py to regenerate JSON files with correct structure.
+      
+      TESTING COMPLETED: All other aspects of Phase 2 integration are working correctly.
