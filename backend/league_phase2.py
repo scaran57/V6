@@ -209,8 +209,9 @@ def fetch_standings(league_name, config):
         result = []
         for pos, team_name in enumerate(config["fallback_teams"], start=1):
             result.append({
-                "position": pos,
-                "team": team_name
+                "rank": pos,
+                "name": team_name,
+                "points": 0
             })
         return result[:config["expected_teams"]]
 
