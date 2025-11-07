@@ -519,6 +519,43 @@ agent_communication:
           - Vérifier que les coefficients sont appliqués dans /api/analyze
           - Tester le scheduler (statut, mise à jour manuelle)
       - working: true
+        agent: "main"
+        comment: |
+          ✅ CHAMPIONS LEAGUE + EUROPA LEAGUE AJOUTÉES AVEC SUCCÈS
+          
+          Ajout des compétitions européennes avec système de fallback intelligent:
+          
+          1. Ajout de 2 nouvelles ligues:
+             - ChampionsLeague: 36 équipes (Real Madrid, Man City, Bayern, PSG, etc.)
+             - EuropaLeague: 36 équipes (AS Roma, Liverpool, Villarreal, etc.)
+          
+          2. Système de fallback intelligent implémenté:
+             - Pour les compétitions européennes, recherche d'abord dans ligues nationales
+             - Si équipe trouvée dans ligue nationale (ex: Real Madrid → LaLiga): utilise coefficient national
+             - Si équipe non trouvée (ex: Galatasaray, Red Star): bonus européen de 1.05
+          
+          3. Modifications techniques:
+             - league_fetcher.py: Ajout LEAGUE_CONFIG pour ChampionsLeague/EuropaLeague
+             - league_fetcher.py: Créé scrape_champions_league() et scrape_europa_league() avec listes de fallback
+             - league_coeff.py: Fonction lookup_in_all_leagues() pour recherche multi-ligues
+             - league_coeff.py: get_team_coeff() retourne maintenant {"coefficient": float, "source": str}
+             - score_predictor.py: Mise à jour pour gérer le nouveau format de retour
+             - server.py: Endpoint /api/league/team-coeff mis à jour avec info de source
+             - server.py: Auto-détection Champions/Europa League via bookmaker
+          
+          4. Tests manuels réussis:
+             ✅ 8 ligues disponibles (6 nationales + 2 européennes)
+             ✅ ChampionsLeague: 36 équipes
+             ✅ EuropaLeague: 36 équipes
+             ✅ Real Madrid (CL) → 1.30 depuis LaLiga
+             ✅ Barcelona (CL) → 1.25 depuis LaLiga
+             ✅ Manchester City (CL) → 1.30 depuis PremierLeague
+             ✅ Liverpool (CL) → 1.28 depuis PremierLeague
+             ✅ Galatasaray (CL) → 1.05 (bonus européen)
+             ✅ Red Star Belgrade (CL) → 1.05 (bonus européen)
+          
+          Le système est opérationnel et prêt pour utilisation.
+      - working: true
         agent: "testing"
         comment: |
           ✅ COMPREHENSIVE LEAGUE COEFFICIENT SYSTEM TESTING COMPLETED
