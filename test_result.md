@@ -479,7 +479,76 @@ agent_communication:
       RECOMMANDATION: L'algorithme fonctionne mais nécessite des ajustements pour mieux extraire les noms de matchs des vraies images de bookmakers. Les éléments d'interface sont parfois inclus dans l'extraction.
   test_priority: "high_first"
 
+  - task: "Système de coefficients de ligue"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/league_fetcher.py, /app/backend/league_coeff.py, /app/backend/league_updater.py, /app/backend/league_scheduler.py, /app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          🔧 SYSTÈME DE COEFFICIENTS DE LIGUE INTÉGRÉ
+          
+          Backend changes:
+          1. Corrigé league_fetcher.py avec imports manquants (re, unicodedata, timezone)
+          2. Ajouté LEAGUE_CONFIG et DEFAULT_TTL pour configuration des ligues
+          3. Créé league_updater.py pour orchestrer les mises à jour de toutes les ligues
+          4. Créé league_scheduler.py pour gérer les mises à jour automatiques quotidiennes (3h00)
+          5. Intégré le scheduler dans server.py (démarrage automatique au lancement)
+          6. Ajouté endpoints API pour gérer le système:
+             - GET /api/admin/league/scheduler-status
+             - POST /api/admin/league/trigger-update
+             - POST /api/admin/league/update
+             - POST /api/admin/league/update-all
+             - GET /api/league/team-coeff
+          
+          Le système:
+          - Récupère automatiquement les classements depuis Wikipedia
+          - Calcule des coefficients normalisés (0.85-1.30) selon la position
+          - S'intègre dans calculate_probabilities de score_predictor.py
+          - Mise à jour automatique quotidienne à 3h00
+          - Cache les coefficients pour performance
+          - Support LaLiga et PremierLeague (autres ligues en placeholder)
+          
+          Tests à effectuer:
+          - Tester les endpoints API de mise à jour des ligues
+          - Tester le calcul des coefficients pour différentes équipes
+          - Vérifier que les coefficients sont appliqués dans /api/analyze
+          - Tester le scheduler (statut, mise à jour manuelle)
+
 agent_communication:
+  - agent: "main"
+    message: |
+      ✅ SYSTÈME DE COEFFICIENTS DE LIGUE INTÉGRÉ
+      
+      Implémentation complète du système de coefficients de ligue:
+      
+      Backend:
+      1. ✅ Corrigé league_fetcher.py (ajout imports, configuration)
+      2. ✅ Créé league_updater.py (orchestration mises à jour)
+      3. ✅ Créé league_scheduler.py (mises à jour automatiques quotidiennes)
+      4. ✅ Intégré scheduler dans server.py (démarrage auto)
+      5. ✅ Ajouté endpoints API pour gestion des ligues
+      6. ✅ Vérifié intégration dans score_predictor.py
+      
+      Mise à jour initiale effectuée:
+      - LaLiga: 20 équipes ✅
+      - PremierLeague: 20 équipes ✅
+      - Autres ligues: placeholder (à implémenter)
+      
+      Prêt pour testing backend:
+      - Tester /api/admin/league/scheduler-status
+      - Tester /api/league/team-coeff
+      - Tester /api/analyze avec league=LaLiga
+      - Vérifier que les coefficients sont appliqués
+      
+      Frontend à implémenter:
+      - Toggle pour activer/désactiver coefficients
+      - Dropdown pour sélectionner la ligue
+      - Affichage des coefficients dans l'UI
   - agent: "main"
     message: |
       Successfully integrated new score_predictor.py file provided by user.
