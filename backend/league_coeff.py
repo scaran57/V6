@@ -276,24 +276,17 @@ def get_team_coeff(team_name, league_name=None):
             logger.warning(f"⚠️ Erreur calcul coeff {team_name} dans {league_name}: {e}")
             return {"coefficient": FALLBACK_COEF, "source": "fallback_error"}
     
-    # Cas 2: Compétition européenne - Recherche multi-ligues
+    # Cas 2: Compétition européenne - Recherche prioritaire dans ligues nationales
     logger.info(f"🏆 Recherche {team_name} pour {league_name}...")
     
-    # D'abord, chercher dans la ligue européenne elle-même
-    try:
-        coef = team_coef_from_position_linear(team_name, league_name)
-        return {"coefficient": coef, "source": league_name}
-    except:
-        pass
-    
-    # Sinon, chercher dans toutes les ligues nationales
+    # PRIORITÉ 1: Chercher dans toutes les ligues nationales
     coef, source_league = lookup_in_all_leagues(team_name)
     
     if coef is not None:
         logger.info(f"✅ {team_name} trouvée dans {source_league} → coeff={coef:.3f}")
         return {"coefficient": coef, "source": source_league}
     
-    # Dernière option: Bonus européen pour clubs non répertoriés
+    # PRIORITÉ 2: Bonus européen pour clubs non répertoriés dans ligues nationales
     european_bonus = 1.05
     logger.info(f"🌍 {team_name} non trouvée dans les ligues nationales → bonus européen={european_bonus}")
     return {"coefficient": european_bonus, "source": "european_fallback"}
