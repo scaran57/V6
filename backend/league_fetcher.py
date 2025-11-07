@@ -247,69 +247,80 @@ def load_positions():
 
 def update_league(league_name, force=False):
     """
-    Met à jour le classement d'une ligue depuis Wikipedia.
+    Met à jour le classement d'une ligue depuis son site officiel.
     Utilise le cache si disponible et non expiré (sauf si force=True).
     """
-    meta = load_meta()
-    ttl = meta.get("ttl", DEFAULT_TTL)
-    last = meta.get("fetched_at", {}).get(league_name)
-    
-    # Vérifier le cache
-    if last and not force:
-        try:
-            last_ts = float(last)
-            if time.time() - last_ts < ttl:
-                logger.info(f"📊 Classement {league_name} en cache (âge: {int(time.time() - last_ts)}s)")
-                data = load_positions()
-                return data.get(league_name, {})
-        except:
-            pass
-    
-    url = WIKI_MAP.get(league_name)
-    if not url:
+    config = LEAGUE_CONFIG.get(league_name)
+    if not config:
         logger.warning(f"⚠️ Ligue inconnue: {league_name}")
         return {}
     
-    headers = {"User-Agent": "EmergentScoreBot/1.0 (+https://emergentagent.com)"}
+    # Vérifier le cache (données locales)
+    cached_data = load_league_data(league_name)
+    if cached_data and not force:
+        try:
+            updated_dt = datetime.fromisoformat(cached_data["updated"].replace("Z", "+00:00"))
+            age_seconds = (datetime.now(timezone.utc) - updated_dt).total_seconds()
+            
+            if age_seconds < DEFAULT_TTL:
+                logger.info(f"📊 Classement {league_name} en cache (âge: {int(age_seconds/3600)}h)")
+                # Retourner au format ancien pour compatibilité
+                standings = {team["name"]: team["rank"] for team in cached_data["teams"]}
+                return standings
+        except Exception as e:
+            logger.warning(f"Erreur lecture cache {league_name}: {e}")
+    
+    # Récupération depuis le site officiel
+    url = config["url"]
+    method_name = config["method"]
+    
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
     
     try:
-        logger.info(f"🌐 Récupération classement {league_name} depuis Wikipedia...")
-        r = requests.get(url, headers=headers, timeout=15)
+        logger.info(f"🌐 Récupération classement {league_name} depuis {url}...")
+        r = requests.get(url, headers=headers, timeout=20)
         
         if r.status_code == 200:
-            parsed = _parse_wikipedia_table(r.text)
+            # Appeler la fonction de parsing appropriée
+            parser_func = globals().get(method_name)
+            if not parser_func:
+                logger.error(f"❌ Parser {method_name} introuvable")
+                return _fallback_to_cache(league_name, cached_data)
             
-            if not parsed:
-                logger.warning(f"⚠️ Aucun tableau de classement trouvé pour {league_name}")
-                return {}
+            teams = parser_func(r.text)
             
-            league_map = {}
-            for pos, team in parsed:
-                league_map[team] = pos
+            if not teams:
+                logger.warning(f"⚠️ Aucune équipe extraite pour {league_name}")
+                return _fallback_to_cache(league_name, cached_data)
             
             # Sauvegarder
-            all_pos = load_positions()
-            all_pos[league_name] = league_map
-            save_positions(all_pos)
+            save_league_data(league_name, teams)
             
-            meta = load_meta()
-            meta.setdefault("fetched_at", {})[league_name] = time.time()
-            save_meta(meta)
+            logger.info(f"✅ Classement {league_name} mis à jour: {len(teams)} équipes")
             
-            logger.info(f"✅ Classement {league_name} mis à jour: {len(league_map)} équipes")
-            return league_map
+            # Retourner au format ancien pour compatibilité
+            standings = {team["name"]: team["rank"] for team in teams}
+            return standings
         else:
             logger.error(f"❌ Erreur HTTP {r.status_code} pour {league_name}")
             
     except Exception as e:
         logger.error(f"❌ Erreur lors de la récupération de {league_name}: {e}")
     
-    # Fallback sur le cache même expiré
-    all_pos = load_positions()
-    cached = all_pos.get(league_name, {})
-    if cached:
-        logger.warning(f"⚠️ Utilisation du cache expiré pour {league_name}")
-    return cached
+    # Fallback sur le cache
+    return _fallback_to_cache(league_name, cached_data)
+
+def _fallback_to_cache(league_name, cached_data):
+    """Utilise les données en cache si disponibles"""
+    if cached_data and "teams" in cached_data:
+        logger.warning(f"⚠️ Utilisation du cache pour {league_name}")
+        standings = {team["name"]: team["rank"] for team in cached_data["teams"]}
+        return standings
+    else:
+        logger.error(f"❌ Aucune donnée disponible pour {league_name}")
+        return {}
 
 def update_all(leagues=None, force=False):
     """Met à jour tous les classements (ou une liste spécifique)"""
