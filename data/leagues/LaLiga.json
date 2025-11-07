@@ -1,0 +1,26 @@
+{
+  "league": "LaLiga",
+  "updated": "2025-11-07T00:00:00Z",
+  "teams": [
+    {"name": "Real Madrid", "rank": 1, "points": 33},
+    {"name": "Girona", "rank": 2, "points": 31},
+    {"name": "Barcelona", "rank": 3, "points": 30},
+    {"name": "Atletico Madrid", "rank": 4, "points": 28},
+    {"name": "Athletic Bilbao", "rank": 5, "points": 25},
+    {"name": "Real Sociedad", "rank": 6, "points": 24},
+    {"name": "Real Betis", "rank": 7, "points": 23},
+    {"name": "Valencia", "rank": 8, "points": 22},
+    {"name": "Villarreal", "rank": 9, "points": 21},
+    {"name": "Getafe", "rank": 10, "points": 20},
+    {"name": "Sevilla", "rank": 11, "points": 19},
+    {"name": "Osasuna", "rank": 12, "points": 18},
+    {"name": "Rayo Vallecano", "rank": 13, "points": 17},
+    {"name": "Las Palmas", "rank": 14, "points": 16},
+    {"name": "Mallorca", "rank": 15, "points": 15},
+    {"name": "Celta Vigo", "rank": 16, "points": 14},
+    {"name": "Cadiz", "rank": 17, "points": 12},
+    {"name": "Alaves", "rank": 18, "points": 11},
+    {"name": "Almeria", "rank": 19, "points": 9},
+    {"name": "Granada", "rank": 20, "points": 8}
+  ]
+}
