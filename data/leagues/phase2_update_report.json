@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-11-07T15:55:29.835331",
+  "phase": "Phase 2 - European Leagues",
+  "leagues_updated": 5,
+  "total_leagues": 5,
+  "report": {
+    "SerieA": {
+      "status": "✅ Success",
+      "teams_count": 20,
+      "message": "20 équipes",
+      "file": "/app/data/leagues/SerieA.json"
+    },
+    "Bundesliga": {
+      "status": "✅ Success",
+      "teams_count": 18,
+      "message": "18 équipes",
+      "file": "/app/data/leagues/Bundesliga.json"
+    },
+    "Ligue1": {
+      "status": "✅ Success",
+      "teams_count": 18,
+      "message": "18 équipes",
+      "file": "/app/data/leagues/Ligue1.json"
+    },
+    "PrimeiraLiga": {
+      "status": "✅ Success",
+      "teams_count": 18,
+      "message": "18 équipes",
+      "file": "/app/data/leagues/PrimeiraLiga.json"
+    },
+    "Ligue2": {
+      "status": "✅ Success",
+      "teams_count": 18,
+      "message": "18 équipes",
+      "file": "/app/data/leagues/Ligue2.json"
+    }
+  }
+}
