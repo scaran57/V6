@@ -223,13 +223,29 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False,
     
     if use_league_coeff and LEAGUE_COEFF_AVAILABLE and league and home_team and away_team:
         try:
-            home_coeff = league_coeff.get_team_coeff(home_team, league)
-            away_coeff = league_coeff.get_team_coeff(away_team, league)
+            home_result = league_coeff.get_team_coeff(home_team, league)
+            away_result = league_coeff.get_team_coeff(away_team, league)
+            
+            # get_team_coeff retourne maintenant un dict avec coefficient et source
+            if isinstance(home_result, dict):
+                home_coeff = home_result["coefficient"]
+                home_source = home_result["source"]
+            else:
+                home_coeff = home_result
+                home_source = league
+            
+            if isinstance(away_result, dict):
+                away_coeff = away_result["coefficient"]
+                away_source = away_result["source"]
+            else:
+                away_coeff = away_result
+                away_source = league
+            
             league_coeffs_applied = True
             
             logger.info(f"🏆 Coefficients de ligue appliqués ({league}):")
-            logger.info(f"   ⚽ {home_team}: {home_coeff:.3f}")
-            logger.info(f"   🟨 {away_team}: {away_coeff:.3f}")
+            logger.info(f"   ⚽ {home_team}: {home_coeff:.3f} (source: {home_source})")
+            logger.info(f"   🟨 {away_team}: {away_coeff:.3f} (source: {away_source})")
         except Exception as e:
             logger.warning(f"⚠️ Erreur calcul coefficients ligue: {e}")
             home_coeff = 1.0
