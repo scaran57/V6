@@ -395,11 +395,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Phase 2 - Intégration des 5 nouvelles ligues européennes dans league_scheduler"
+    - "Phase 2 - Fix data structure mismatch in league_phase2.py"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
-  last_test_results: "League coefficient system fully tested and working - 10/11 tests passed (91% success rate). All endpoints operational, coefficient calculations accurate, integration with prediction algorithm successful."
+  last_test_results: "Phase 2 integration tested - 6/7 tests passed (85.7%). Critical issue found: Data structure mismatch prevents coefficient calculation for Phase 2 leagues. Files created successfully but use incompatible field names (team/position vs name/rank)."
 
 agent_communication:
   - agent: "main"
