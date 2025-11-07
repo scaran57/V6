@@ -1,0 +1,18 @@
+{
+  "timestamp": "2025-11-07T15:28:49.356445",
+  "period_days": 30,
+  "predictions_total": 5,
+  "predictions_period": 5,
+  "results_available": 5,
+  "status": "success",
+  "matches_tested": 5,
+  "correct_predictions": 2,
+  "accuracy": 0.4,
+  "outcome_accuracy": 0.6,
+  "goal_diff_accuracy": 0.4,
+  "mae": 0.8,
+  "rmse": 1.095,
+  "exact_matches": 2,
+  "outcome_matches": 3,
+  "goal_diff_matches": 2
+}
