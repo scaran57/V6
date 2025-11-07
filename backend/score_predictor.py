@@ -283,7 +283,7 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False,
     
     logger.info(f"Probabilités normalisées: {normalized}")
 
-    # 🧠 Étape 2 : Pondération Poisson (comme code Kotlin original)
+    # 🧠 Étape 2 : Pondération Poisson (comme code Kotlin original) + Coefficients de ligue
     weighted = {}
     for score, p in normalized.items():
         if score == "Autre" or "-" not in score:
@@ -298,8 +298,31 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False,
                 diff = abs(away - home)
                 adjusted_diff = diff_expected + 1 if diff_expected > 2 else diff_expected
                 weight = math.exp(-0.4 * (diff - adjusted_diff) ** 2)
-                weighted[score] = p * weight
-                logger.info(f"Score {score}: diff={diff}, weight={weight:.3f}, weighted={p * weight:.4f}")
+                
+                # Appliquer les coefficients de ligue
+                # Plus l'équipe domicile est forte, plus les scores avec beaucoup de buts domicile sont favorisés
+                # Plus l'équipe extérieur est forte, plus les scores avec beaucoup de buts extérieur sont favorisés
+                league_weight = 1.0
+                if league_coeffs_applied:
+                    # Formule : favoriser les scores selon la force relative
+                    # home_coeff > away_coeff → favoriser victoire domicile
+                    # away_coeff > home_coeff → favoriser victoire extérieur
+                    if home > away:
+                        # Victoire domicile : appliquer home_coeff
+                        league_weight = home_coeff / ((home_coeff + away_coeff) / 2)
+                    elif away > home:
+                        # Victoire extérieur : appliquer away_coeff
+                        league_weight = away_coeff / ((home_coeff + away_coeff) / 2)
+                    else:
+                        # Nul : moyenne des deux
+                        league_weight = (home_coeff + away_coeff) / 2
+                
+                weighted[score] = p * weight * league_weight
+                
+                if league_coeffs_applied:
+                    logger.info(f"Score {score}: diff={diff}, poisson_weight={weight:.3f}, league_weight={league_weight:.3f}, final={p * weight * league_weight:.4f}")
+                else:
+                    logger.info(f"Score {score}: diff={diff}, weight={weight:.3f}, weighted={p * weight:.4f}")
             except ValueError:
                 weighted[score] = p
                 continue
