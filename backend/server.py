@@ -228,23 +228,31 @@ async def analyze(
         # Auto-détection de la ligue si non spécifiée
         detected_league = league
         if not detected_league and home_team:
-            # Mapper automatiquement selon les noms d'équipes
-            # (Simple heuristique - peut être amélioré)
-            spanish_teams = ["Real Madrid", "Barcelona", "Atletico Madrid", "Valencia", "Sevilla", "Villarreal", 
-                           "Athletic Bilbao", "Real Sociedad", "Betis", "Getafe", "Granada", "Alaves",
-                           "Girona", "Mallorca", "Osasuna", "Rayo Vallecano", "Celta Vigo", "Cadiz", "Almeria", "Las Palmas"]
-            
-            english_teams = ["Manchester City", "Liverpool", "Arsenal", "Aston Villa", "Tottenham", 
-                           "Manchester United", "Newcastle", "Brighton", "West Ham", "Chelsea", "Brentford",
-                           "Wolves", "Crystal Palace", "Fulham", "Bournemouth", "Nottingham", "Everton", 
-                           "Luton", "Burnley", "Sheffield"]
-            
-            if any(team in home_team for team in spanish_teams):
-                detected_league = "LaLiga"
-                logger.info(f"🔍 Ligue auto-détectée: LaLiga (équipe: {home_team})")
-            elif any(team in home_team for team in english_teams):
-                detected_league = "PremierLeague"
-                logger.info(f"🔍 Ligue auto-détectée: PremierLeague (équipe: {home_team})")
+            # Détection du bookmaker pour compétitions européennes
+            # Si bookmaker contient "Champions League" ou "Europa League"
+            if "champions" in bookmaker.lower() or "ucl" in bookmaker.lower():
+                detected_league = "ChampionsLeague"
+                logger.info(f"🏆 Compétition détectée: Champions League")
+            elif "europa" in bookmaker.lower() or "uel" in bookmaker.lower():
+                detected_league = "EuropaLeague"
+                logger.info(f"🏆 Compétition détectée: Europa League")
+            else:
+                # Mapper automatiquement selon les noms d'équipes pour ligues nationales
+                spanish_teams = ["Real Madrid", "Barcelona", "Atletico Madrid", "Valencia", "Sevilla", "Villarreal", 
+                               "Athletic Bilbao", "Real Sociedad", "Betis", "Getafe", "Granada", "Alaves",
+                               "Girona", "Mallorca", "Osasuna", "Rayo Vallecano", "Celta Vigo", "Cadiz", "Almeria", "Las Palmas"]
+                
+                english_teams = ["Manchester City", "Liverpool", "Arsenal", "Aston Villa", "Tottenham", 
+                               "Manchester United", "Newcastle", "Brighton", "West Ham", "Chelsea", "Brentford",
+                               "Wolves", "Crystal Palace", "Fulham", "Bournemouth", "Nottingham", "Everton", 
+                               "Luton", "Burnley", "Sheffield"]
+                
+                if any(team in home_team for team in spanish_teams):
+                    detected_league = "LaLiga"
+                    logger.info(f"🔍 Ligue auto-détectée: LaLiga (équipe: {home_team})")
+                elif any(team in home_team for team in english_teams):
+                    detected_league = "PremierLeague"
+                    logger.info(f"🔍 Ligue auto-détectée: PremierLeague (équipe: {home_team})")
         
         # Prédire le score avec l'algorithme choisi
         use_league_coeff = not disable_league_coeff
