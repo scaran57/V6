@@ -216,6 +216,27 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False,
         Si use_league_coeff=True, les probabilités seront ajustées selon le classement.
     """
     
+    # 🧩 Étape 0 : Calcul des coefficients de ligue si activé
+    home_coeff = 1.0
+    away_coeff = 1.0
+    league_coeffs_applied = False
+    
+    if use_league_coeff and LEAGUE_COEFF_AVAILABLE and league and home_team and away_team:
+        try:
+            home_coeff = league_coeff.get_team_coeff(home_team, league)
+            away_coeff = league_coeff.get_team_coeff(away_team, league)
+            league_coeffs_applied = True
+            
+            logger.info(f"🏆 Coefficients de ligue appliqués ({league}):")
+            logger.info(f"   ⚽ {home_team}: {home_coeff:.3f}")
+            logger.info(f"   🟨 {away_team}: {away_coeff:.3f}")
+        except Exception as e:
+            logger.warning(f"⚠️ Erreur calcul coefficients ligue: {e}")
+            home_coeff = 1.0
+            away_coeff = 1.0
+    elif use_league_coeff and not league:
+        logger.debug("⚠️ Coefficients de ligue non appliqués (ligue non spécifiée)")
+    
     # 🧩 Étape 1 : Vérification et normalisation des données
     if not scores:
         logger.warning("Aucune donnée pour la prédiction")
@@ -227,7 +248,7 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False,
     else:
         scores_dict = scores
     
-    logger.info(f"Calcul probabilités pour {len(scores_dict)} scores, diffExpected={diff_expected}, odds_weighting={use_odds_weighting}")
+    logger.info(f"Calcul probabilités pour {len(scores_dict)} scores, diffExpected={diff_expected}, odds_weighting={use_odds_weighting}, league_coeff={use_league_coeff}")
     
     # 🎯 Pondération par cotes si activée
     if use_odds_weighting:
