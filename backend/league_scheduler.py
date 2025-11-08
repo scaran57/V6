@@ -237,6 +237,40 @@ class LeagueScheduler:
         except Exception as e:
             logger.error(f"❌ Erreur lors du training UFA: {e}")
     
+    def _run_balance_check(self):
+        """Exécute la vérification d'équilibre UFA"""
+        try:
+            logger.info("=" * 60)
+            logger.info("⚖️  VÉRIFICATION D'ÉQUILIBRE UFA")
+            logger.info("=" * 60)
+            
+            # Importer le module de vérification
+            sys.path.insert(0, '/app/backend')
+            from ufa.ufa_check_balance import analyze_balance
+            
+            report = analyze_balance()
+            
+            if report.get("status") == "error":
+                logger.info(f"ℹ️ Balance Check: {report.get('message', 'Erreur')}")
+            else:
+                logger.info(f"✅ Vérification d'équilibre terminée:")
+                logger.info(f"   📊 Total matchs: {report.get('total_matches', 0)}")
+                logger.info(f"   🔍 Ratio Unknown: {report.get('unknown_ratio', 0)*100:.1f}%")
+                
+                # Afficher les alertes
+                alerts = report.get('alerts', [])
+                if alerts:
+                    logger.warning(f"   ⚠️  {len(alerts)} alerte(s) détectée(s):")
+                    for alert in alerts:
+                        logger.warning(f"      • {alert}")
+                else:
+                    logger.info(f"   ✅ Aucune alerte - Système équilibré")
+            
+            logger.info("=" * 60)
+            
+        except Exception as e:
+            logger.error(f"❌ Erreur lors de la vérification d'équilibre: {e}")
+    
     def trigger_manual_update(self):
         """Déclenche une mise à jour manuelle immédiate (non-bloquant)"""
         logger.info("🔧 Mise à jour manuelle déclenchée")
