@@ -596,6 +596,65 @@ async def upload_score_image_v2(file: UploadFile = File(...)):
             status_code=500
         )
 
+@api_router.post("/ufa/ocr/upload-autotrain")
+async def upload_score_image_autotrain(
+    file: UploadFile = File(...),
+    auto_train: bool = Form(True)
+):
+    """
+    Upload une image avec détection automatique ET training immédiat (v3).
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app/backend')
+        from ufa.ufa_ocr_importer_autotrain import process_image, train_now
+        
+        # Créer le dossier d'upload
+        upload_dir = "/app/uploads/fdj_captures"
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        # Sauvegarder l'image
+        file_path = os.path.join(upload_dir, file.filename)
+        with open(file_path, "wb") as f:
+            content = await file.read()
+            f.write(content)
+        
+        logger.info(f"📸 Image reçue (v3 auto-train): {file.filename}")
+        
+        # Traiter l'image
+        result = process_image(file_path)
+        
+        if not result["success"]:
+            return {
+                "success": False,
+                "message": result.get("error", "Échec de détection"),
+                "error": result.get("error")
+            }
+        
+        logger.info(f"✅ Détecté: {result.get('teams', [])} - {result['score']} - {result.get('league')}")
+        
+        # Training automatique si demandé
+        training_success = False
+        if auto_train:
+            logger.info("🧠 Lancement du training UFA...")
+            training_success = train_now()
+        
+        return {
+            "success": True,
+            "message": "Détection complète et training effectué" if training_success else "Détection complète",
+            "score": result['score'],
+            "teams": result.get('teams', []),
+            "league": result.get('league', 'Unknown'),
+            "training_executed": training_success
+        }
+        
+    except Exception as e:
+        logger.error(f"Erreur lors du traitement OCR v3: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
 @api_router.post("/ufa/ocr/process-folder")
 async def process_folder_ocr(
     folder_path: str = Form("/app/uploads/fdj_captures"),
