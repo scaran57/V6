@@ -1,0 +1,55 @@
+{
+  "timestamp": "2025-11-08T23:29:26.846929",
+  "total_matches": 79,
+  "unknown_ratio": 0.8354430379746836,
+  "top_score": {
+    "score": "1-1",
+    "frequency": 0.10126582278481013
+  },
+  "results_distribution": {
+    "home": 36,
+    "draw": 22,
+    "away": 21
+  },
+  "league_stats": {
+    "Unknown": {
+      "avg_goals": 2.590909090909091,
+      "std_dev": 1.6546184568540983,
+      "matches": 66,
+      "status": "✅"
+    },
+    "Eredivisie": {
+      "avg_goals": 2.4,
+      "std_dev": 0.8944271909999159,
+      "matches": 5,
+      "status": "✅"
+    },
+    "ChampionsLeague": {
+      "avg_goals": 2.4,
+      "std_dev": 0.8944271909999159,
+      "matches": 5,
+      "status": "✅"
+    },
+    "LaLiga": {
+      "avg_goals": 3,
+      "std_dev": 0,
+      "matches": 1,
+      "status": "ℹ️"
+    },
+    "PremierLeague": {
+      "avg_goals": 2,
+      "std_dev": 0,
+      "matches": 1,
+      "status": "ℹ️"
+    },
+    "SerieA": {
+      "avg_goals": 5,
+      "std_dev": 0,
+      "matches": 1,
+      "status": "ℹ️"
+    }
+  },
+  "alerts": [
+    "Ratio Unknown trop élevé: 83.5%"
+  ]
+}
