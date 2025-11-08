@@ -1,19 +1,19 @@
 {
-  "timestamp": "2025-11-08T23:56:35.069681",
-  "matches_processed": 90,
+  "timestamp": "2025-11-08T23:58:18.354442",
+  "matches_processed": 92,
   "avg_loss": {
     "LaLiga": 7.8563152714250775,
     "PremierLeague": 1.7147984280919266,
     "SerieA": 13.815510557964274,
-    "Eredivisie": 3.6693342234897486,
+    "Eredivisie": 3.4250172490650206,
     "ChampionsLeague": 4.472591358510306,
     "Unknown": 5.633772729117806,
     "Ligue1": 1.8971199848858813
   },
-  "global_avg_loss": 5.438061607694691,
+  "global_avg_loss": 5.359102859842392,
   "priors": {
     "draw_prior": 0.35,
-    "avg_goals": 2.31858186939,
+    "avg_goals": 2.2490244133083,
     "home_advantage": 1.05,
     "high_score_penalty": 0.75
   },
@@ -34,9 +34,9 @@
       "accuracy": 0.0
     },
     "Eredivisie": {
-      "avg_loss": 3.6693342234897486,
-      "matches": 7,
-      "accuracy": 28.57142857142857
+      "avg_loss": 3.4250172490650206,
+      "matches": 8,
+      "accuracy": 37.5
     },
     "ChampionsLeague": {
       "avg_loss": 4.472591358510306,
@@ -50,7 +50,7 @@
     },
     "Ligue1": {
       "avg_loss": 1.8971199848858813,
-      "matches": 3,
+      "matches": 4,
       "accuracy": 0.0
     }
   }
