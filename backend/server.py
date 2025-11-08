@@ -491,6 +491,99 @@ async def run_ufa_balance_check():
             status_code=500
         )
 
+@api_router.post("/ufa/ocr/upload")
+async def upload_score_image(
+    file: UploadFile = File(...),
+    home_team: str = Form("Unknown"),
+    away_team: str = Form("Unknown"),
+    league: str = Form("Unknown")
+):
+    """
+    Upload une image de score et extrait automatiquement le résultat via OCR.
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app/backend')
+        from ufa.ufa_ocr_importer import process_image
+        
+        # Créer le dossier d'upload
+        upload_dir = "/app/uploads/fdj_captures"
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        # Sauvegarder l'image
+        file_path = os.path.join(upload_dir, file.filename)
+        with open(file_path, "wb") as f:
+            content = await file.read()
+            f.write(content)
+        
+        logger.info(f"📸 Image reçue: {file.filename}")
+        
+        # Traiter l'image
+        result = process_image(file_path, home_team, away_team, league)
+        
+        if result["success"]:
+            logger.info(f"✅ Score détecté: {result['score']}")
+            return {
+                "success": True,
+                "message": f"Score détecté et ajouté: {result['score']}",
+                "score": result['score'],
+                "entry": result['entry']
+            }
+        else:
+            logger.warning(f"⚠️ Aucun score détecté dans {file.filename}")
+            return {
+                "success": False,
+                "message": "Aucun score détecté dans l'image",
+                "error": result.get("error"),
+                "text_detected": result.get("text")
+            }
+        
+    except Exception as e:
+        logger.error(f"Erreur lors du traitement OCR: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
+@api_router.post("/ufa/ocr/process-folder")
+async def process_folder_ocr(
+    folder_path: str = Form("/app/uploads/fdj_captures"),
+    home_team: str = Form("Unknown"),
+    away_team: str = Form("Unknown"),
+    league: str = Form("Unknown")
+):
+    """
+    Traite toutes les images d'un dossier via OCR.
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app/backend')
+        from ufa.ufa_ocr_importer import process_folder
+        
+        logger.info(f"🔄 Traitement du dossier: {folder_path}")
+        
+        report = process_folder(folder_path, home_team, away_team, league)
+        
+        if report.get("success"):
+            return {
+                "success": True,
+                "message": f"Dossier traité: {report['detected']}/{report['total']} scores détectés",
+                "report": report
+            }
+        else:
+            return {
+                "success": False,
+                "message": report.get("error", "Erreur inconnue"),
+                "report": report
+            }
+        
+    except Exception as e:
+        logger.error(f"Erreur lors du traitement du dossier: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
 @api_router.get("/diff")
 async def get_diff():
     """
