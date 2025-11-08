@@ -390,6 +390,50 @@ async def learn(
             status_code=500
         )
 
+@api_router.post("/save-real-score")
+async def save_real_score_endpoint(
+    match_id: str = Form(...),
+    league: str = Form(...),
+    home_team: str = Form(...),
+    away_team: str = Form(...),
+    home_goals: int = Form(...),
+    away_goals: int = Form(...)
+):
+    """
+    Enregistre un score réel pour l'apprentissage UFA.
+    Utilisé par le Mode Production (Phase 1).
+    Aucun apprentissage n'est effectué ici - juste sauvegarde.
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app/backend')
+        from production_phase1.save_real_score import save_real_score
+        
+        entry = save_real_score(
+            match_id=match_id,
+            league=league,
+            home_team=home_team,
+            away_team=away_team,
+            home_goals=home_goals,
+            away_goals=away_goals
+        )
+        
+        logger.info(f"✅ Score réel enregistré (Phase 1): {home_team} {home_goals}-{away_goals} {away_team}")
+        
+        return {
+            "success": True,
+            "message": f"Score réel enregistré: {home_team} {home_goals}-{away_goals} {away_team}",
+            "entry": entry,
+            "note": "L'apprentissage UFA sera effectué automatiquement lors de la prochaine mise à jour nocturne"
+        }
+        
+    except Exception as e:
+        logger.error(f"Erreur lors de l'enregistrement du score réel: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
 @api_router.get("/diff")
 async def get_diff():
     """
