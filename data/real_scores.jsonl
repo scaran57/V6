@@ -1,1 +1,3 @@
 {"timestamp": "2025-11-08T15:15:59.438396", "match_id": "test_ufa_001", "league": "LaLiga", "home_team": "Real Madrid", "away_team": "Barcelona", "home_goals": 2, "away_goals": 1, "source": "production_phase1"}
+{"timestamp": "2025-11-08T15:16:19.800953", "match_id": "test_ufa_002", "league": "PremierLeague", "home_team": "Manchester City", "away_team": "Liverpool", "home_goals": 1, "away_goals": 1, "source": "production_phase1"}
+{"timestamp": "2025-11-08T15:16:19.811627", "match_id": "test_ufa_003", "league": "SerieA", "home_team": "Inter Milan", "away_team": "AC Milan", "home_goals": 3, "away_goals": 2, "source": "production_phase1"}
