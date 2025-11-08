@@ -217,9 +217,12 @@ def train_now():
             print(f"❌ Script de training introuvable: {TRAINING_SCRIPT}")
             return False
         
-        # Lancer le training
+        # Lancer le training (utiliser sys.executable pour le bon python)
+        import sys as sys_module
+        python_exe = sys_module.executable
+        
         result = subprocess.run(
-            ["python3", TRAINING_SCRIPT],
+            [python_exe, TRAINING_SCRIPT],
             capture_output=True,
             text=True,
             timeout=60  # Timeout de 60 secondes
