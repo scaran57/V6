@@ -203,6 +203,37 @@ class LeagueScheduler:
         except Exception as e:
             logger.error(f"❌ Erreur lors de la validation: {e}")
     
+    def _run_ufa_training(self):
+        """Exécute l'entraînement UFA"""
+        try:
+            logger.info("=" * 60)
+            logger.info("🧠 DÉBUT DE L'ENTRAÎNEMENT UFA")
+            logger.info("=" * 60)
+            
+            # Importer le module de training UFA
+            sys.path.insert(0, '/app/backend')
+            from ufa.training.trainer import train_from_real_matches
+            
+            result = train_from_real_matches()
+            
+            if result.get("status") == "no_data":
+                logger.info(f"ℹ️ Training UFA: {result.get('message', 'Pas de données')}")
+            else:
+                logger.info(f"✅ Training UFA terminé:")
+                logger.info(f"   📊 Matchs traités: {result.get('matches_processed', 0)}")
+                logger.info(f"   📉 Perte moyenne: {result.get('global_avg_loss', 0):.3f}")
+                
+                # Afficher les stats par ligue
+                league_stats = result.get('league_stats', {})
+                for league, stats in league_stats.items():
+                    logger.info(f"   🏆 {league}: Loss={stats.get('avg_loss', 0):.3f}, "
+                               f"Accuracy={stats.get('accuracy', 0):.1f}%")
+            
+            logger.info("=" * 60)
+            
+        except Exception as e:
+            logger.error(f"❌ Erreur lors du training UFA: {e}")
+    
     def trigger_manual_update(self):
         """Déclenche une mise à jour manuelle immédiate (non-bloquant)"""
         logger.info("🔧 Mise à jour manuelle déclenchée")
