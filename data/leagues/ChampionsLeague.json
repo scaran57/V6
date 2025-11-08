@@ -1,222 +1,141 @@
 {
   "league": "ChampionsLeague",
-  "updated": "2025-11-07T16:42:29.957259Z",
+  "updated": "2025-11-07T16:53:28.700569Z",
   "teams": [
     {
+      "name": "Inter Milan",
       "rank": 1,
-      "name": "The Football Association",
-      "points": 0,
-      "coefficient": 1.3
+      "points": 0
     },
     {
+      "name": "Borussia Dortmund",
       "rank": 2,
-      "name": "Royal Spanish Football Federation",
-      "points": 0,
-      "coefficient": 1.287
+      "points": 0
     },
     {
+      "name": "Barcelona",
       "rank": 3,
-      "name": "The Football Association",
-      "points": 0,
-      "coefficient": 1.274
+      "points": 0
     },
     {
+      "name": "2025 FIFA Intercontinental Cup final",
       "rank": 4,
-      "name": "Italian Football Federation",
-      "points": 0,
-      "coefficient": 1.261
+      "points": 0
     },
     {
+      "name": "Real Madrid",
       "rank": 5,
-      "name": "Royal Spanish Football Federation",
-      "points": 0,
-      "coefficient": 1.249
+      "points": 0
     },
     {
+      "name": "Arsenal",
       "rank": 6,
-      "name": "German Football Association",
-      "points": 0,
-      "coefficient": 1.236
+      "points": 0
     },
     {
+      "name": "Romania",
       "rank": 7,
-      "name": "French Football Federation",
-      "points": 0,
-      "coefficient": 1.223
+      "points": 0
     },
     {
+      "name": "Benfica",
       "rank": 8,
-      "name": "The Football Association",
-      "points": 0,
-      "coefficient": 1.21
+      "points": 0
     },
     {
+      "name": "Manchester City",
       "rank": 9,
-      "name": "Italian Football Federation",
-      "points": 0,
-      "coefficient": 1.197
+      "points": 0
     },
     {
+      "name": "Liverpool",
       "rank": 10,
-      "name": "German Football Association",
-      "points": 0,
-      "coefficient": 1.184
+      "points": 0
     },
     {
+      "name": "Atletico Madrid",
       "rank": 11,
-      "name": "Royal Spanish Football Federation",
-      "points": 0,
-      "coefficient": 1.171
+      "points": 0
     },
     {
+      "name": "Bayer Leverkusen",
       "rank": 12,
-      "name": "German Football Association",
-      "points": 0,
-      "coefficient": 1.159
+      "points": 0
     },
     {
+      "name": "Bayern Munich",
       "rank": 13,
-      "name": "Italian Football Federation",
-      "points": 0,
-      "coefficient": 1.146
+      "points": 0
     },
     {
+      "name": "RB Leipzig",
       "rank": 14,
-      "name": "Royal Dutch Football Association",
-      "points": 0,
-      "coefficient": 1.133
+      "points": 0
     },
     {
+      "name": "Milan",
       "rank": 15,
-      "name": "French Football Federation",
-      "points": 0,
-      "coefficient": 1.12
+      "points": 0
     },
     {
+      "name": "Juventus",
       "rank": 16,
-      "name": "Portuguese Football Federation",
-      "points": 0,
-      "coefficient": 1.107
+      "points": 0
     },
     {
+      "name": "Sporting CP",
       "rank": 17,
-      "name": "French Football Federation",
-      "points": 0,
-      "coefficient": 1.094
+      "points": 0
     },
     {
+      "name": "Celtic",
       "rank": 18,
-      "name": "French Football Federation",
-      "points": 0,
-      "coefficient": 1.081
+      "points": 0
     },
     {
+      "name": "Rangers",
       "rank": 19,
-      "name": "Royal Dutch Football Association",
-      "points": 0,
-      "coefficient": 1.069
+      "points": 0
     },
     {
+      "name": "FCSB",
       "rank": 20,
-      "name": "Italian Football Federation",
-      "points": 0,
-      "coefficient": 1.056
+      "points": 0
     },
     {
+      "name": "Man. City",
       "rank": 21,
-      "name": "Scottish Football Association",
-      "points": 0,
-      "coefficient": 1.043
+      "points": 0
     },
     {
+      "name": "Leverkusen",
       "rank": 22,
-      "name": "The Football Association",
-      "points": 0,
-      "coefficient": 1.03
+      "points": 0
     },
     {
+      "name": "Bayern",
       "rank": 23,
-      "name": "Portuguese Football Federation",
-      "points": 0,
-      "coefficient": 1.017
+      "points": 0
     },
     {
+      "name": "Dortmund",
       "rank": 24,
-      "name": "Royal Belgian Football Association",
-      "points": 0,
-      "coefficient": 1.004
+      "points": 0
     },
     {
+      "name": "Leipzig",
       "rank": 25,
-      "name": "Croatian Football Federation",
-      "points": 0,
-      "coefficient": 0.991
+      "points": 0
     },
     {
+      "name": "2007 Roma–Manchester United conflict",
       "rank": 26,
-      "name": "German Football Association",
-      "points": 0,
-      "coefficient": 0.979
+      "points": 0
     },
     {
+      "name": "Under-20 Intercontinental Cup",
       "rank": 27,
-      "name": "Ukrainian Association of Football",
-      "points": 0,
-      "coefficient": 0.966
-    },
-    {
-      "rank": 28,
-      "name": "Italian Football Federation",
-      "points": 0,
-      "coefficient": 0.953
-    },
-    {
-      "rank": 29,
-      "name": "Football Association of Serbia",
-      "points": 0,
-      "coefficient": 0.94
-    },
-    {
-      "rank": 30,
-      "name": "Austrian Football Association",
-      "points": 0,
-      "coefficient": 0.927
-    },
-    {
-      "rank": 31,
-      "name": "Football Association of the Czech Republic",
-      "points": 0,
-      "coefficient": 0.914
-    },
-    {
-      "rank": 32,
-      "name": "German Football Association",
-      "points": 0,
-      "coefficient": 0.901
-    },
-    {
-      "rank": 33,
-      "name": "Royal Spanish Football Federation",
-      "points": 0,
-      "coefficient": 0.889
-    },
-    {
-      "rank": 34,
-      "name": "Austrian Football Association",
-      "points": 0,
-      "coefficient": 0.876
-    },
-    {
-      "rank": 35,
-      "name": "Slovak Football Association",
-      "points": 0,
-      "coefficient": 0.863
-    },
-    {
-      "rank": 36,
-      "name": "Swiss Football Association",
-      "points": 0,
-      "coefficient": 0.85
+      "points": 0
     }
   ]
 }
