@@ -1,18 +1,18 @@
 {
-  "timestamp": "2025-11-08T15:54:51.130021",
-  "matches_processed": 52,
+  "timestamp": "2025-11-08T22:55:33.429703",
+  "matches_processed": 79,
   "avg_loss": {
     "LaLiga": 1.8971199848858813,
     "PremierLeague": 1.7147984280919266,
     "SerieA": 13.815510557964274,
     "Eredivisie": 4.451148541648877,
     "ChampionsLeague": 4.472591358510306,
-    "Unknown": 5.520311477201583
+    "Unknown": 5.8036205811283486
   },
-  "global_avg_loss": 5.333428386203841,
+  "global_avg_loss": 5.633988440838086,
   "priors": {
     "draw_prior": 0.35,
-    "avg_goals": 2.54043,
+    "avg_goals": 2.4642171,
     "home_advantage": 1.05,
     "high_score_penalty": 0.75
   },
@@ -43,9 +43,9 @@
       "accuracy": 0.0
     },
     "Unknown": {
-      "avg_loss": 5.520311477201583,
-      "matches": 39,
-      "accuracy": 10.256410256410255
+      "avg_loss": 5.8036205811283486,
+      "matches": 66,
+      "accuracy": 10.606060606060606
     }
   }
 }
