@@ -545,6 +545,57 @@ async def upload_score_image(
             status_code=500
         )
 
+@api_router.post("/ufa/ocr/upload-v2")
+async def upload_score_image_v2(file: UploadFile = File(...)):
+    """
+    Upload une image et détecte automatiquement : Score + Équipes + Ligue (v2).
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app/backend')
+        from ufa.ufa_ocr_importer_v2 import process_image
+        
+        # Créer le dossier d'upload
+        upload_dir = "/app/uploads/fdj_captures"
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        # Sauvegarder l'image
+        file_path = os.path.join(upload_dir, file.filename)
+        with open(file_path, "wb") as f:
+            content = await file.read()
+            f.write(content)
+        
+        logger.info(f"📸 Image reçue (v2): {file.filename}")
+        
+        # Traiter l'image avec v2 (détection automatique)
+        result = process_image(file_path)
+        
+        if result["success"]:
+            logger.info(f"✅ Détecté: {result.get('teams', [])} - {result['score']} - {result.get('league', 'Unknown')}")
+            return {
+                "success": True,
+                "message": f"Détection complète réussie",
+                "score": result['score'],
+                "teams": result.get('teams', []),
+                "league": result.get('league', 'Unknown'),
+                "entry": result['entry']
+            }
+        else:
+            logger.warning(f"⚠️ Échec détection dans {file.filename}")
+            return {
+                "success": False,
+                "message": result.get("error", "Échec de détection"),
+                "error": result.get("error"),
+                "text_detected": result.get("text")
+            }
+        
+    except Exception as e:
+        logger.error(f"Erreur lors du traitement OCR v2: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
 @api_router.post("/ufa/ocr/process-folder")
 async def process_folder_ocr(
     folder_path: str = Form("/app/uploads/fdj_captures"),
