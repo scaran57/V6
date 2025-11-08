@@ -9,7 +9,7 @@ import numpy as np
 
 # Import du système de prédiction existant
 sys.path.insert(0, '/app/backend')
-from app.score_predictor import calculate_probabilities
+from score_predictor import calculate_probabilities
 
 STATE_PATH = Path("/app/backend/ufa/training/state.json")
 
