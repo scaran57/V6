@@ -434,6 +434,62 @@ async def save_real_score_endpoint(
             status_code=500
         )
 
+@api_router.get("/ufa/balance")
+async def get_ufa_balance():
+    """
+    Retourne le rapport d'équilibre UFA le plus récent.
+    """
+    try:
+        import os
+        report_path = "/app/data/ufa_balance_report.json"
+        
+        if not os.path.exists(report_path):
+            return {
+                "success": False,
+                "message": "Aucun rapport d'équilibre disponible. Lancez d'abord l'analyse."
+            }
+        
+        with open(report_path, "r", encoding="utf-8") as f:
+            report = json.load(f)
+        
+        return {
+            "success": True,
+            "report": report
+        }
+        
+    except Exception as e:
+        logger.error(f"Erreur lors de la récupération du rapport d'équilibre: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
+@api_router.post("/ufa/balance/run")
+async def run_ufa_balance_check():
+    """
+    Lance manuellement une vérification d'équilibre UFA.
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app/backend')
+        from ufa.ufa_check_balance import analyze_balance
+        
+        logger.info("🔄 Lancement manuel de la vérification d'équilibre UFA")
+        report = analyze_balance()
+        
+        return {
+            "success": True,
+            "message": "Vérification d'équilibre terminée",
+            "report": report
+        }
+        
+    except Exception as e:
+        logger.error(f"Erreur lors de la vérification d'équilibre: {str(e)}")
+        return JSONResponse(
+            {"error": f"Erreur: {str(e)}"}, 
+            status_code=500
+        )
+
 @api_router.get("/diff")
 async def get_diff():
     """
