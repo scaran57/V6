@@ -172,6 +172,9 @@ class LeagueScheduler:
             # Exécuter la validation des prédictions après la mise à jour des ligues
             self._run_validation()
             
+            # Exécuter l'entraînement UFA après la validation
+            self._run_ufa_training()
+            
         except Exception as e:
             logger.error(f"❌ Erreur lors de la mise à jour automatique: {e}")
     
