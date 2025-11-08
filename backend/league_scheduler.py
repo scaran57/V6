@@ -175,6 +175,9 @@ class LeagueScheduler:
             # Exécuter l'entraînement UFA après la validation
             self._run_ufa_training()
             
+            # Exécuter la vérification d'équilibre UFA
+            self._run_balance_check()
+            
         except Exception as e:
             logger.error(f"❌ Erreur lors de la mise à jour automatique: {e}")
     
