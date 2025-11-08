@@ -8,64 +8,104 @@ import json
 import os
 from datetime import datetime
 
-# --- TABLE DE CORRESPONDANCE DES ÉQUIPES → LIGUE ---
+# --- TABLE DE CORRESPONDANCE DES ÉQUIPES → LIGUE (VERSION ENRICHIE v2.3.1) ---
 TEAM_LEAGUE_MAP = {
     # 🇪🇸 LaLiga
-    "real madrid": "LaLiga", "barcelona": "LaLiga", "atletico": "LaLiga",
+    "real madrid": "LaLiga", "madrid": "LaLiga", "barcelona": "LaLiga", 
+    "atletico": "LaLiga", "atlético": "LaLiga",
     "sevilla": "LaLiga", "valencia": "LaLiga", "villarreal": "LaLiga",
     "betis": "LaLiga", "athletic": "LaLiga", "bilbao": "LaLiga",
     "sociedad": "LaLiga", "celta": "LaLiga", "getafe": "LaLiga",
+    "osasuna": "LaLiga", "girona": "LaLiga", "rayo": "LaLiga",
+    "mallorca": "LaLiga", "cadiz": "LaLiga", "almeria": "LaLiga",
 
     # 🏴 Premier League
-    "manchester united": "PremierLeague", "manchester city": "PremierLeague",
+    "manchester united": "PremierLeague", "man united": "PremierLeague",
+    "manchester city": "PremierLeague", "man city": "PremierLeague",
     "arsenal": "PremierLeague", "chelsea": "PremierLeague",
     "liverpool": "PremierLeague", "tottenham": "PremierLeague",
     "newcastle": "PremierLeague", "brighton": "PremierLeague",
     "aston villa": "PremierLeague", "west ham": "PremierLeague",
     "everton": "PremierLeague", "leicester": "PremierLeague",
+    "wolves": "PremierLeague", "fulham": "PremierLeague",
+    "crystal palace": "PremierLeague", "brentford": "PremierLeague",
+    "nottingham": "PremierLeague", "bournemouth": "PremierLeague",
 
     # 🇮🇹 Serie A
-    "juventus": "SerieA", "inter": "SerieA", "milan": "SerieA",
-    "napoli": "SerieA", "roma": "SerieA", "lazio": "SerieA",
-    "atalanta": "SerieA", "fiorentina": "SerieA", "torino": "SerieA",
+    "juventus": "SerieA", "juve": "SerieA",
+    "inter": "SerieA", "milan": "SerieA", "ac milan": "SerieA",
+    "napoli": "SerieA", "roma": "SerieA", "as roma": "SerieA",
+    "lazio": "SerieA", "atalanta": "SerieA",
+    "fiorentina": "SerieA", "torino": "SerieA",
     "bologna": "SerieA", "udinese": "SerieA",
+    "genoa": "SerieA", "lecce": "SerieA", "empoli": "SerieA",
+    "hellas verona": "SerieA", "cagliari": "SerieA",
 
     # 🇩🇪 Bundesliga
-    "bayern": "Bundesliga", "dortmund": "Bundesliga",
-    "leipzig": "Bundesliga", "leverkusen": "Bundesliga",
+    "bayern": "Bundesliga", "münchen": "Bundesliga", "munich": "Bundesliga",
+    "dortmund": "Bundesliga", "leipzig": "Bundesliga",
+    "leverkusen": "Bundesliga", "bayer": "Bundesliga",
     "wolfsburg": "Bundesliga", "stuttgart": "Bundesliga",
     "frankfurt": "Bundesliga", "union berlin": "Bundesliga",
     "freiburg": "Bundesliga", "gladbach": "Bundesliga",
+    "mönchengladbach": "Bundesliga", "köln": "Bundesliga",
+    "mainz": "Bundesliga", "augsburg": "Bundesliga",
+    "hoffenheim": "Bundesliga", "bochum": "Bundesliga",
 
     # 🇫🇷 Ligue 1
-    "psg": "Ligue1", "paris saint-germain": "Ligue1",
-    "marseille": "Ligue1", "lyon": "Ligue1",
-    "lille": "Ligue1", "monaco": "Ligue1", "nice": "Ligue1",
-    "toulouse": "Ligue1", "reims": "Ligue1", "rennes": "Ligue1",
-    "lens": "Ligue1", "strasbourg": "Ligue1", "montpellier": "Ligue1",
+    "psg": "Ligue1", "paris": "Ligue1", "paris saint-germain": "Ligue1",
+    "saint-germain": "Ligue1",
+    "marseille": "Ligue1", "om": "Ligue1",
+    "lyon": "Ligue1", "ol": "Ligue1",
+    "lille": "Ligue1", "losc": "Ligue1",
+    "monaco": "Ligue1", "nice": "Ligue1",
+    "toulouse": "Ligue1", "reims": "Ligue1", 
+    "rennes": "Ligue1", "lens": "Ligue1",
+    "strasbourg": "Ligue1", "montpellier": "Ligue1",
+    "nantes": "Ligue1", "brest": "Ligue1",
+    "lorient": "Ligue1", "clermont": "Ligue1",
+    "saint-étienne": "Ligue1", "saint-etienne": "Ligue1",
+    "bordeaux": "Ligue1", "metz": "Ligue1",
 
     # 🇵🇹 Primeira Liga
-    "benfica": "PrimeiraLiga", "porto": "PrimeiraLiga",
-    "sporting": "PrimeiraLiga", "braga": "PrimeiraLiga",
-    "guimaraes": "PrimeiraLiga", "boavista": "PrimeiraLiga",
+    "benfica": "PrimeiraLiga", "porto": "PrimeiraLiga", "fc porto": "PrimeiraLiga",
+    "sporting": "PrimeiraLiga", "sporting cp": "PrimeiraLiga",
+    "braga": "PrimeiraLiga", "guimaraes": "PrimeiraLiga",
+    "guimarães": "PrimeiraLiga", "boavista": "PrimeiraLiga",
+    "gil vicente": "PrimeiraLiga", "vitoria": "PrimeiraLiga",
 
     # 🇫🇷 Ligue 2
     "ajaccio": "Ligue2", "amiens": "Ligue2", "bastia": "Ligue2",
     "troyes": "Ligue2", "auxerre": "Ligue2", "sochaux": "Ligue2",
     "angers": "Ligue2", "caen": "Ligue2", "grenoble": "Ligue2",
+    "guingamp": "Ligue2", "laval": "Ligue2", "pau": "Ligue2",
+    "rodez": "Ligue2", "valenciennes": "Ligue2",
+    "dunkerque": "Ligue2", "quevilly": "Ligue2",
+    "annecy": "Ligue2", "concarneau": "Ligue2",
+    "paris fc": "Ligue2",
 
     # 🇳🇱 Eredivisie
-    "ajax": "Eredivisie", "psv": "Eredivisie", "feyenoord": "Eredivisie",
-    "az": "Eredivisie", "twente": "Eredivisie", "utrecht": "Eredivisie",
+    "ajax": "Eredivisie", "ajax amsterdam": "Eredivisie",
+    "psv": "Eredivisie", "psv eindhoven": "Eredivisie",
+    "feyenoord": "Eredivisie", "az": "Eredivisie", "az alkmaar": "Eredivisie",
+    "twente": "Eredivisie", "fc twente": "Eredivisie",
+    "utrecht": "Eredivisie", "fc utrecht": "Eredivisie",
+    "vitesse": "Eredivisie", "groningen": "Eredivisie",
+    "heerenveen": "Eredivisie", "go ahead": "Eredivisie",
 
     # 🌍 Champions League
     "galatasaray": "ChampionsLeague", "red star": "ChampionsLeague",
+    "crvena zvezda": "ChampionsLeague", "zvezda": "ChampionsLeague",
     "shakhtar": "ChampionsLeague", "olympiacos": "ChampionsLeague",
     "copenhagen": "ChampionsLeague", "celtic": "ChampionsLeague",
+    "young boys": "ChampionsLeague", "salzburg": "ChampionsLeague",
+    "club brugge": "ChampionsLeague", "antwerp": "ChampionsLeague",
 
     # 🌍 Europa League
-    "fenerbahce": "EuropaLeague", "rangers": "EuropaLeague",
-    "slavia": "EuropaLeague", "sparta": "EuropaLeague"
+    "fenerbahce": "EuropaLeague", "fenerbahçe": "EuropaLeague",
+    "rangers": "EuropaLeague", "slavia": "EuropaLeague",
+    "sparta": "EuropaLeague", "qarabag": "EuropaLeague",
+    "paok": "EuropaLeague", "olympiakos": "EuropaLeague"
 }
 
 # --- FONCTIONS UTILES ---
