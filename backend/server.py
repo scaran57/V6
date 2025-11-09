@@ -16,7 +16,8 @@ import subprocess
 import hashlib
 
 # Import des modules de prédiction de score
-from ocr_engine import extract_odds, extract_match_info
+from ocr_engine import extract_odds, extract_match_info as extract_match_info_legacy
+from ocr_parser import extract_match_info as extract_match_info_advanced
 from score_predictor import calculate_probabilities, calculate_probabilities_v2
 from learning import update_model, get_diff_expected
 from matches_memory import (
