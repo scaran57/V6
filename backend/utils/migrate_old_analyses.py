@@ -194,9 +194,144 @@ def migrate():
             score = entry.get("prediction", {}).get("most_probable", "?")
             print(f"   {i}. {home} vs {away} ({league}) → {score}")
 
+def generate_report(combined, stats):
+    """Génère un rapport statistique détaillé de la migration"""
+    
+    # Statistiques par ligue
+    leagues = Counter([e.get("league", "Unknown") for e in combined])
+    
+    # Statistiques par source
+    sources = Counter([e.get("source", "unknown") for e in combined])
+    
+    # Créer le rapport
+    report = []
+    report.append("=" * 80)
+    report.append("📊 RAPPORT DE MIGRATION - UNIFIED ANALYZER")
+    report.append("=" * 80)
+    report.append("")
+    report.append(f"📅 Date : {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC")
+    report.append("")
+    report.append("📈 RÉSULTATS GLOBAUX:")
+    report.append(f"   • Total analyses : {len(combined)}")
+    report.append(f"   • Entrées lues : {stats['total_read']}")
+    report.append(f"   • Doublons évités : {stats['duplicates']}")
+    report.append(f"   • Nouvelles entrées : {stats['migrated']}")
+    report.append("")
+    report.append("🏆 RÉPARTITION PAR LIGUE:")
+    for league, count in leagues.most_common():
+        report.append(f"   • {league}: {count} analyses")
+    report.append("")
+    report.append("📁 RÉPARTITION PAR SOURCE:")
+    for source, count in sources.most_common():
+        report.append(f"   • {source}: {count} analyses")
+    report.append("")
+    report.append(f"💾 Fichier final : {TARGET}")
+    report.append("=" * 80)
+    
+    report_text = "\n".join(report)
+    
+    # Écrire dans le fichier de log
+    REPORT_LOG.parent.mkdir(parents=True, exist_ok=True)
+    with REPORT_LOG.open("a", encoding="utf-8") as f:
+        f.write(report_text + "\n\n")
+    
+    # Afficher dans la console
+    print(report_text)
+    
+    # Retourner le résumé court pour les logs
+    summary = f"✅ Migration réussie : {len(combined)} analyses totales ({stats['migrated']} nouvelles)"
+    league_summary = " | ".join([f"{league}: {count}" for league, count in leagues.most_common(6)])
+    return f"{summary}\n   → {league_summary}\n📅 Dernière mise à jour : {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}"
+
+def migrate_and_report():
+    """
+    Fonction principale exportable pour le scheduler.
+    Effectue la migration et retourne un résumé.
+    """
+    print("=" * 60)
+    print("🔄 MIGRATION DES ANALYSES VERS LE CACHE UNIFIÉ UFA")
+    print("=" * 60)
+    print()
+    
+    combined = []
+    seen_keys = set()
+    stats = {
+        "total_read": 0,
+        "duplicates": 0,
+        "migrated": 0
+    }
+    
+    # Lire les anciens fichiers
+    for f in OLD_FILES:
+        if not f.exists():
+            print(f"⏭️  {f.name} n'existe pas, ignoré")
+            continue
+        
+        print(f"📖 Lecture de {f.name}...")
+        
+        if f.suffix == ".json":
+            # Fichier JSON classique
+            data = read_json(f)
+            if data is None:
+                continue
+            
+            # Si c'est un dict, essayer d'extraire les entrées
+            if isinstance(data, dict):
+                entries = list(data.values()) if data else []
+            elif isinstance(data, list):
+                entries = data
+            else:
+                print(f"   ⚠️  Format non reconnu, ignoré")
+                continue
+        else:
+            # Fichier JSONL
+            entries = read_jsonl(f)
+        
+        stats["total_read"] += len(entries)
+        print(f"   ✅ {len(entries)} entrées trouvées")
+        
+        for e in entries:
+            # Normaliser l'entrée
+            normalized = normalize_entry(e, f.stem)
+            
+            # Générer clé pour détection doublons
+            key = generate_key(normalized)
+            
+            if key in seen_keys:
+                stats["duplicates"] += 1
+                continue
+            
+            combined.append(normalized)
+            seen_keys.add(key)
+            stats["migrated"] += 1
+    
+    # Ajouter ceux déjà dans le nouveau cache (éviter écrasement)
+    if TARGET.exists():
+        print(f"📖 Lecture du cache actuel {TARGET.name}...")
+        current = read_jsonl(TARGET)
+        stats["total_read"] += len(current)
+        print(f"   ✅ {len(current)} entrées existantes")
+        
+        for e in current:
+            key = generate_key(e)
+            if key not in seen_keys:
+                combined.append(e)
+                seen_keys.add(key)
+                stats["migrated"] += 1
+            else:
+                stats["duplicates"] += 1
+    
+    # Écrire le fichier final
+    write_jsonl(TARGET, combined)
+    
+    # Générer et afficher le rapport
+    summary = generate_report(combined, stats)
+    
+    return summary
+
 if __name__ == "__main__":
     try:
-        migrate()
+        migrate_and_report()
     except Exception as e:
         print(f"❌ Erreur fatale : {e}")
         import traceback
