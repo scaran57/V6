@@ -107,7 +107,8 @@ user_problem_statement: |
   Score prediction application capable of processing images from bookmakers. 
   The core problem is to extract match scores and corresponding odds from screenshots, 
   then use a prediction algorithm to predict the most probable score.
-  Latest update: Integration of new score_predictor.py with improved calculation algorithm.
+  Latest update: Integration of advanced OCR parser (ocr_parser.py) with fuzzy team/league 
+  detection to ensure league coefficients are correctly applied during predictions.
 
 backend:
   - task: "Integrate new score_predictor.py algorithm"
