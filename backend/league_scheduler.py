@@ -172,6 +172,9 @@ class LeagueScheduler:
             # Exécuter la validation des prédictions après la mise à jour des ligues
             self._run_validation()
             
+            # Exécuter la validation automatique des scores réels (UFA)
+            self._run_ufa_auto_validate()
+            
             # Exécuter l'entraînement UFA après la validation
             self._run_ufa_training()
             
