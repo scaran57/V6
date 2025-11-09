@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """
-OCR Parser + Auto-Mapping Intelligent + Détection Ligues Améliorée
+OCR Parser + Auto-Mapping Intelligent
 - expose extract_match_info(image_path, manual_home=None, manual_away=None, manual_league=None)
 - returns dict: { home_team, away_team, league, home_goals, away_goals, raw_text }
-- Détecte les marqueurs de ligues dans le texte OCR (Ligue 1, LaLiga, Bundesliga, etc.)
 """
 
 import re
 import os
 from pathlib import Path
-from typing import Tuple, Optional, Dict, List
+from typing import Tuple, Optional, Dict
 from fuzzywuzzy import process
 from PIL import Image, ImageEnhance, ImageFilter
 import pytesseract
@@ -19,49 +18,6 @@ import datetime
 # --- CONFIG ---
 pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 SCORE_PATTERN = re.compile(r"\b([0-9])\s*[-:]\s*([0-9])\b")
-
-# Patterns de détection de ligues dans le texte OCR
-LEAGUE_DETECTION_PATTERNS = {
-    "Ligue1": [
-        r"ligue\s*1", r"ligue\s*un", r"l1", r"ligue 1 mcdonald",
-        r"championnat de france", r"french league"
-    ],
-    "LaLiga": [
-        r"la\s*liga", r"laliga", r"liga\s*santander", r"liga\s*ea\s*sports",
-        r"liga\s*espagnole", r"spanish\s*league", r"primera\s*division", r"liga\s*españa"
-    ],
-    "PremierLeague": [
-        r"premier\s*league", r"epl", r"english\s*premier", r"barclays",
-        r"league\s*anglaise", r"premier\s*league\s*anglaise"
-    ],
-    "Bundesliga": [
-        r"bundesliga", r"buli", r"1\.\s*bundesliga", r"bundesliga\s*1",
-        r"ligue\s*allemande", r"german\s*league"
-    ],
-    "SerieA": [
-        r"serie\s*a", r"seria\s*a", r"calcio\s*serie\s*a", r"serie\s*a\s*tim",
-        r"ligue\s*italienne", r"italian\s*league", r"serie\s*a\s*enilive"
-    ],
-    "Ligue2": [
-        r"ligue\s*2", r"ligue\s*deux", r"l2", r"championship\s*france"
-    ],
-    "PrimeiraLiga": [
-        r"primeira\s*liga", r"liga\s*portugal", r"liga\s*nos", r"liga\s*betclic",
-        r"portuguese\s*league", r"ligue\s*portugaise", r"portugal\s*league"
-    ],
-    "Eredivisie": [
-        r"eredivisie", r"eredivise", r"dutch\s*league", r"ligue\s*neerlandaise"
-    ],
-    "Championship": [
-        r"championship", r"efl\s*championship", r"english\s*championship"
-    ],
-    "ChampionsLeague": [
-        r"champions\s*league", r"ucl", r"c1", r"uefa\s*champions", r"ligue\s*des\s*champions"
-    ],
-    "EuropaLeague": [
-        r"europa\s*league", r"uel", r"c3", r"uefa\s*europa"
-    ]
-}
 
 # Table enrichie équipes → ligues
 TEAM_LEAGUE_MAP = {
@@ -179,8 +135,6 @@ def extract_teams_from_text(text: str) -> Tuple[Optional[str], Optional[str]]:
     1) Séparateurs courants (" - ", " vs ", etc.)
     2) Tokens connus directement
     3) Fuzzy matching
-    
-    Applique le nettoyage automatique sur les noms extraits.
     """
     if not text:
         return None, None
@@ -193,13 +147,7 @@ def extract_teams_from_text(text: str) -> Tuple[Optional[str], Optional[str]]:
         if sep in raw:
             parts = [p.strip() for p in raw.split(sep) if p.strip()]
             if len(parts) >= 2:
-                # NOUVEAU: Nettoyer les noms extraits
-                home_cleaned = clean_team_name(parts[0])
-                away_cleaned = clean_team_name(parts[1])
-                
-                # Vérifier que les noms nettoyés sont valides
-                if home_cleaned and away_cleaned:
-                    return home_cleaned, away_cleaned
+                return parts[0], parts[1]
     
     # Stratégie 2: tokens directs
     low = raw.lower()
@@ -211,21 +159,14 @@ def extract_teams_from_text(text: str) -> Tuple[Optional[str], Optional[str]]:
                 break
     
     if len(found) == 2:
-        # Nettoyer les noms
-        home_cleaned = clean_team_name(found[0].title())
-        away_cleaned = clean_team_name(found[1].title())
-        if home_cleaned and away_cleaned:
-            return home_cleaned, away_cleaned
+        return found[0].title(), found[1].title()
     
     # Stratégie 3: fuzzy matching
     candidates = process.extract(low, TEAM_KEYS, limit=5)
     filtered = [c[0] for c in candidates if c[1] >= 70]
     
     if len(filtered) >= 2:
-        home_cleaned = clean_team_name(filtered[0].title())
-        away_cleaned = clean_team_name(filtered[1].title())
-        if home_cleaned and away_cleaned:
-            return home_cleaned, away_cleaned
+        return filtered[0].title(), filtered[1].title()
     
     return None, None
 
@@ -258,141 +199,7 @@ def detect_league_from_teams(home: Optional[str], away: Optional[str]) -> str:
     
     return leagues[0]
 
-def detect_league_from_text(text: str) -> Optional[str]:
-    """
-    Détecte la ligue à partir du texte OCR brut en cherchant les marqueurs.
-    Retourne le nom de la ligue ou None si aucune détection.
-    PRIORITÉ ABSOLUE sur le mapping par équipe.
-    """
-    if not text:
-        return None
-    
-    text_lower = text.lower()
-    
-    # Chercher chaque pattern de ligue
-    for league_name, patterns in LEAGUE_DETECTION_PATTERNS.items():
-        for pattern in patterns:
-            if re.search(pattern, text_lower):
-                return league_name
-    
-    return None
-
-def detect_all_leagues_in_text(text: str) -> List[Tuple[str, int]]:
-    """
-    Détecte TOUTES les ligues présentes dans le texte avec leur position.
-    Crucial pour les images avec plusieurs matchs de différentes ligues.
-    """
-    if not text:
-        return []
-    
-    text_lower = text.lower()
-    detected = []
-    
-    for league_name, patterns in LEAGUE_DETECTION_PATTERNS.items():
-        for pattern in patterns:
-            matches = re.finditer(pattern, text_lower)
-            for match in matches:
-                detected.append((league_name, match.start(), match.group()))
-    
-    # Trier par position dans le texte
-    detected.sort(key=lambda x: x[1])
-    
-    return detected
-
 # --- API FUNCTION ---
-def clean_team_name(name: str) -> str:
-    """
-    Nettoie un nom d'équipe en supprimant le texte parasite.
-    GARDE les marqueurs de ligues dans le texte global, mais les retire des noms d'équipes.
-    """
-    if not name:
-        return name
-    
-    # ÉTAPE 1: Supprimer les marqueurs de ligue des noms d'équipes
-    league_markers = [
-        r'Liga\s+Portugal', r'Primeira\s+Liga', r'Liga\s+Nos',
-        r'Ligue\s+1', r'Ligue\s+2', r'La\s*Liga', r'LaLiga',
-        r'Premier\s+League', r'Bundesliga', r'Serie\s+A',
-        r'Champions\s+League', r'Europa\s+League',
-        r'Ligue\s+des\s+Champions', r'Championship'
-    ]
-    
-    cleaned = name
-    for marker in league_markers:
-        cleaned = re.sub(marker, ' ', cleaned, flags=re.IGNORECASE)
-    
-    # ÉTAPE 2: Patterns à supprimer des NOMS D'ÉQUIPES
-    noise_patterns = [
-        # Horaires (tous les formats)
-        r'À\s*\d{1,2}h\d{2}',
-        r'A\s*\d{1,2}h\d{2}',
-        r'\d{1,2}h\d{2}',
-        r'[ÀA]\s*\d{1,2}:\d{2}',
-        r'\d{1,2}:\d{2}',  # Format 16:30, 20:45
-        r'\d{2}h',          # Format 16h, 20h
-        
-        # Éléments d'interface bookmaker (PRIORITÉ)
-        r'\bParis\b(?!\s+Saint)',  # "Paris" seul (pas "Paris Saint-Germain")
-        r'Pari(?:er)?(?:\s+sur\s+mesure)?',  # "Parier", "Pari sur mesure"
-        r'\bStats?\b',      # "Stat", "Stats"
-        r'\bCompos?\b',     # "Compo", "Compos"
-        r'\bCote(?:s)?\b',  # "Cote", "Cotes"
-        r'sur\s+mesure',
-        r'\bParis\s+Pari',  # "Paris Pari sur mesure"
-        r'\bParier\b',
-        r'\bS\'inscrire\b', # Bouton inscription
-        
-        # Texte publicitaire et promotionnel
-        r'\bBonus\b',
-        r'\bOffre\b',
-        r'\bGratuit\b',
-        r'\bPromo(?:tion)?\b',
-        
-        # Codes et symboles parasites
-        r'\d{5,}\s*OCH',  # Codes comme "15552 OCH"
-        r'neue\s+\w+',    # "neue ts", etc.
-        r'[=\)]?\s*[JFL]e', # "=) Je", "=) Le", etc.
-        
-        # Lignes de séparation et symboles
-        r'^[-_<>]+$',
-        r'^\s*[<>]\s*$',
-        
-        # Texte technique
-        r'MT\s*\d*',
-        r'\(\s*[=\)]+\s*\)',
-        
-        # Symboles et caractères isolés
-        r'[©®™§¶•]',  # Symboles spéciaux
-        r'[@#$%&*]',
-    ]
-    
-    for pattern in noise_patterns:
-        cleaned = re.sub(pattern, ' ', cleaned, flags=re.IGNORECASE)
-    
-    # ÉTAPE 3: Couper au premier pattern de données (scores, cotes)
-    # Si on voit des patterns comme "1-0", "6,80", on coupe tout après
-    data_cutoff = re.search(r'(\d+[-:]\d+|\d+,\d+|\d+\s+\d+\s+\d+)', cleaned)
-    if data_cutoff:
-        cleaned = cleaned[:data_cutoff.start()]
-    
-    # ÉTAPE 4: Supprimer les nombres isolés au début
-    cleaned = re.sub(r'^\s*\d+\s+', '', cleaned)
-    
-    # ÉTAPE 5: Nettoyer les espaces multiples et trim
-    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
-    
-    # ÉTAPE 6: Limiter à 5 premiers mots (un nom d'équipe typique)
-    words = cleaned.split()
-    if len(words) > 5:
-        cleaned = ' '.join(words[:5])
-    
-    # ÉTAPE 7: Validation finale
-    # Si le résultat est trop court ou juste des symboles, retourner vide
-    if len(cleaned) < 3 or cleaned in ['<', '>', '-', '_', 'o', 'Q', 'D', 'G', 'vs', 'e']:
-        return ""
-    
-    return cleaned
-
 def extract_match_info(image_path: str,
                        manual_home: Optional[str] = None,
                        manual_away: Optional[str] = None,
@@ -411,10 +218,10 @@ def extract_match_info(image_path: str,
       'timestamp': iso
     }
     """
-    # OCR du texte (GARDE le texte complet avec marqueurs de ligues)
+    # OCR du texte
     text = ocr_read(image_path)
     
-    # Détection du score (optionnel)
+    # Extraction du score
     home_goals, away_goals = parse_score(text)
     
     # Utiliser les valeurs manuelles si fournies
@@ -426,29 +233,11 @@ def extract_match_info(image_path: str,
         home = t1
         away = t2
     
-    # Détection de la ligue - ORDRE DE PRIORITÉ MODIFIÉ:
-    # 1. Manuel (override)
-    # 2. Détection dans le texte OCR (NOUVEAU - PRIORITÉ MAXIMALE)
-    # 3. Mapping par équipe (fallback)
-    # 4. Unknown
-    
+    # Détection de la ligue (priorité: manuel > détection > Unknown)
     if manual_league:
         league = manual_league
-        print(f"[OCR Parser] Ligue manuelle : {league}")
     else:
-        # NOUVEAU: Chercher d'abord dans le texte OCR
-        league_from_text = detect_league_from_text(text)
-        
-        if league_from_text:
-            league = league_from_text
-            print(f"[OCR Parser] ✅ Ligue détectée dans le texte : {league}")
-        else:
-            # Fallback sur le mapping par équipe
-            league = detect_league_from_teams(home, away)
-            if league and league != "Unknown":
-                print(f"[OCR Parser] ⚠️ Ligue déduite des équipes : {league}")
-            else:
-                print(f"[OCR Parser] ❌ Ligue non détectée : Unknown")
+        league = detect_league_from_teams(home, away)
     
     return {
         "home_team": home,
