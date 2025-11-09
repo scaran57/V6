@@ -216,8 +216,8 @@ cat /app/data/learning_meta.json
 wc -l /app/data/learning_events.jsonl
 
 # Tester API
-curl https://betanalyst-10.preview.emergentagent.com/api/health
-curl https://betanalyst-10.preview.emergentagent.com/api/diff
+curl https://clean-ocr-engine.preview.emergentagent.com/api/health
+curl https://clean-ocr-engine.preview.emergentagent.com/api/diff
 
 # Vérifier services
 sudo supervisorctl status

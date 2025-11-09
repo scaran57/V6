@@ -11,7 +11,7 @@ import time
 from pathlib import Path
 
 # Configuration
-BASE_URL = "https://betanalyst-10.preview.emergentagent.com/api"
+BASE_URL = "https://clean-ocr-engine.preview.emergentagent.com/api"
 BACKEND_DIR = "/app/backend"
 
 class OCRParserIntegrationTester:
