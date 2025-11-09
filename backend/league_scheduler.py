@@ -117,6 +117,40 @@ class LeagueScheduler:
         
         return time_match
     
+    def _run_migration_cache(self):
+        """
+        Migration automatique des anciennes analyses (UEFA/Production) vers le cache unifié.
+        S'exécute une seule fois au démarrage du scheduler.
+        """
+        migrate_script = Path("/app/backend/utils/migrate_old_analyses.py")
+        if migrate_script.exists():
+            try:
+                logger.info("🧩 Migration automatique du cache d'analyse...")
+                result = subprocess.run(
+                    ["python3", str(migrate_script)], 
+                    capture_output=True, 
+                    text=True,
+                    timeout=60
+                )
+                
+                if result.returncode == 0:
+                    logger.info("✅ Migration terminée avec succès")
+                    # Log les dernières lignes du résultat
+                    output_lines = result.stdout.strip().split('\n')
+                    for line in output_lines[-5:]:  # Dernières 5 lignes
+                        if line.strip():
+                            logger.info(f"   {line}")
+                else:
+                    logger.warning(f"⚠️ Échec migration cache (code {result.returncode})")
+                    if result.stderr:
+                        logger.error(f"   Erreur: {result.stderr[:200]}")
+            except subprocess.TimeoutExpired:
+                logger.error("❌ Migration cache timeout (>60s)")
+            except Exception as e:
+                logger.error(f"❌ Erreur migration cache : {e}")
+        else:
+            logger.warning(f"⚠️ Script de migration introuvable: {migrate_script}")
+    
     def _perform_initial_update(self):
         """Effectue une mise à jour initiale au démarrage (si nécessaire)"""
         try:
