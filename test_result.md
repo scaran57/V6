@@ -399,7 +399,7 @@ test_plan:
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
-  last_test_results: "Advanced OCR parser integration testing completed successfully. League coefficients are now correctly applied. Team and league detection working as expected. All core functionality verified."
+  last_test_results: "Intelligent OCR filtering system testing completed successfully. Liga Portugal image processed correctly with clean team names 'AVS Futebol - Gil Vicente', league detected as 'PrimeiraLiga', and coefficients applied. All filtering criteria met - no schedules, no interface elements. Regression tests passed."
 
 agent_communication:
   - agent: "main"
