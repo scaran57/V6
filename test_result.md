@@ -796,6 +796,62 @@ agent_communication:
 agent_communication:
   - agent: "main"
     message: |
+      🎯 INTÉGRATION OCR PARSER AVANCÉ - PRÊT POUR TESTS
+      
+      Tâche complétée: Intégration de ocr_parser.py pour résoudre le problème d'application des coefficients
+      
+      Ce qui a été fait:
+      1. Intégré ocr_parser.py avec fuzzy matching des équipes
+      2. Modifié /api/analyze pour utiliser le nouveau parser
+      3. Détection automatique robuste des équipes et ligues
+      4. Priorité de détection: manuel > parser avancé > Unknown
+      
+      Tests requis (testing agent):
+      FOCUS: Vérifier que les coefficients sont maintenant appliqués correctement
+      
+      1. Test avec image LaLiga:
+         - Vérifier extraction home_team/away_team
+         - Vérifier detected_league = "LaLiga"
+         - Vérifier league_coeffs_applied = true
+         - Vérifier coefficients différents de 1.0
+      
+      2. Test avec image PremierLeague:
+         - Vérifier extraction équipes anglaises
+         - Vérifier detected_league = "PremierLeague"
+         - Vérifier coefficients appliqués
+      
+      3. Test avec image Ligue1:
+         - Vérifier extraction équipes françaises (PSG, Marseille, Lyon, etc.)
+         - Vérifier detected_league = "Ligue1"
+         - Vérifier coefficients appliqués
+      
+      4. Test régression:
+         - /api/health
+         - /api/diff
+         - Autres endpoints existants
+      
+      5. Logs backend:
+         - Chercher "✅ Équipes détectées:"
+         - Chercher "✅ Ligue détectée:"
+         - Chercher "league_coeffs_applied"
+         - Vérifier absence d'erreurs
+      
+      Configuration:
+      - Backend redémarré: ✅
+      - Imports vérifiés: ✅
+      - fuzzywuzzy installé: ✅
+      - ocr_parser.py importable: ✅
+      - Aucune erreur au démarrage: ✅
+      
+      NOTE CRITIQUE: Les coefficients ne peuvent être appliqués QUE si:
+      - Les équipes sont détectées (home_team != None, away_team != None)
+      - La ligue est détectée (league != "Unknown")
+      - use_league_coeff = True (défaut)
+      
+      Vérifier que ces conditions sont maintenant remplies avec le nouveau parser.
+      
+  - agent: "main"
+    message: |
       ✅ PHASE 2 COMPLÈTE - 5 NOUVELLES LIGUES EUROPÉENNES INTÉGRÉES ET FONCTIONNELLES
       
       RÉSUMÉ DE L'IMPLÉMENTATION:
