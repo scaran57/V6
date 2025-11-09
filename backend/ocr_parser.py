@@ -285,6 +285,54 @@ def detect_all_leagues_in_text(text: str) -> List[Tuple[str, int]]:
     return detected
 
 # --- API FUNCTION ---
+def clean_team_name(name: str) -> str:
+    """
+    Nettoie un nom d'équipe en supprimant le texte parasite.
+    GARDE les marqueurs de ligues dans le texte global, mais les retire des noms d'équipes.
+    """
+    if not name:
+        return name
+    
+    # Patterns à supprimer des NOMS D'ÉQUIPES uniquement
+    noise_patterns = [
+        # Horaires
+        r'À\s*\d{1,2}h\d{2}',
+        r'A\s*\d{1,2}h\d{2}',
+        r'\d{1,2}h\d{2}',
+        r'[ÀA]\s*\d{1,2}:\d{2}',
+        
+        # Texte publicitaire
+        r'Paris\s*Pari(?:s)?(?:\s+sur\s+mesure)?',
+        r'Stats?\s*Compos?',
+        r'sur\s+mesure',
+        
+        # Codes et symboles parasites
+        r'\d{5,}\s*OCH',  # Codes comme "15552 OCH"
+        r'neue\s+\w+',    # "neue ts", etc.
+        r'[=\)]?\s*[JFL]e', # "=) Je", "=) Le", etc.
+        
+        # Lignes de séparation et symboles
+        r'^[-_<>]+$',
+        r'^\s*[<>]\s*$',
+        
+        # Texte technique
+        r'MT\s*\d*',
+        r'\(\s*[=\)]+\s*\)',
+    ]
+    
+    cleaned = name
+    for pattern in noise_patterns:
+        cleaned = re.sub(pattern, ' ', cleaned, flags=re.IGNORECASE)
+    
+    # Nettoyer les espaces multiples et trim
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    
+    # Si le résultat est trop court ou juste des symboles, retourner vide
+    if len(cleaned) < 3 or cleaned in ['<', '>', '-', '_', 'o', 'Q', 'D', 'G', 'vs']:
+        return ""
+    
+    return cleaned
+
 def extract_match_info(image_path: str,
                        manual_home: Optional[str] = None,
                        manual_away: Optional[str] = None,
