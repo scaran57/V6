@@ -154,6 +154,10 @@ class LeagueScheduler:
     def _perform_initial_update(self):
         """Effectue une mise à jour initiale au démarrage (si nécessaire)"""
         try:
+            # ÉTAPE 1 : Migration automatique du cache d'analyse
+            self._run_migration_cache()
+            
+            # ÉTAPE 2 : Vérification et mise à jour des ligues
             logger.info("🚀 Vérification des données de ligues au démarrage (système unifié)...")
             
             # Vérifier si le rapport global existe et est récent
