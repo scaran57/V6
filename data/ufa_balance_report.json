@@ -1,27 +1,57 @@
 {
-  "timestamp": "2025-11-09T01:05:09.831263",
-  "total_matches": 92,
-  "unknown_ratio": 0.75,
+  "timestamp": "2025-11-09T23:12:46.213257",
+  "total_matches": 183,
+  "unknown_ratio": 0.39344262295081966,
   "top_score": {
-    "score": "2-1",
-    "frequency": 0.16304347826086957
+    "score": "1-0",
+    "frequency": 0.23497267759562843
   },
   "results_distribution": {
-    "home": 46,
-    "draw": 25,
-    "away": 21
+    "home": 102,
+    "draw": 47,
+    "away": 34
   },
   "league_stats": {
     "Unknown": {
-      "avg_goals": 2.608695652173913,
-      "std_dev": 1.61988916926934,
-      "matches": 69,
+      "avg_goals": 2.5416666666666665,
+      "std_dev": 1.6180104284209276,
+      "matches": 72,
+      "status": "✅"
+    },
+    "Ligue1": {
+      "avg_goals": 5,
+      "std_dev": 6.102571532587294,
+      "matches": 30,
+      "status": "⚠️"
+    },
+    "LaLiga": {
+      "avg_goals": 2.3076923076923075,
+      "std_dev": 1.702185623672077,
+      "matches": 13,
       "status": "✅"
     },
     "Eredivisie": {
-      "avg_goals": 2.25,
-      "std_dev": 0.7071067811865476,
-      "matches": 8,
+      "avg_goals": 2.076923076923077,
+      "std_dev": 0.9540735874430285,
+      "matches": 13,
+      "status": "✅"
+    },
+    "Championship": {
+      "avg_goals": 2.6666666666666665,
+      "std_dev": 1.556997888323046,
+      "matches": 12,
+      "status": "✅"
+    },
+    "Bundesliga": {
+      "avg_goals": 2.888888888888889,
+      "std_dev": 1.7638342073763937,
+      "matches": 9,
+      "status": "✅"
+    },
+    "PremierLeague": {
+      "avg_goals": 3,
+      "std_dev": 1.0,
+      "matches": 5,
       "status": "✅"
     },
     "ChampionsLeague": {
@@ -30,25 +60,49 @@
       "matches": 5,
       "status": "✅"
     },
-    "LaLiga": {
-      "avg_goals": 4,
-      "std_dev": 1.1547005383792515,
-      "matches": 4,
+    "Campeonato Brasileiro Série A": {
+      "avg_goals": 3.4,
+      "std_dev": 1.949358868961793,
+      "matches": 5,
       "status": "⚠️"
     },
-    "Ligue1": {
-      "avg_goals": 3,
+    "PrimeiraLiga": {
+      "avg_goals": 1,
       "std_dev": 0.0,
+      "matches": 5,
+      "status": "⚠️"
+    },
+    "Primeira Liga": {
+      "avg_goals": 3.25,
+      "std_dev": 2.6299556396765835,
       "matches": 4,
       "status": "✅"
     },
-    "PremierLeague": {
-      "avg_goals": 2,
+    "SerieA": {
+      "avg_goals": 3,
+      "std_dev": 2.6457513110645907,
+      "matches": 3,
+      "status": "✅"
+    },
+    "Serie A": {
+      "avg_goals": 0.3333333333333333,
+      "std_dev": 0.5773502691896257,
+      "matches": 3,
+      "status": "⚠️"
+    },
+    "Primera Division": {
+      "avg_goals": 3,
+      "std_dev": 1.4142135623730951,
+      "matches": 2,
+      "status": "ℹ️"
+    },
+    "Ligue 1": {
+      "avg_goals": 1,
       "std_dev": 0,
       "matches": 1,
       "status": "ℹ️"
     },
-    "SerieA": {
+    "Premier League": {
       "avg_goals": 5,
       "std_dev": 0,
       "matches": 1,
@@ -56,6 +110,6 @@
     }
   },
   "alerts": [
-    "Ratio Unknown trop élevé: 75.0%"
+    "Ratio Unknown trop élevé: 39.3%"
   ]
 }
