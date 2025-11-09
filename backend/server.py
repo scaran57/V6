@@ -327,6 +327,115 @@ async def analyze(
             status_code=500
         )
 
+@api_router.post("/unified/analyze")
+async def unified_analyze(
+    file: UploadFile = File(...),
+    manual_home: str = Form(None),
+    manual_away: str = Form(None),
+    manual_league: str = Form(None),
+    persist_cache: bool = Form(True)
+):
+    """
+    Unified analyzer endpoint - Replaces both Analyzer UEFA and Mode Production.
+    
+    - Applies league coefficients automatically
+    - Saves analysis to cache (analysis_cache.jsonl)
+    - Saves real scores if detected (real_scores.jsonl)
+    - Compatible with UFA pipeline
+    
+    Args:
+        file: Image file from bookmaker
+        manual_home: Manual override for home team (optional)
+        manual_away: Manual override for away team (optional)
+        manual_league: Manual override for league (optional)
+        persist_cache: Whether to save analysis to cache (default: True)
+    
+    Returns:
+        JSON with analysis results including:
+        - Detected teams and league
+        - Prediction with league coefficients applied
+        - Top 3 most probable scores
+        - Confidence level
+    """
+    try:
+        # Save uploaded file
+        file_path = os.path.join(UPLOAD_DIR, file.filename)
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        logger.info(f"📸 Unified Analyzer - Image reçue: {file.filename}")
+        
+        # Analyze using unified analyzer
+        result = analyze_image(
+            file_path=file_path,
+            manual_home=manual_home,
+            manual_away=manual_away,
+            manual_league=manual_league,
+            persist_cache=persist_cache
+        )
+        
+        # Clean up temporary file
+        os.remove(file_path)
+        
+        if result.get("status") == "ok":
+            analysis = result.get("analysis", {})
+            prediction = result.get("prediction", {})
+            info = result.get("info", {})
+            
+            logger.info(f"✅ Unified Analyzer - Analyse terminée")
+            logger.info(f"   Équipes: {info.get('home_team')} vs {info.get('away_team')}")
+            logger.info(f"   Ligue: {info.get('league')}")
+            logger.info(f"   Score probable: {prediction.get('most_probable')}")
+            logger.info(f"   Coefficients appliqués: {prediction.get('league_coeffs_applied')}")
+            logger.info(f"   Sauvegardé: {persist_cache}")
+            
+            return JSONResponse({
+                "success": True,
+                "matchName": f"{info.get('home_team', 'Unknown')} - {info.get('away_team', 'Unknown')}",
+                "league": info.get("league", "Unknown"),
+                "leagueCoeffsApplied": prediction.get("league_coeffs_applied", False),
+                "mostProbableScore": prediction.get("most_probable", "N/A"),
+                "probabilities": prediction.get("probabilities", {}),
+                "confidence": prediction.get("confidence", 0.0),
+                "top3": prediction.get("top3", []),
+                "savedToCache": persist_cache,
+                "timestamp": analysis.get("timestamp"),
+                "info": {
+                    "home_team": info.get("home_team"),
+                    "away_team": info.get("away_team"),
+                    "league": info.get("league"),
+                    "home_goals_detected": info.get("home_goals"),
+                    "away_goals_detected": info.get("away_goals")
+                }
+            })
+        else:
+            logger.error(f"❌ Unified Analyzer - Erreur: {result.get('error')}")
+            return JSONResponse({
+                "success": False,
+                "error": result.get("error", "Unknown error"),
+                "trace": result.get("trace", "")
+            }, status_code=500)
+            
+    except Exception as e:
+        logger.error(f"❌ Unified Analyzer - Exception: {str(e)}")
+        import traceback
+        return JSONResponse({
+            "success": False,
+            "error": str(e),
+            "trace": traceback.format_exc()
+        }, status_code=500)
+
+@api_router.get("/unified/health")
+async def unified_health():
+    """Health check for unified analyzer"""
+    return JSONResponse({
+        "status": "ok",
+        "analysis_cache": str(ANALYSIS_CACHE),
+        "real_scores": str(REAL_SCORES),
+        "cache_entries": len(open(ANALYSIS_CACHE).readlines()) if ANALYSIS_CACHE.exists() else 0,
+        "real_scores_entries": len(open(REAL_SCORES).readlines()) if REAL_SCORES.exists() else 0
+    })
+
 @api_router.post("/learn")
 async def learn(
     predicted: str = Form(...), 
