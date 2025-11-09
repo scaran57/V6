@@ -170,10 +170,26 @@ async def analyze(
         
         logger.info(f"Hash de l'image: {image_hash}")
         
-        # Extraire les informations du match (nom et bookmaker)
-        match_info = extract_match_info(file_path)
-        match_name = match_info.get("match_name", "Match non détecté")
-        bookmaker = match_info.get("bookmaker", "Bookmaker inconnu")
+        # Utiliser le nouveau parser avancé pour extraire les informations du match
+        logger.info("🔍 Extraction avancée des informations de match avec ocr_parser...")
+        advanced_info = extract_match_info_advanced(file_path)
+        
+        home_team = advanced_info.get("home_team")
+        away_team = advanced_info.get("away_team")
+        detected_league = advanced_info.get("league", "Unknown")
+        
+        # Construire le match_name à partir des équipes détectées
+        if home_team and away_team:
+            match_name = f"{home_team} - {away_team}"
+            logger.info(f"✅ Équipes détectées: {home_team} vs {away_team}")
+            logger.info(f"✅ Ligue détectée: {detected_league}")
+        else:
+            match_name = "Match non détecté"
+            logger.warning(f"⚠️ Aucune équipe détectée par le parser avancé")
+        
+        # Fallback sur l'ancien système pour le bookmaker
+        legacy_info = extract_match_info_legacy(file_path)
+        bookmaker = legacy_info.get("bookmaker", "Bookmaker inconnu")
         
         # Générer un ID unique pour ce match (basé sur le hash de l'image)
         match_id = generate_match_id(match_name, bookmaker, image_hash=image_hash)
