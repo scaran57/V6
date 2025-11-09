@@ -295,16 +295,30 @@ def clean_team_name(name: str) -> str:
     
     # Patterns à supprimer des NOMS D'ÉQUIPES uniquement
     noise_patterns = [
-        # Horaires
+        # Horaires (tous les formats)
         r'À\s*\d{1,2}h\d{2}',
         r'A\s*\d{1,2}h\d{2}',
         r'\d{1,2}h\d{2}',
         r'[ÀA]\s*\d{1,2}:\d{2}',
+        r'\d{1,2}:\d{2}',  # Format 16:30, 20:45
+        r'\d{2}h',          # Format 16h, 20h
         
-        # Texte publicitaire
-        r'Paris\s*Pari(?:s)?(?:\s+sur\s+mesure)?',
-        r'Stats?\s*Compos?',
+        # Éléments d'interface bookmaker (PRIORITÉ)
+        r'\bParis\b(?!\s+Saint)',  # "Paris" seul (pas "Paris Saint-Germain")
+        r'Pari(?:er)?(?:\s+sur\s+mesure)?',  # "Parier", "Pari sur mesure"
+        r'\bStats?\b',      # "Stat", "Stats"
+        r'\bCompos?\b',     # "Compo", "Compos"
+        r'\bCote(?:s)?\b',  # "Cote", "Cotes"
         r'sur\s+mesure',
+        r'\bParis\s+Pari',  # "Paris Pari sur mesure"
+        r'\bParier\b',
+        r'\bS\'inscrire\b', # Bouton inscription
+        
+        # Texte publicitaire et promotionnel
+        r'\bBonus\b',
+        r'\bOffre\b',
+        r'\bGratuit\b',
+        r'\bPromo(?:tion)?\b',
         
         # Codes et symboles parasites
         r'\d{5,}\s*OCH',  # Codes comme "15552 OCH"
@@ -318,6 +332,10 @@ def clean_team_name(name: str) -> str:
         # Texte technique
         r'MT\s*\d*',
         r'\(\s*[=\)]+\s*\)',
+        
+        # Symboles et caractères isolés
+        r'^\s*[©®™]\s*$',
+        r'^\s*[@#$%&*]\s*$',
     ]
     
     cleaned = name
