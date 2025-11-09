@@ -308,7 +308,20 @@ def clean_team_name(name: str) -> str:
     if not name:
         return name
     
-    # Patterns à supprimer des NOMS D'ÉQUIPES uniquement
+    # ÉTAPE 1: Supprimer les marqueurs de ligue des noms d'équipes
+    league_markers = [
+        r'Liga\s+Portugal', r'Primeira\s+Liga', r'Liga\s+Nos',
+        r'Ligue\s+1', r'Ligue\s+2', r'La\s*Liga', r'LaLiga',
+        r'Premier\s+League', r'Bundesliga', r'Serie\s+A',
+        r'Champions\s+League', r'Europa\s+League',
+        r'Ligue\s+des\s+Champions', r'Championship'
+    ]
+    
+    cleaned = name
+    for marker in league_markers:
+        cleaned = re.sub(marker, ' ', cleaned, flags=re.IGNORECASE)
+    
+    # ÉTAPE 2: Patterns à supprimer des NOMS D'ÉQUIPES
     noise_patterns = [
         # Horaires (tous les formats)
         r'À\s*\d{1,2}h\d{2}',
@@ -349,19 +362,33 @@ def clean_team_name(name: str) -> str:
         r'\(\s*[=\)]+\s*\)',
         
         # Symboles et caractères isolés
-        r'^\s*[©®™]\s*$',
-        r'^\s*[@#$%&*]\s*$',
+        r'[©®™§¶•]',  # Symboles spéciaux
+        r'[@#$%&*]',
     ]
     
-    cleaned = name
     for pattern in noise_patterns:
         cleaned = re.sub(pattern, ' ', cleaned, flags=re.IGNORECASE)
     
-    # Nettoyer les espaces multiples et trim
+    # ÉTAPE 3: Couper au premier pattern de données (scores, cotes)
+    # Si on voit des patterns comme "1-0", "6,80", on coupe tout après
+    data_cutoff = re.search(r'(\d+[-:]\d+|\d+,\d+|\d+\s+\d+\s+\d+)', cleaned)
+    if data_cutoff:
+        cleaned = cleaned[:data_cutoff.start()]
+    
+    # ÉTAPE 4: Supprimer les nombres isolés au début
+    cleaned = re.sub(r'^\s*\d+\s+', '', cleaned)
+    
+    # ÉTAPE 5: Nettoyer les espaces multiples et trim
     cleaned = re.sub(r'\s+', ' ', cleaned).strip()
     
+    # ÉTAPE 6: Limiter à 5 premiers mots (un nom d'équipe typique)
+    words = cleaned.split()
+    if len(words) > 5:
+        cleaned = ' '.join(words[:5])
+    
+    # ÉTAPE 7: Validation finale
     # Si le résultat est trop court ou juste des symboles, retourner vide
-    if len(cleaned) < 3 or cleaned in ['<', '>', '-', '_', 'o', 'Q', 'D', 'G', 'vs']:
+    if len(cleaned) < 3 or cleaned in ['<', '>', '-', '_', 'o', 'Q', 'D', 'G', 'vs', 'e']:
         return ""
     
     return cleaned
