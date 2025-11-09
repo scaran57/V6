@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """
-OCR Parser + Auto-Mapping Intelligent
+OCR Parser + Auto-Mapping Intelligent + Détection Ligues Améliorée
 - expose extract_match_info(image_path, manual_home=None, manual_away=None, manual_league=None)
 - returns dict: { home_team, away_team, league, home_goals, away_goals, raw_text }
+- Détecte les marqueurs de ligues dans le texte OCR (Ligue 1, LaLiga, Bundesliga, etc.)
 """
 
 import re
 import os
 from pathlib import Path
-from typing import Tuple, Optional, Dict
+from typing import Tuple, Optional, Dict, List
 from fuzzywuzzy import process
 from PIL import Image, ImageEnhance, ImageFilter
 import pytesseract
@@ -18,6 +19,49 @@ import datetime
 # --- CONFIG ---
 pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 SCORE_PATTERN = re.compile(r"\b([0-9])\s*[-:]\s*([0-9])\b")
+
+# Patterns de détection de ligues dans le texte OCR
+LEAGUE_DETECTION_PATTERNS = {
+    "Ligue1": [
+        r"ligue\s*1", r"ligue\s*un", r"l1", r"ligue 1 mcdonald",
+        r"championnat de france", r"french league"
+    ],
+    "LaLiga": [
+        r"la\s*liga", r"laliga", r"liga\s*santander", r"liga\s*ea\s*sports",
+        r"liga\s*espagnole", r"spanish\s*league", r"primera\s*division", r"liga\s*españa"
+    ],
+    "PremierLeague": [
+        r"premier\s*league", r"epl", r"english\s*premier", r"barclays",
+        r"league\s*anglaise", r"premier\s*league\s*anglaise"
+    ],
+    "Bundesliga": [
+        r"bundesliga", r"buli", r"1\.\s*bundesliga", r"bundesliga\s*1",
+        r"ligue\s*allemande", r"german\s*league"
+    ],
+    "SerieA": [
+        r"serie\s*a", r"seria\s*a", r"calcio\s*serie\s*a", r"serie\s*a\s*tim",
+        r"ligue\s*italienne", r"italian\s*league", r"serie\s*a\s*enilive"
+    ],
+    "Ligue2": [
+        r"ligue\s*2", r"ligue\s*deux", r"l2", r"championship\s*france"
+    ],
+    "PrimeiraLiga": [
+        r"primeira\s*liga", r"liga\s*portugal", r"liga\s*nos", r"liga\s*betclic",
+        r"portuguese\s*league", r"ligue\s*portugaise", r"portugal\s*league"
+    ],
+    "Eredivisie": [
+        r"eredivisie", r"eredivise", r"dutch\s*league", r"ligue\s*neerlandaise"
+    ],
+    "Championship": [
+        r"championship", r"efl\s*championship", r"english\s*championship"
+    ],
+    "ChampionsLeague": [
+        r"champions\s*league", r"ucl", r"c1", r"uefa\s*champions", r"ligue\s*des\s*champions"
+    ],
+    "EuropaLeague": [
+        r"europa\s*league", r"uel", r"c3", r"uefa\s*europa"
+    ]
+}
 
 # Table enrichie équipes → ligues
 TEAM_LEAGUE_MAP = {
