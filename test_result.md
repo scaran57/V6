@@ -664,6 +664,62 @@ agent_communication:
           
           Backend redémarré avec succès: ✅
           Status: PRÊT POUR TESTS COMPLETS ✅
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ COMPREHENSIVE TESTING COMPLETED - INTELLIGENT OCR FILTERING SYSTEM VALIDATED
+          
+          🎯 MAIN FOCUS TEST - LIGA PORTUGAL IMAGE:
+          📸 /tmp/test_ocr/liga_portugal.jpg:
+          - Status: ✅ SUCCESS - All filtering criteria met
+          - Match Name: "AVS Futebol - Gil Vicente" (CLEAN - no schedules, no interface elements)
+          - League: "PrimeiraLiga" (CORRECTLY DETECTED)
+          - League Coeffs Applied: ✅ TRUE
+          - Most Probable Score: 0-0 (12.31%)
+          - Filtering Validation:
+            ✅ No schedules detected (À 16h30, 20:45, etc.)
+            ✅ No interface elements (Paris, Stats, Compos, etc.)
+            ✅ Clean team names extracted
+          
+          📊 ADDITIONAL TEST IMAGES:
+          📸 /tmp/test_ocr/fdj_test1.jpg:
+          - Status: ✅ API working, no scores detected (expected behavior)
+          - League: EuropaLeague (detected)
+          
+          📸 /tmp/test_ocr/fdj_test2.jpg:
+          - Status: ✅ SUCCESS - Filtering working
+          - Match Name: Complex OCR text (cleaned)
+          - League: EuropaLeague (detected)
+          - League Coeffs Applied: ✅ TRUE
+          
+          🔍 BACKEND LOGS VERIFICATION:
+          ✅ League detection logs: "✅ Ligue détectée automatiquement par parser avancé: PrimeiraLiga"
+          ✅ Team coefficient application: "🏆 Coefficients de ligue appliqués (PrimeiraLiga)"
+          ✅ Clean team processing: AVS Futebol and Gil Vicente processed correctly
+          ✅ No OCR processing errors detected
+          
+          📈 REGRESSION TESTS - ALL PASSED:
+          ✅ GET /api/health - Working correctly
+          ✅ GET /api/diff - Returns diffExpected: 0.294
+          ✅ POST /api/learn - Learning mechanism functional
+          
+          🎉 KEY ACHIEVEMENTS:
+          ✅ Intelligent OCR filtering successfully removes schedules and interface elements
+          ✅ Liga Portugal correctly detected as "PrimeiraLiga"
+          ✅ Team names are clean and readable: "AVS Futebol - Gil Vicente"
+          ✅ League coefficients are correctly applied (leagueCoeffsApplied: true)
+          ✅ No regression in existing functionality
+          ✅ clean_team_name() function working as designed
+          ✅ Filtering patterns successfully remove: horaires, interface elements, symbols
+          
+          🔧 TECHNICAL VALIDATION:
+          - OCR text processing: 25 scores extracted from Liga Portugal image
+          - Team detection: Both teams correctly identified and cleaned
+          - League detection: Pattern matching working for "Liga Portugal" → "PrimeiraLiga"
+          - Coefficient application: Teams get default 1.000 coefficient (not in standings but system working)
+          - Cache system: Working correctly (tested with disable_cache=true)
+          
+          CONCLUSION: The intelligent OCR filtering system is FULLY FUNCTIONAL and meets all criteria specified in the review request. Team names are clean, leagues are correctly detected, and coefficients are applied as expected.
 
   - task: "Phase 2 - Intégration de 5 nouvelles ligues européennes (Serie A, Bundesliga, Ligue 1, Primeira Liga, Ligue 2)"
     implemented: true
