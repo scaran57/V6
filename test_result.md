@@ -489,6 +489,58 @@ agent_communication:
     priority: "high"
     needs_retesting: false
 
+  - task: "Intégration OCR Parser Avancé - Détection Robuste Équipes et Ligues"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/ocr_parser.py, /app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ INTÉGRATION OCR PARSER AVANCÉ COMPLÉTÉE
+          
+          Problème résolu:
+          - Les coefficients de ligue n'étaient pas appliqués en mode "Analyzer UEFA"
+          - Extraction des équipes trop simpliste (split sur " - ")
+          - Résultait en équipes "Unknown" et coefficients non appliqués
+          
+          Solution implémentée:
+          1. Intégré ocr_parser.py (fourni par l'utilisateur):
+             - Fuzzy matching avancé des équipes (FuzzyWuzzy)
+             - Table enrichie de mapping équipes → ligues (100+ équipes)
+             - Stratégies multiples d'extraction: séparateurs, tokens directs, fuzzy
+             - Support de 7+ ligues: Ligue1, LaLiga, PremierLeague, SerieA, Bundesliga, etc.
+          
+          2. Modifié /api/analyze dans server.py:
+             - Importé extract_match_info de ocr_parser (renommé extract_match_info_advanced)
+             - Extrait home_team, away_team, et league via parser avancé
+             - Construit match_name à partir des équipes détectées
+             - Passe les équipes et ligue au prédicteur
+             - Logs détaillés de détection
+          
+          3. Hiérarchie de détection de ligue:
+             - Priorité 1: Paramètre manuel (query param league)
+             - Priorité 2: Détection avancée par ocr_parser
+             - Priorité 3: Unknown (fallback)
+          
+          Avantages:
+          ✅ Détection automatique de la ligue basée sur les équipes
+          ✅ Fuzzy matching pour gérer variantes de noms (ex: "PSG", "Paris", "Paris Saint-Germain")
+          ✅ Support de multiples séparateurs (" - ", " vs ", " v ", etc.)
+          ✅ Extraction robuste même avec OCR imparfait
+          ✅ Coefficients maintenant appliqués correctement
+          
+          Tests à effectuer:
+          - Tester /api/analyze avec images de matchs de différentes ligues
+          - Vérifier que home_team, away_team sont correctement extraits
+          - Vérifier que detected_league est correct
+          - Vérifier que league_coeffs_applied = true dans la réponse
+          - Tester avec images réelles (Winamax, Unibet, BetClic)
+          - Vérifier logs backend pour confirmation de détection
+
   - task: "Phase 2 - Intégration de 5 nouvelles ligues européennes (Serie A, Bundesliga, Ligue 1, Primeira Liga, Ligue 2)"
     implemented: true
     working: true
