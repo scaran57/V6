@@ -121,35 +121,28 @@ class LeagueScheduler:
         """
         Migration automatique des anciennes analyses (UEFA/Production) vers le cache unifié.
         S'exécute une seule fois au démarrage du scheduler.
+        Génère un rapport statistique détaillé.
         """
-        migrate_script = Path("/app/backend/utils/migrate_old_analyses.py")
-        if migrate_script.exists():
-            try:
-                logger.info("🧩 Migration automatique du cache d'analyse...")
-                result = subprocess.run(
-                    ["python3", str(migrate_script)], 
-                    capture_output=True, 
-                    text=True,
-                    timeout=60
-                )
-                
-                if result.returncode == 0:
-                    logger.info("✅ Migration terminée avec succès")
-                    # Log les dernières lignes du résultat
-                    output_lines = result.stdout.strip().split('\n')
-                    for line in output_lines[-5:]:  # Dernières 5 lignes
-                        if line.strip():
-                            logger.info(f"   {line}")
-                else:
-                    logger.warning(f"⚠️ Échec migration cache (code {result.returncode})")
-                    if result.stderr:
-                        logger.error(f"   Erreur: {result.stderr[:200]}")
-            except subprocess.TimeoutExpired:
-                logger.error("❌ Migration cache timeout (>60s)")
-            except Exception as e:
-                logger.error(f"❌ Erreur migration cache : {e}")
-        else:
-            logger.warning(f"⚠️ Script de migration introuvable: {migrate_script}")
+        try:
+            logger.info("🔄 Initialisation UFA System...")
+            logger.info("🧩 Migration automatique du cache d'analyse...")
+            
+            # Importer et appeler la fonction de migration
+            sys.path.insert(0, '/app/backend')
+            from utils.migrate_old_analyses import migrate_and_report
+            
+            summary = migrate_and_report()
+            
+            # Afficher le résumé dans les logs
+            logger.info(summary)
+            logger.info(f"📁 Fichier final : /app/data/analysis_cache.jsonl")
+            
+        except ImportError as e:
+            logger.error(f"❌ Erreur import script migration : {e}")
+        except Exception as e:
+            logger.error(f"❌ Erreur migration cache : {e}")
+            import traceback
+            logger.error(traceback.format_exc())
     
     def _perform_initial_update(self):
         """Effectue une mise à jour initiale au démarrage (si nécessaire)"""
