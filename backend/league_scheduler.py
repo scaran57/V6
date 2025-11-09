@@ -212,6 +212,41 @@ class LeagueScheduler:
         except Exception as e:
             logger.error(f"❌ Erreur lors de la validation: {e}")
     
+    def _run_ufa_auto_validate(self):
+        """Exécute la validation automatique des scores réels"""
+        try:
+            logger.info("=" * 60)
+            logger.info("✅ VALIDATION AUTOMATIQUE DES SCORES RÉELS (UFA)")
+            logger.info("=" * 60)
+            
+            # Appeler le script ufa_auto_validate via subprocess
+            import subprocess
+            script_path = "/app/backend/ufa/ufa_auto_validate.py"
+            
+            result = subprocess.run(
+                [sys.executable, script_path],
+                capture_output=True,
+                text=True,
+                timeout=300
+            )
+            
+            if result.returncode == 0:
+                logger.info("✅ Validation automatique terminée avec succès")
+                # Log les dernières lignes du stdout
+                output_lines = result.stdout.strip().split('\n')
+                for line in output_lines[-5:]:  # Dernières 5 lignes
+                    if line.strip():
+                        logger.info(f"   {line}")
+            else:
+                logger.error(f"❌ Validation automatique échouée: rc={result.returncode}")
+                if result.stderr:
+                    logger.error(f"   Erreur: {result.stderr[:200]}")
+            
+            logger.info("=" * 60)
+            
+        except Exception as e:
+            logger.error(f"❌ Erreur lors de la validation automatique: {e}")
+    
     def _run_ufa_training(self):
         """Exécute l'entraînement UFA"""
         try:
