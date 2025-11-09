@@ -237,41 +237,17 @@ async def analyze(
         # Obtenir la diffExpected pour le calcul
         diff_expected = get_diff_expected()
         
-        # Extraire les noms d'équipes du match_name
-        home_team, away_team = None, None
-        if " - " in match_name and match_name != "Match non détecté":
-            parts = match_name.split(" - ")
-            if len(parts) == 2:
-                home_team, away_team = parts[0].strip(), parts[1].strip()
-        
-        # Auto-détection de la ligue si non spécifiée
-        detected_league = league
-        if not detected_league and home_team:
-            # Détection du bookmaker pour compétitions européennes
-            # Si bookmaker contient "Champions League" ou "Europa League"
-            if "champions" in bookmaker.lower() or "ucl" in bookmaker.lower():
-                detected_league = "ChampionsLeague"
-                logger.info(f"🏆 Compétition détectée: Champions League")
-            elif "europa" in bookmaker.lower() or "uel" in bookmaker.lower():
-                detected_league = "EuropaLeague"
-                logger.info(f"🏆 Compétition détectée: Europa League")
-            else:
-                # Mapper automatiquement selon les noms d'équipes pour ligues nationales
-                spanish_teams = ["Real Madrid", "Barcelona", "Atletico Madrid", "Valencia", "Sevilla", "Villarreal", 
-                               "Athletic Bilbao", "Real Sociedad", "Betis", "Getafe", "Granada", "Alaves",
-                               "Girona", "Mallorca", "Osasuna", "Rayo Vallecano", "Celta Vigo", "Cadiz", "Almeria", "Las Palmas"]
-                
-                english_teams = ["Manchester City", "Liverpool", "Arsenal", "Aston Villa", "Tottenham", 
-                               "Manchester United", "Newcastle", "Brighton", "West Ham", "Chelsea", "Brentford",
-                               "Wolves", "Crystal Palace", "Fulham", "Bournemouth", "Nottingham", "Everton", 
-                               "Luton", "Burnley", "Sheffield"]
-                
-                if any(team in home_team for team in spanish_teams):
-                    detected_league = "LaLiga"
-                    logger.info(f"🔍 Ligue auto-détectée: LaLiga (équipe: {home_team})")
-                elif any(team in home_team for team in english_teams):
-                    detected_league = "PremierLeague"
-                    logger.info(f"🔍 Ligue auto-détectée: PremierLeague (équipe: {home_team})")
+        # Utiliser la ligue détectée par le parser avancé
+        # Priorité: paramètre manuel > détection avancée > Unknown
+        if league:
+            detected_league = league
+            logger.info(f"🎯 Ligue spécifiée manuellement: {detected_league}")
+        elif detected_league and detected_league != "Unknown":
+            logger.info(f"✅ Ligue détectée automatiquement par parser avancé: {detected_league}")
+        else:
+            # Fallback sur Unknown si aucune détection
+            detected_league = "Unknown"
+            logger.warning(f"⚠️ Ligue non détectée - coefficients ne seront pas appliqués")
         
         # Prédire le score avec l'algorithme choisi
         use_league_coeff = not disable_league_coeff
