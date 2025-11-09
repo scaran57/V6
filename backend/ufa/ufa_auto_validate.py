@@ -3,29 +3,29 @@
 """
 UFA Auto-Validate & Auto-Train
 --------------------------------
-Scanne /app/data/real_scores.jsonl pour les matchs non validés,
-normalise les équipes, détecte la ligue (si missing), évite doublons,
-marque validated=True et déclenche un training via API ou script local.
+Vérifie automatiquement les nouveaux scores réels depuis l'API Football-Data.org,
+compare avec les matchs OCR avant-match, valide les correspondances,
+et déclenche l'apprentissage UFA.
+
+Intègre la clé API et un délai automatique entre chaque requête pour rester
+dans les limites du forfait gratuit.
 
 Usage:
     python /app/backend/ufa/ufa_auto_validate.py
-
-Configuration (env or edit constants below):
- - REAL_SCORES_FILE: path to real_scores.jsonl
- - TEAM_MAP_FILE: optional generated map for normalization
- - TRAIN_API_URL: if set, will POST JSON to this endpoint for training
- - TRAIN_SCRIPT: if set and TRAIN_API_URL not set, will call this script with subprocess
- - LOG_FILE: path for logs
 """
 
 import os
 import json
-import datetime
-import subprocess
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
-from fuzzywuzzy import process
+import time
+import logging
 import requests
+from datetime import datetime, timedelta
+from fuzzywuzzy import fuzz, process
+import sys
+from pathlib import Path
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # ---------- CONFIG ----------
 REAL_SCORES_FILE = Path("/app/data/real_scores.jsonl")
