@@ -1,42 +1,50 @@
 {
-  "timestamp": "2025-11-09T01:05:09.830133",
-  "matches_processed": 92,
+  "timestamp": "2025-11-09T14:46:13.851328",
+  "matches_processed": 143,
   "avg_loss": {
-    "LaLiga": 7.8563152714250775,
-    "PremierLeague": 1.7147984280919266,
-    "SerieA": 13.815510557964274,
-    "Eredivisie": 3.4250172490650206,
+    "LaLiga": 5.455930971772678,
+    "PremierLeague": 4.550829162402364,
+    "SerieA": 6.4807773304947816,
+    "Eredivisie": 3.0008042925768494,
     "ChampionsLeague": 4.472591358510306,
     "Unknown": 5.633772729117806,
-    "Ligue1": 1.8971199848858813
+    "Ligue1": 5.276328497652001,
+    "Campeonato Brasileiro Série A": 6.930837449284402,
+    "Bundesliga": 7.91106594925375,
+    "Ligue 1": 2.2072749131897207,
+    "Serie A": 2.8526717286454972,
+    "Championship": 5.012417373904343,
+    "Primera Division": 7.7651544930281,
+    "Primeira Liga": 4.925924188904688,
+    "Premier League": 13.815510557964274
   },
-  "global_avg_loss": 5.359102859842392,
+  "global_avg_loss": 5.381191767987484,
   "priors": {
     "draw_prior": 0.35,
-    "avg_goals": 2.181553680909051,
+    "avg_goals": 2.1161070704817795,
     "home_advantage": 1.05,
     "high_score_penalty": 0.75
   },
   "league_stats": {
     "LaLiga": {
-      "avg_loss": 7.8563152714250775,
-      "matches": 4,
+      "avg_loss": 5.455930971772678,
+      "matches": 7,
       "accuracy": 0.0
     },
     "PremierLeague": {
-      "avg_loss": 1.7147984280919266,
-      "matches": 1,
-      "accuracy": 100.0
+      "avg_loss": 4.550829162402364,
+      "matches": 5,
+      "accuracy": 20.0
     },
     "SerieA": {
-      "avg_loss": 13.815510557964274,
-      "matches": 1,
+      "avg_loss": 6.4807773304947816,
+      "matches": 3,
       "accuracy": 0.0
     },
     "Eredivisie": {
-      "avg_loss": 3.4250172490650206,
-      "matches": 8,
-      "accuracy": 37.5
+      "avg_loss": 3.0008042925768494,
+      "matches": 13,
+      "accuracy": 23.076923076923077
     },
     "ChampionsLeague": {
       "avg_loss": 4.472591358510306,
@@ -49,8 +57,48 @@
       "accuracy": 10.144927536231885
     },
     "Ligue1": {
-      "avg_loss": 1.8971199848858813,
+      "avg_loss": 5.276328497652001,
+      "matches": 7,
+      "accuracy": 14.285714285714285
+    },
+    "Campeonato Brasileiro Série A": {
+      "avg_loss": 6.930837449284402,
+      "matches": 5,
+      "accuracy": 0.0
+    },
+    "Bundesliga": {
+      "avg_loss": 7.91106594925375,
+      "matches": 6,
+      "accuracy": 16.666666666666664
+    },
+    "Ligue 1": {
+      "avg_loss": 2.2072749131897207,
+      "matches": 1,
+      "accuracy": 0.0
+    },
+    "Serie A": {
+      "avg_loss": 2.8526717286454972,
+      "matches": 3,
+      "accuracy": 0.0
+    },
+    "Championship": {
+      "avg_loss": 5.012417373904343,
+      "matches": 12,
+      "accuracy": 16.666666666666664
+    },
+    "Primera Division": {
+      "avg_loss": 7.7651544930281,
+      "matches": 2,
+      "accuracy": 50.0
+    },
+    "Primeira Liga": {
+      "avg_loss": 4.925924188904688,
       "matches": 4,
+      "accuracy": 25.0
+    },
+    "Premier League": {
+      "avg_loss": 13.815510557964274,
+      "matches": 1,
       "accuracy": 0.0
     }
   }
