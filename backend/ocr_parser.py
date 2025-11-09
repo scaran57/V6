@@ -318,11 +318,29 @@ def extract_match_info(image_path: str,
         home = t1
         away = t2
     
-    # Détection de la ligue (priorité: manuel > détection > Unknown)
+    # Détection de la ligue - ORDRE DE PRIORITÉ MODIFIÉ:
+    # 1. Manuel (override)
+    # 2. Détection dans le texte OCR (NOUVEAU - PRIORITÉ MAXIMALE)
+    # 3. Mapping par équipe (fallback)
+    # 4. Unknown
+    
     if manual_league:
         league = manual_league
+        print(f"[OCR Parser] Ligue manuelle : {league}")
     else:
-        league = detect_league_from_teams(home, away)
+        # NOUVEAU: Chercher d'abord dans le texte OCR
+        league_from_text = detect_league_from_text(text)
+        
+        if league_from_text:
+            league = league_from_text
+            print(f"[OCR Parser] ✅ Ligue détectée dans le texte : {league}")
+        else:
+            # Fallback sur le mapping par équipe
+            league = detect_league_from_teams(home, away)
+            if league and league != "Unknown":
+                print(f"[OCR Parser] ⚠️ Ligue déduite des équipes : {league}")
+            else:
+                print(f"[OCR Parser] ❌ Ligue non détectée : Unknown")
     
     return {
         "home_team": home,
