@@ -43,5 +43,8 @@
   "PrimeiraLiga:CD Tondela OU": 0.8765,
   "PrimeiraLiga:@ Guimaraes": 0.85,
   "Ligue1:Lorient 8": 1.1412,
-  "Ligue1:@ Toulouse": 0.85
+  "Ligue1:@ Toulouse": 0.85,
+  "SerieA:Inter Milan": 1.0158,
+  "Bundesliga:Bayern Munich": 0.9294,
+  "Ligue1:Paris Saint-Germain": 0.9294
 }
