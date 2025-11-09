@@ -243,6 +243,47 @@ def detect_league_from_teams(home: Optional[str], away: Optional[str]) -> str:
     
     return leagues[0]
 
+def detect_league_from_text(text: str) -> Optional[str]:
+    """
+    Détecte la ligue à partir du texte OCR brut en cherchant les marqueurs.
+    Retourne le nom de la ligue ou None si aucune détection.
+    PRIORITÉ ABSOLUE sur le mapping par équipe.
+    """
+    if not text:
+        return None
+    
+    text_lower = text.lower()
+    
+    # Chercher chaque pattern de ligue
+    for league_name, patterns in LEAGUE_DETECTION_PATTERNS.items():
+        for pattern in patterns:
+            if re.search(pattern, text_lower):
+                return league_name
+    
+    return None
+
+def detect_all_leagues_in_text(text: str) -> List[Tuple[str, int]]:
+    """
+    Détecte TOUTES les ligues présentes dans le texte avec leur position.
+    Crucial pour les images avec plusieurs matchs de différentes ligues.
+    """
+    if not text:
+        return []
+    
+    text_lower = text.lower()
+    detected = []
+    
+    for league_name, patterns in LEAGUE_DETECTION_PATTERNS.items():
+        for pattern in patterns:
+            matches = re.finditer(pattern, text_lower)
+            for match in matches:
+                detected.append((league_name, match.start(), match.group()))
+    
+    # Trier par position dans le texte
+    detected.sort(key=lambda x: x[1])
+    
+    return detected
+
 # --- API FUNCTION ---
 def extract_match_info(image_path: str,
                        manual_home: Optional[str] = None,
