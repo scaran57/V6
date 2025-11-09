@@ -1009,6 +1009,43 @@ agent_communication:
       
   - agent: "main"
     message: |
+      ✅ FILTRAGE INTELLIGENT OCR IMPLÉMENTÉ - PRÊT POUR TESTS BACKEND
+      
+      Tâche complétée: Implémenter un filtre intelligent dans ocr_parser.py pour nettoyer les noms d'équipes
+      
+      Problème résolu:
+      - Horaires (À 16h30, 20:45) détectés comme noms d'équipes
+      - Éléments d'interface (Paris Pari, Stats, Compos) inclus dans les noms
+      - Ligues incorrectement assignées malgré marqueurs clairs
+      
+      Solution:
+      1. Amélioration de clean_team_name() avec 9 étapes de nettoyage
+      2. Intégration automatique dans extract_teams_from_text()
+      3. Préservation des marqueurs de ligue dans le texte global
+      4. Filtrage uniquement des noms d'équipes extraits
+      
+      Tests manuels validés:
+      ✅ Image Liga Portugal (utilisateur): AVS Futebol vs Gil Vicente
+      ✅ API /api/analyze: matchName propre, league correcte, coeffs appliqués
+      ✅ Horaires et interface filtrés
+      
+      Tests requis (testing agent):
+      1. Tester /api/analyze avec plusieurs images de différentes ligues
+      2. Vérifier que les noms d'équipes sont propres (pas d'horaires, pas d'interface)
+      3. Vérifier que les ligues sont correctement détectées
+      4. Vérifier que les coefficients sont appliqués
+      5. Tests de régression: /api/health, /api/diff, /api/learn
+      6. Vérifier logs backend pour confirmer détection
+      
+      Focus tests:
+      - Images avec horaires visibles (À 16h30, 20:45, etc.)
+      - Images avec interface bookmaker (Paris, Stats, Compos)
+      - Images de différentes ligues (Ligue1, LaLiga, PremierLeague, PrimeiraLiga, etc.)
+      
+      Backend redémarré: ✅
+      Aucune erreur au démarrage: ✅
+  - agent: "main"
+    message: |
       ✅ PHASE 2 COMPLÈTE - 5 NOUVELLES LIGUES EUROPÉENNES INTÉGRÉES ET FONCTIONNELLES
       
       RÉSUMÉ DE L'IMPLÉMENTATION:
