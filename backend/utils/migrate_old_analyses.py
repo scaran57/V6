@@ -4,11 +4,13 @@
 Migration des anciennes analyses vers le cache unifié UFA.
 Fusionne : analyzer_uefa.jsonl, production_cache.jsonl → analysis_cache.jsonl
 Évite les doublons automatiquement.
+Génère un rapport statistique détaillé.
 """
 
 import json
 from pathlib import Path
 from datetime import datetime
+from collections import Counter
 
 BASE = Path("/app/data")
 TARGET = BASE / "analysis_cache.jsonl"
