@@ -351,10 +351,10 @@ def extract_match_info(image_path: str,
       'timestamp': iso
     }
     """
-    # OCR du texte
+    # OCR du texte (GARDE le texte complet avec marqueurs de ligues)
     text = ocr_read(image_path)
     
-    # Extraction du score
+    # Détection du score (optionnel)
     home_goals, away_goals = parse_score(text)
     
     # Utiliser les valeurs manuelles si fournies
