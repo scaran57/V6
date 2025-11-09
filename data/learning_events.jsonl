@@ -74,3 +74,4 @@
 {"ts": 1762642126.6388323, "iso": "2025-11-08T22:48:46.638832Z", "match_id": "learn_1762642126", "home": "Unknown", "away": "Unknown", "predicted": "3-2", "real": "1-1", "agent_id": "api_learn_endpoint", "schema_version": 2}
 {"ts": 1762642165.0560913, "iso": "2025-11-08T22:49:25.056091Z", "match_id": "learn_1762642165", "home": "Unknown", "away": "Unknown", "predicted": "3-2", "real": "0-1", "agent_id": "api_learn_endpoint", "schema_version": 2}
 {"ts": 1762642211.8817935, "iso": "2025-11-08T22:50:11.881793Z", "match_id": "learn_1762642211", "home": "Unknown", "away": "Unknown", "predicted": "2-3", "real": "1-2", "agent_id": "api_learn_endpoint", "schema_version": 2}
+{"ts": 1762650363.808002, "iso": "2025-11-09T01:06:03.808002Z", "match_id": "learn_1762650363", "home": "Unknown", "away": "Unknown", "predicted": "2-1", "real": "1-1", "agent_id": "api_learn_endpoint", "schema_version": 2}
