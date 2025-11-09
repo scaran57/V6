@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-08T23:58:18.354442",
+  "timestamp": "2025-11-09T01:05:09.830133",
   "matches_processed": 92,
   "avg_loss": {
     "LaLiga": 7.8563152714250775,
@@ -13,7 +13,7 @@
   "global_avg_loss": 5.359102859842392,
   "priors": {
     "draw_prior": 0.35,
-    "avg_goals": 2.2490244133083,
+    "avg_goals": 2.181553680909051,
     "home_advantage": 1.05,
     "high_score_penalty": 0.75
   },
