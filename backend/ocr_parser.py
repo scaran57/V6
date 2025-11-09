@@ -179,6 +179,8 @@ def extract_teams_from_text(text: str) -> Tuple[Optional[str], Optional[str]]:
     1) Séparateurs courants (" - ", " vs ", etc.)
     2) Tokens connus directement
     3) Fuzzy matching
+    
+    Applique le nettoyage automatique sur les noms extraits.
     """
     if not text:
         return None, None
@@ -191,7 +193,13 @@ def extract_teams_from_text(text: str) -> Tuple[Optional[str], Optional[str]]:
         if sep in raw:
             parts = [p.strip() for p in raw.split(sep) if p.strip()]
             if len(parts) >= 2:
-                return parts[0], parts[1]
+                # NOUVEAU: Nettoyer les noms extraits
+                home_cleaned = clean_team_name(parts[0])
+                away_cleaned = clean_team_name(parts[1])
+                
+                # Vérifier que les noms nettoyés sont valides
+                if home_cleaned and away_cleaned:
+                    return home_cleaned, away_cleaned
     
     # Stratégie 2: tokens directs
     low = raw.lower()
@@ -203,14 +211,21 @@ def extract_teams_from_text(text: str) -> Tuple[Optional[str], Optional[str]]:
                 break
     
     if len(found) == 2:
-        return found[0].title(), found[1].title()
+        # Nettoyer les noms
+        home_cleaned = clean_team_name(found[0].title())
+        away_cleaned = clean_team_name(found[1].title())
+        if home_cleaned and away_cleaned:
+            return home_cleaned, away_cleaned
     
     # Stratégie 3: fuzzy matching
     candidates = process.extract(low, TEAM_KEYS, limit=5)
     filtered = [c[0] for c in candidates if c[1] >= 70]
     
     if len(filtered) >= 2:
-        return filtered[0].title(), filtered[1].title()
+        home_cleaned = clean_team_name(filtered[0].title())
+        away_cleaned = clean_team_name(filtered[1].title())
+        if home_cleaned and away_cleaned:
+            return home_cleaned, away_cleaned
     
     return None, None
 
