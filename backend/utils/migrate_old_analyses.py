@@ -14,6 +14,7 @@ from collections import Counter
 
 BASE = Path("/app/data")
 TARGET = BASE / "analysis_cache.jsonl"
+REPORT_LOG = Path("/app/logs/migration_report.log")
 OLD_FILES = [
     BASE / "analyzer_uefa.jsonl",
     BASE / "production_cache.jsonl",
