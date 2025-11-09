@@ -610,6 +610,60 @@ agent_communication:
           - The integration maintains backward compatibility with existing endpoints
           
           CONCLUSION: The advanced OCR parser integration is FULLY FUNCTIONAL and successfully resolves the original issue where league coefficients were not being applied. The system now correctly detects teams and leagues from bookmaker images and applies appropriate coefficients during prediction calculations.
+      - working: true
+        agent: "main"
+        comment: |
+          ✅ FILTRAGE INTELLIGENT OCR IMPLÉMENTÉ ET TESTÉ
+          
+          Problème résolu:
+          - OCR détectait des horaires (ex: "À 16h30") comme noms d'équipes
+          - Éléments d'interface ("Paris", "Pari sur mesure", "Stats", "Compos") détectés comme équipes
+          - Ligues mal assignées malgré la présence de marqueurs clairs
+          
+          Solution implémentée dans /app/backend/ocr_parser.py:
+          
+          1. Amélioration de clean_team_name():
+             - Filtrage des marqueurs de ligue (Liga Portugal, Ligue 1, etc.)
+             - Suppression des horaires (tous formats: 16h30, À 16h30, 20:45)
+             - Filtrage des éléments d'interface bookmaker (Paris Pari, Stats, Compos, Cote)
+             - Suppression des symboles parasites (©, ®, ™, §, etc.)
+             - Coupure au premier pattern de données (scores/cotes)
+             - Limitation à 5 mots max (nom d'équipe typique)
+          
+          2. Intégration du nettoyage dans extract_teams_from_text():
+             - Appliqué après chaque stratégie d'extraction (séparateurs, tokens, fuzzy)
+             - Validation que les noms nettoyés sont valides avant de les retourner
+          
+          3. Ordre de priorité préservé pour détection de ligue:
+             - 1. Manuel (si fourni)
+             - 2. Détection dans texte OCR brut (detect_league_from_text) ⭐ PRIORITÉ
+             - 3. Mapping par équipe (fallback)
+             - 4. Unknown
+          
+          Tests manuels réussis:
+          ✅ Image Liga Portugal (fournie par utilisateur):
+             - Home: "AVS Futebol" (propre, "Liga Portugal" filtré)
+             - Away: "Gil Vicente" (propre, symboles et interface filtrés)
+             - League: "PrimeiraLiga" (correct)
+             - Horaire "À 16h30": Filtré ✅
+             - Interface "Paris Pari sur mesure Stats Compos": Filtrée ✅
+          
+          ✅ Test API /api/analyze:
+             - matchName: "AVS Futebol - Gil Vicente"
+             - league: "PrimeiraLiga"
+             - leagueCoeffsApplied: true
+             - Aucun texte parasite dans les noms d'équipes
+          
+          Patterns filtrés (liste complète):
+          - Horaires: À 16h30, 16h30, 20:45, etc.
+          - Interface: Paris, Pari sur mesure, Stats, Compos, Cote, Parier
+          - Publicitaire: Bonus, Offre, Gratuit, Promo
+          - Marqueurs de ligue dans noms d'équipes (préservés dans texte global)
+          - Symboles: ©, ®, ™, §, @, #, $, %, &, *
+          - Codes techniques: MT, OCH, etc.
+          
+          Backend redémarré avec succès: ✅
+          Status: PRÊT POUR TESTS COMPLETS ✅
 
   - task: "Phase 2 - Intégration de 5 nouvelles ligues européennes (Serie A, Bundesliga, Ligue 1, Primeira Liga, Ligue 2)"
     implemented: true
