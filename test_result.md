@@ -396,11 +396,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Phase 2 - Intégration complète des 5 nouvelles ligues européennes - COMPLETED ✅"
+    - "Intégration OCR Parser Avancé - Détection Robuste Équipes et Ligues"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
-  last_test_results: "Phase 2 integration fully tested and working - 100% success rate. All 5 new leagues (Serie A, Bundesliga, Ligue 1, Primeira Liga, Ligue 2) successfully integrated with correct coefficient calculations (0.85-1.30). Data structure issue resolved. Scheduler integration working. All regression tests passing."
+  last_test_results: "Integration of advanced OCR parser (ocr_parser.py) completed. Need to test if league coefficients are now correctly applied. Focus on team/league detection and verification of league_coeffs_applied flag in API responses."
 
 agent_communication:
   - agent: "main"
