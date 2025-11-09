@@ -36,6 +36,9 @@ import league_coeff
 import league_scheduler
 import prediction_validator
 
+# Import du unified analyzer
+from ufa.unified_analyzer import analyze_image, ANALYSIS_CACHE, REAL_SCORES
+
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
