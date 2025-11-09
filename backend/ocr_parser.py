@@ -378,17 +378,28 @@ def clean_team_name(name: str) -> str:
     # ÉTAPE 4: Supprimer les nombres isolés au début
     cleaned = re.sub(r'^\s*\d+\s+', '', cleaned)
     
-    # ÉTAPE 5: Nettoyer les espaces multiples et trim
+    # ÉTAPE 5: Supprimer les caractères isolés non-alphabétiques à la fin
+    # Retire les patterns comme "e ' = Li §"
+    cleaned = re.sub(r'\s+[^\w\s]{1,3}(\s+[^\w\s]{1,3})*$', '', cleaned)
+    cleaned = re.sub(r'\s+[a-zA-Z]\s+[^\w\s].*$', '', cleaned)  # "e ' ="
+    
+    # ÉTAPE 6: Nettoyer les espaces multiples et trim
     cleaned = re.sub(r'\s+', ' ', cleaned).strip()
     
-    # ÉTAPE 6: Limiter à 5 premiers mots (un nom d'équipe typique)
+    # ÉTAPE 7: Limiter à 5 premiers mots (un nom d'équipe typique)
     words = cleaned.split()
     if len(words) > 5:
         cleaned = ' '.join(words[:5])
     
-    # ÉTAPE 7: Validation finale
+    # ÉTAPE 8: Supprimer les mots d'un seul caractère à la fin
+    words = cleaned.split()
+    while words and len(words[-1]) == 1 and words[-1].lower() not in ['o', 'fc', 'sc', 'as']:
+        words.pop()
+    cleaned = ' '.join(words)
+    
+    # ÉTAPE 9: Validation finale
     # Si le résultat est trop court ou juste des symboles, retourner vide
-    if len(cleaned) < 3 or cleaned in ['<', '>', '-', '_', 'o', 'Q', 'D', 'G', 'vs', 'e']:
+    if len(cleaned) < 3 or cleaned.lower() in ['<', '>', '-', '_', 'o', 'q', 'd', 'g', 'vs', 'e', 'li']:
         return ""
     
     return cleaned
