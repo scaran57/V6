@@ -15,10 +15,14 @@ from PIL import Image, ImageEnhance, ImageFilter
 import pytesseract
 import json
 import datetime
+import cv2
+import numpy as np
 
 # --- CONFIG ---
 pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 SCORE_PATTERN = re.compile(r"\b([0-9])\s*[-:]\s*([0-9])\b")
+OCR_MODE = os.getenv("OCR_MODE", "optimized")  # "optimized" ou "legacy"
+GOOD_VARIANTS = ["orig", "resize_2x", "sharpen"]
 
 # Patterns de détection de ligues dans le texte OCR
 LEAGUE_DETECTION_PATTERNS = {
