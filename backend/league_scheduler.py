@@ -35,8 +35,10 @@ class LeagueScheduler:
         self.is_running = False
         self.thread = None
         self.last_update = None
+        self.last_fifa_update = None  # Pour les mises à jour FIFA hebdomadaires
         
         logger.info(f"🕐 Planificateur initialisé: mise à jour quotidienne à {update_time_hour:02d}:{update_time_minute:02d}")
+        logger.info(f"🌍 Mise à jour FIFA: chaque lundi à 03:05")
     
     def start(self):
         """Démarre le planificateur dans un thread séparé"""
