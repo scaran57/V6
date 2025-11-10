@@ -516,7 +516,7 @@ def analyze_image_auto(img_path: str, team_map: Dict[str, str], use_crop: bool =
                     team_score += 1
             
             # Score de confiance
-            confidence = team_score * 10 + len(scores) * 5
+            confidence = team_score * 10 + len(scores) * 5 + best_line_score
             
             if confidence > best_score:
                 best_score = confidence
@@ -525,7 +525,8 @@ def analyze_image_auto(img_path: str, team_map: Dict[str, str], use_crop: bool =
                     "text": text,
                     "cleaned": cleaned,
                     "scores": scores,
-                    "confidence": confidence
+                    "confidence": confidence,
+                    "best_match_line": best_line  # Ligne avec les équipes
                 }
         except Exception as e:
             print(f"[OCR] Erreur variant {v}: {e}")
