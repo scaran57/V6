@@ -1,13 +1,15 @@
 {
-  "Ligue1": 1.0,
-  "LaLiga": 1.0,
-  "PremierLeague": 1.0,
-  "Bundesliga": 1.0,
-  "SerieA": 1.0,
-  "Championship": 0.95,
-  "Eredivisie": 0.97,
-  "PrimeiraLiga": 0.96,
-  "WorldCup": 1.1,
-  "Euro": 1.08,
-  "NationsLeague": 1.05
+    "Ligue1": 1.0072,
+    "LaLiga": 1.0012,
+    "PremierLeague": 1.0,
+    "Bundesliga": 0.9952,
+    "SerieA": 0.9912,
+    "Championship": 0.95,
+    "Eredivisie": 0.97,
+    "PrimeiraLiga": 0.96,
+    "WorldCup": 1.1,
+    "Euro": 1.08,
+    "NationsLeague": 1.05,
+    "EuropaLeague": 1.03,
+    "ChampionsLeague": 1.0552
 }
