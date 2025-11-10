@@ -564,7 +564,7 @@ def extract_match_info(image_path: str,
     if OCR_MODE == "optimized":
         try:
             # Charger le team_map pour l'analyse optimisée
-            team_map = TEAM_TO_LEAGUE_MAP
+            team_map = TEAM_LEAGUE_MAP
             
             # Analyse avec variantes optimisées
             ocr_result = analyze_image_auto(image_path, team_map)
