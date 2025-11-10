@@ -364,51 +364,96 @@ def get_coeffs_for_match(home_team, away_team, league):
 # AJUSTEMENT AUTOMATIQUE DES COEFFICIENTS SELON PERFORMANCES
 # =============================================================================
 
-COEFF_PATH = "/app/data/league_coefficients.json"
+from threading import Lock
+from datetime import datetime
+
+# 🔒 Sécurité thread-safe pour éviter les écritures concurrentes
+_coeff_lock = Lock()
+
+# 📍 Fichier de stockage persistant
+COEFF_PATH = os.getenv("LEAGUE_COEFF_FILE", "/app/data/league_coefficients.json")
 LOG_COEFF = "/app/logs/coeff_adjustment.log"
+
+# 🔧 Valeurs par défaut en cas de première initialisation
+DEFAULT_COEFFS = {
+    "Ligue1": 1.00,
+    "LaLiga": 1.00,
+    "Bundesliga": 1.00,
+    "SerieA": 1.00,
+    "PremierLeague": 1.00,
+    "PrimeiraLiga": 0.96,
+    "Championship": 0.95,
+    "Eredivisie": 0.97,
+    "WorldCup": 1.10,
+    "Euro": 1.08,
+    "EuropaLeague": 1.03,
+    "ChampionsLeague": 1.05,
+    "NationsLeague": 1.05
+}
+
+# 🔁 Limites d'ajustement
+MIN_COEFF = 0.80
+MAX_COEFF = 1.35
+
 
 def load_league_coeffs():
     """
-    Charge les coefficients de ligue depuis le fichier JSON.
+    Charge les coefficients depuis le fichier JSON ou initialise avec les valeurs par défaut.
+    Thread-safe avec merge automatique des nouvelles ligues.
     
     Returns:
         dict: Coefficients par ligue
     """
     if not os.path.exists(COEFF_PATH):
-        # Créer fichier initial si n'existe pas
-        initial_coeffs = {
-            "Ligue1": 1.0,
-            "LaLiga": 1.0,
-            "PremierLeague": 1.0,
-            "Bundesliga": 1.0,
-            "SerieA": 1.0,
-            "Championship": 0.95,
-            "Eredivisie": 0.97,
-            "PrimeiraLiga": 0.96,
-            "WorldCup": 1.1,
-            "Euro": 1.08,
-            "NationsLeague": 1.05
-        }
-        save_league_coeffs(initial_coeffs)
-        return initial_coeffs
+        logger.info(f"📄 Fichier {COEFF_PATH} non trouvé — création avec valeurs par défaut.")
+        save_league_coeffs(DEFAULT_COEFFS)
+        return DEFAULT_COEFFS
     
-    with open(COEFF_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(COEFF_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        # Merge pour s'assurer que toutes les ligues sont présentes
+        for k, v in DEFAULT_COEFFS.items():
+            data.setdefault(k, v)
+        
+        return data
+    except Exception as e:
+        logger.error(f"❌ Échec chargement coefficients: {e}")
+        return DEFAULT_COEFFS
 
-def save_league_coeffs(coeffs):
+
+def save_league_coeffs(coeffs: dict):
     """
-    Sauvegarde les coefficients de ligue dans le fichier JSON.
+    Sauvegarde les coefficients actuels dans le fichier JSON.
+    Écrit de manière sécurisée avec verrouillage pour éviter les conflits d'accès.
+    Utilise une écriture atomique (tmp file + os.replace).
     
     Args:
         coeffs: Dictionnaire des coefficients
     """
-    Path(COEFF_PATH).parent.mkdir(parents=True, exist_ok=True)
-    with open(COEFF_PATH, "w", encoding="utf-8") as f:
-        json.dump(coeffs, f, indent=2, ensure_ascii=False)
+    with _coeff_lock:
+        # Créer le dossier parent si nécessaire
+        Path(COEFF_PATH).parent.mkdir(parents=True, exist_ok=True)
+        
+        # Écriture atomique via fichier temporaire
+        tmp_file = COEFF_PATH + ".tmp"
+        try:
+            with open(tmp_file, "w", encoding="utf-8") as f:
+                json.dump(coeffs, f, indent=4, ensure_ascii=False)
+            
+            # Remplacer atomiquement l'ancien fichier
+            os.replace(tmp_file, COEFF_PATH)
+            logger.info(f"💾 Coefficients sauvegardés → {COEFF_PATH}")
+        except Exception as e:
+            logger.error(f"❌ Sauvegarde échouée: {e}")
+            # Nettoyer le fichier temporaire en cas d'erreur
+            if os.path.exists(tmp_file):
+                os.remove(tmp_file)
+
 
 def log_coeff(msg):
     """Log un message d'ajustement de coefficient."""
-    from datetime import datetime
     Path(LOG_COEFF).parent.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_msg = f"[{timestamp}] {msg}"
@@ -416,9 +461,10 @@ def log_coeff(msg):
         f.write(log_msg + "\n")
     print(log_msg)
 
+
 def update_league_coefficients(perf_file):
     """
-    Met à jour les coefficients de ligue selon les performances du modèle.
+    Ajuste automatiquement les coefficients selon la performance de chaque ligue.
     
     Logique:
     - Compare la performance de chaque ligue à la moyenne globale
@@ -427,7 +473,7 @@ def update_league_coefficients(perf_file):
     - Ajustement progressif: ±0.002 par point de pourcentage
     
     Args:
-        perf_file: Chemin vers performance_summary.json
+        perf_file: Chemin vers performance_summary.json (dict ou str)
     
     Returns:
         dict: Nouveaux coefficients
@@ -436,13 +482,19 @@ def update_league_coefficients(perf_file):
     log_coeff("⚙️  AJUSTEMENT AUTOMATIQUE DES COEFFICIENTS")
     log_coeff("=" * 70)
     
-    if not os.path.exists(perf_file):
-        log_coeff("❌ Aucun rapport de performance trouvé.")
+    # Accepter soit un dict directement, soit un chemin de fichier
+    if isinstance(perf_file, dict):
+        perf_data = perf_file
+    elif isinstance(perf_file, str):
+        if not os.path.exists(perf_file):
+            log_coeff("❌ Aucun rapport de performance trouvé.")
+            return {}
+        
+        with open(perf_file, "r", encoding="utf-8") as f:
+            perf_data = json.load(f)
+    else:
+        log_coeff("❌ Format de perf_file invalide.")
         return {}
-    
-    # Charger les performances
-    with open(perf_file, "r", encoding="utf-8") as f:
-        perf_data = json.load(f)
     
     if not perf_data:
         log_coeff("❌ Rapport de performance vide.")
@@ -452,7 +504,11 @@ def update_league_coefficients(perf_file):
     coeffs = load_league_coeffs()
     
     # Calculer la moyenne globale des performances
-    accuracies = [v["accuracy"] for v in perf_data.values()]
+    accuracies = [v.get("accuracy", 0.0) for v in perf_data.values() if isinstance(v, dict)]
+    if not accuracies:
+        log_coeff("⚠️  Aucune donnée de performance trouvée — aucun ajustement effectué.")
+        return coeffs
+    
     avg_accuracy = sum(accuracies) / len(accuracies)
     
     log_coeff(f"📊 Moyenne globale des performances: {avg_accuracy:.1f}%")
@@ -461,33 +517,33 @@ def update_league_coefficients(perf_file):
     updated = 0
     
     for league, stats in perf_data.items():
-        accuracy = stats["accuracy"]
-        matches = stats["matches"]
+        accuracy = stats.get("accuracy", 0.0)
+        matches = stats.get("matches", 0)
         
         # Calculer l'écart par rapport à la moyenne
         diff = accuracy - avg_accuracy
         
         # Ajustement progressif: ±0.002 par point de pourcentage
-        # (ex: si +5% au-dessus de la moyenne → +0.01)
-        adjust = round(diff * 0.002, 3)
+        adjust = round(diff * 0.002, 4)
         
         # Obtenir le coefficient actuel (ou 1.0 par défaut)
         current_coeff = coeffs.get(league, 1.0)
         
         # Calculer le nouveau coefficient
-        new_coeff = round(current_coeff + adjust, 3)
+        new_coeff = round(current_coeff + adjust, 4)
         
-        # Limiter les coefficients entre 0.80 et 1.35
-        new_coeff = max(0.80, min(1.35, new_coeff))
+        # Limiter les coefficients entre MIN_COEFF et MAX_COEFF
+        new_coeff = max(MIN_COEFF, min(MAX_COEFF, new_coeff))
         
-        # Sauvegarder
-        coeffs[league] = new_coeff
-        updated += 1
-        
-        # Log l'ajustement
-        log_coeff(f"⚙️  {league}: {accuracy:.1f}% ({matches} matchs) → {current_coeff:.3f} → {new_coeff:.3f} ({adjust:+.3f})")
+        # Ne sauvegarder que si l'ajustement est significatif
+        if abs(adjust) > 0.0005:
+            coeffs[league] = new_coeff
+            updated += 1
+            
+            # Log l'ajustement
+            log_coeff(f"⚙️  {league}: {accuracy:.1f}% ({matches} matchs) → {current_coeff:.3f} → {new_coeff:.3f} ({adjust:+.4f})")
     
-    # Sauvegarder les nouveaux coefficients
+    # 🔄 Sauvegarde automatique après ajustement
     save_league_coeffs(coeffs)
     
     log_coeff("=" * 70)
