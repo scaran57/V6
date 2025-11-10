@@ -1,0 +1,26 @@
+{
+  "Ligue1": {
+    "accuracy": 0.0,
+    "matches": 8,
+    "correct": 0,
+    "avg_error": 0
+  },
+  "LaLiga": {
+    "accuracy": 0.0,
+    "matches": 7,
+    "correct": 0,
+    "avg_error": 0
+  },
+  "Bundesliga": {
+    "accuracy": 0.0,
+    "matches": 3,
+    "correct": 0,
+    "avg_error": 0
+  },
+  "PrimeiraLiga": {
+    "accuracy": 0.0,
+    "matches": 6,
+    "correct": 0,
+    "avg_error": 0
+  }
+}
