@@ -290,3 +290,70 @@ def get_team_coeff(team_name, league_name=None):
     european_bonus = 1.05
     logger.info(f"🌍 {team_name} non trouvée dans les ligues nationales → bonus européen={european_bonus}")
     return {"coefficient": european_bonus, "source": "european_fallback"}
+
+
+# =============================================================================
+# COEFFICIENTS FIFA POUR MATCHS INTERNATIONAUX
+# =============================================================================
+
+def get_coeffs_for_match(home_team, away_team, league):
+    """
+    Retourne les coefficients pour un match, en détectant automatiquement
+    s'il s'agit d'un match international (FIFA) ou d'un match de clubs.
+    
+    Si la ligue est internationale (WorldCup, Qualification, NationsLeague), 
+    on utilise les coefficients FIFA mondiaux.
+    Sinon on utilise les coefficients de ligue existants.
+    
+    Args:
+        home_team: Nom équipe domicile
+        away_team: Nom équipe extérieur
+        league: Nom de la ligue/compétition
+    
+    Returns:
+        tuple: (home_coeff, away_coeff)
+    
+    Examples:
+        >>> get_coeffs_for_match("France", "Portugal", "WorldCup")
+        (1.28, 1.25)  # Coefficients FIFA
+        
+        >>> get_coeffs_for_match("Real Madrid", "Barcelona", "LaLiga")
+        (1.30, 1.28)  # Coefficients de ligue
+    """
+    # Marqueurs pour détecter les compétitions internationales
+    international_markers = {
+        "world", "worldcup", "qualification", "fifa", 
+        "international", "nations", "euro", "copa america"
+    }
+    
+    # Vérifier si c'est une compétition internationale
+    is_international = False
+    if league:
+        league_lower = league.lower()
+        is_international = any(marker in league_lower for marker in international_markers)
+    
+    if is_international:
+        # Utiliser les coefficients FIFA
+        try:
+            from ufa.world_coeffs import get_world_coeff
+            home_coeff = get_world_coeff(home_team)
+            away_coeff = get_world_coeff(away_team)
+            logger.info(f"🌍 Match international: {home_team} ({home_coeff}) vs {away_team} ({away_coeff})")
+            return home_coeff, away_coeff
+        except Exception as e:
+            logger.error(f"Erreur coefficients FIFA: {e}, utilisation fallback")
+            return FALLBACK_COEF, FALLBACK_COEF
+    
+    # Sinon, utiliser les coefficients de ligue classiques
+    try:
+        home_result = get_team_coeff(home_team, league)
+        away_result = get_team_coeff(away_team, league)
+        
+        home_coeff = home_result.get("coefficient", FALLBACK_COEF)
+        away_coeff = away_result.get("coefficient", FALLBACK_COEF)
+        
+        logger.info(f"🏆 Match de clubs: {home_team} ({home_coeff}) vs {away_team} ({away_coeff})")
+        return home_coeff, away_coeff
+    except Exception as e:
+        logger.error(f"Erreur coefficients de ligue: {e}")
+        return FALLBACK_COEF, FALLBACK_COEF
