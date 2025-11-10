@@ -76,12 +76,18 @@ class LeagueScheduler:
                 now = datetime.now()
                 current_time = now.time()
                 
-                # Vérifier si c'est l'heure de la mise à jour
+                # Vérifier si c'est l'heure de la mise à jour quotidienne
                 if self._should_update(current_time):
-                    logger.info("⏰ Heure de mise à jour atteinte")
+                    logger.info("⏰ Heure de mise à jour quotidienne atteinte")
                     self._perform_update()
                     
                     # Attendre au moins 2 minutes pour éviter les doubles mises à jour
+                    time.sleep(120)
+                
+                # Vérifier si c'est l'heure de la mise à jour FIFA hebdomadaire (lundi 03:05)
+                elif self._should_update_fifa(now):
+                    logger.info("⏰ Heure de mise à jour FIFA hebdomadaire atteinte (lundi)")
+                    self._update_fifa_rankings()
                     time.sleep(120)
                 else:
                     # Vérifier toutes les 60 secondes
