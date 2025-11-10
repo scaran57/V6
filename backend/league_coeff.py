@@ -488,6 +488,65 @@ def update_league_coefficients(perf_file):
     elif isinstance(perf_file, str):
         if not os.path.exists(perf_file):
             log_coeff("❌ Aucun rapport de performance trouvé.")
+
+
+# =============================================================================
+# TEST MANUEL DU SYSTÈME
+# =============================================================================
+
+if __name__ == "__main__":
+    print("=" * 70)
+    print("🧪 TEST DU SYSTÈME DE SAUVEGARDE AUTOMATIQUE DES COEFFICIENTS")
+    print("=" * 70)
+    print()
+    
+    # Test 1: Chargement/création des coefficients
+    print("1️⃣ Test chargement des coefficients:")
+    coeffs = load_league_coeffs()
+    print(f"   ✅ {len(coeffs)} ligues chargées")
+    print(f"   📊 Échantillon: Ligue1={coeffs.get('Ligue1')}, LaLiga={coeffs.get('LaLiga')}")
+    print()
+    
+    # Test 2: Ajustement avec performances simulées
+    print("2️⃣ Test ajustement avec performances simulées:")
+    fake_perf = {
+        "Ligue1": {"accuracy": 28.0, "matches": 40},
+        "LaLiga": {"accuracy": 25.0, "matches": 38},
+        "Bundesliga": {"accuracy": 22.0, "matches": 35},
+        "SerieA": {"accuracy": 20.0, "matches": 33},
+        "ChampionsLeague": {"accuracy": 27.0, "matches": 25},
+    }
+    
+    print("   Performances simulées:")
+    for league, stats in fake_perf.items():
+        print(f"      {league}: {stats['accuracy']}% ({stats['matches']} matchs)")
+    print()
+    
+    updated_coeffs = update_league_coefficients(fake_perf)
+    print()
+    
+    # Test 3: Vérification de la sauvegarde
+    print("3️⃣ Test vérification de la sauvegarde:")
+    reloaded = load_league_coeffs()
+    if reloaded == updated_coeffs:
+        print("   ✅ Coefficients correctement sauvegardés et rechargés")
+    else:
+        print("   ❌ Problème de sauvegarde/rechargement")
+    print()
+    
+    # Test 4: Affichage des coefficients finaux
+    print("4️⃣ Coefficients finaux (top 10):")
+    sorted_coeffs = sorted(updated_coeffs.items(), key=lambda x: x[1], reverse=True)[:10]
+    for league, coeff in sorted_coeffs:
+        print(f"   {league}: {coeff:.4f}")
+    print()
+    
+    print("=" * 70)
+    print("✅ Tests terminés")
+    print(f"📁 Fichier: {COEFF_PATH}")
+    print(f"📝 Logs: {LOG_COEFF}")
+    print("=" * 70)
+
             return {}
         
         with open(perf_file, "r", encoding="utf-8") as f:
