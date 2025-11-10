@@ -117,6 +117,33 @@ class LeagueScheduler:
         
         return time_match
     
+    def _update_fifa_rankings(self):
+        """
+        Mise à jour des coefficients FIFA pour les matchs internationaux.
+        S'exécute au démarrage et de manière hebdomadaire.
+        """
+        try:
+            logger.info("🌍 Mise à jour des coefficients FIFA...")
+            
+            # Importer et appeler la fonction de mise à jour FIFA
+            sys.path.insert(0, '/app/backend')
+            from ufa.update_fifa_rankings import update_world_coeffs
+            
+            result = update_world_coeffs()
+            
+            if result and "teams" in result:
+                num_teams = len(result["teams"])
+                logger.info(f"✅ Coefficients FIFA mis à jour: {num_teams} équipes nationales")
+            else:
+                logger.warning("⚠️ Mise à jour FIFA: utilisation du fallback")
+                
+        except ImportError as e:
+            logger.error(f"❌ Erreur import update_fifa_rankings: {e}")
+        except Exception as e:
+            logger.error(f"❌ Erreur mise à jour FIFA: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+    
     def _run_migration_cache(self):
         """
         Migration automatique des anciennes analyses (UEFA/Production) vers le cache unifié.
