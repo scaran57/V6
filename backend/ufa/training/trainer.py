@@ -208,3 +208,33 @@ if __name__ == "__main__":
     result = train_from_real_matches()
     print("\n📊 Résultat de l'entraînement:")
     print(json.dumps(result, indent=2, ensure_ascii=False))
+
+def train_model(dataset_path, save_path=None):
+    """
+    Fonction wrapper pour l'entraînement du modèle UFA.
+    Compatible avec force_retrain_all.py
+    
+    Args:
+        dataset_path: Chemin vers le dataset d'entraînement (training_set.jsonl)
+        save_path: Chemin pour sauvegarder le modèle (optionnel)
+    
+    Returns:
+        État du modèle entraîné
+    """
+    print(f"[UFA Training] Dataset fourni: {dataset_path}")
+    if save_path:
+        print(f"[UFA Training] Modèle sera sauvegardé dans: {save_path}")
+    
+    # Pour l'instant, utiliser l'entraînement standard
+    # À terme, on peut utiliser le dataset_path pour un entraînement personnalisé
+    result = train_from_real_matches()
+    
+    if save_path and result.get("status") != "no_data":
+        # Sauvegarder l'état du modèle dans le chemin spécifié
+        Path(save_path).parent.mkdir(parents=True, exist_ok=True)
+        with open(save_path, "w", encoding="utf-8") as f:
+            json.dump(result, f, indent=2, ensure_ascii=False)
+        print(f"[UFA Training] ✅ Modèle sauvegardé: {save_path}")
+    
+    return result
+
