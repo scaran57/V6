@@ -1489,6 +1489,7 @@ async def api_add_result(
 
 # Include the router in the main app
 app.include_router(api_router)
+app.include_router(world_coeffs_router)
 
 app.add_middleware(
     CORSMiddleware,
