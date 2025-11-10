@@ -617,7 +617,7 @@ def extract_match_info(image_path: str,
             else:
                 print(f"[OCR Parser] ❌ Ligue non détectée : Unknown")
     
-    return {
+    result = {
         "home_team": home,
         "away_team": away,
         "league": league or "Unknown",
@@ -626,6 +626,12 @@ def extract_match_info(image_path: str,
         "raw_text": text,
         "timestamp": datetime.datetime.utcnow().isoformat()
     }
+    
+    # Ajouter variant si mode optimisé
+    if OCR_MODE == "optimized":
+        result["ocr_variant"] = ocr_variant
+    
+    return result
 
 # --- TEST ---
 if __name__ == "__main__":
