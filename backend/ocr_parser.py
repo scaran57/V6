@@ -615,7 +615,14 @@ def extract_match_info(image_path: str,
         home = manual_home.strip()
         away = manual_away.strip()
     else:
-        t1, t2 = extract_teams_from_text(text)
+        # En mode optimisé, essayer d'abord la meilleure ligne détectée
+        if OCR_MODE == "optimized" and best_match_line:
+            t1, t2 = extract_teams_from_text(best_match_line)
+            # Si ça n'a pas marché, essayer sur le texte complet
+            if not t1 or not t2:
+                t1, t2 = extract_teams_from_text(text)
+        else:
+            t1, t2 = extract_teams_from_text(text)
         home = t1
         away = t2
     
