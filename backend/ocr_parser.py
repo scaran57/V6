@@ -450,11 +450,11 @@ def find_scores_optimized(text: str) -> List[str]:
     scores = score_regex.findall(text)
     return [s.replace(" ", "").replace(":", "-") for s in scores]
 
-def analyze_image_auto(img_path: str, team_map: Dict[str, str]) -> Dict:
+def analyze_image_auto(img_path: str, team_map: Dict[str, str], use_crop: bool = False) -> Dict:
     """
     Analyse automatique avec variantes optimisées.
     
-    - Auto-crop la zone utile (30-70% de l'image)
+    - Auto-crop la zone utile (30-70% de l'image) si use_crop=True
     - Teste les meilleures variantes (orig, resize_2x, sharpen)
     - Choisit la meilleure sortie basée sur le score de confiance
     
@@ -465,10 +465,13 @@ def analyze_image_auto(img_path: str, team_map: Dict[str, str]) -> Dict:
     if img is None:
         raise ValueError(f"Impossible de lire {img_path}")
     
-    h, w = img.shape[:2]
-    # Auto crop (centrer sur zone utile FDJ)
-    y1, y2 = int(h*0.3), int(h*0.7)
-    cropped = img[y1:y2, :]
+    # Optionnel: Auto crop pour réduire le bruit
+    if use_crop:
+        h, w = img.shape[:2]
+        y1, y2 = int(h*0.3), int(h*0.7)
+        cropped = img[y1:y2, :]
+    else:
+        cropped = img
     
     best_result = None
     best_score = -1
