@@ -1,0 +1,171 @@
+{
+  "file": "test_psg_marseille.png",
+  "variants": {
+    "orig": {
+      "ocr_text": "PSG vs Marseille\n2-1\n\n>. u Marseille\n",
+      "cleaned_text": "psg vs marseille 2-1 u marseille",
+      "scores_found": [
+        "2-1"
+      ],
+      "home_candidate_raw": "PSG",
+      "away_candidate_raw": "Marseille",
+      "home_match": {
+        "name": "PSG",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Marseille",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "PSG vs Marseille\n2-1\n",
+        "psm7": ">. u Marseille\n"
+      }
+    },
+    "resize_2x": {
+      "ocr_text": "PSG vs Marseille\n2-1\n\n>. , Marseille\n",
+      "cleaned_text": "psg vs marseille 2-1 marseille",
+      "scores_found": [
+        "2-1"
+      ],
+      "home_candidate_raw": "PSG",
+      "away_candidate_raw": "Marseille",
+      "home_match": {
+        "name": "PSG",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Marseille",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "PSG vs Marseille\n2-1\n",
+        "psm7": ">. , Marseille\n"
+      }
+    },
+    "gray": {
+      "ocr_text": "PSG vs Marseille\n2-1\n\n>. u Marseille\n",
+      "cleaned_text": "psg vs marseille 2-1 u marseille",
+      "scores_found": [
+        "2-1"
+      ],
+      "home_candidate_raw": "PSG",
+      "away_candidate_raw": "Marseille",
+      "home_match": {
+        "name": "PSG",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Marseille",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "PSG vs Marseille\n2-1\n",
+        "psm7": ">. u Marseille\n"
+      }
+    },
+    "binar_otsu": {
+      "ocr_text": "PSG vs Marseille\n2-1\n\n‘ Marseille\n",
+      "cleaned_text": "psg vs marseille 2-1 marseille",
+      "scores_found": [
+        "2-1"
+      ],
+      "home_candidate_raw": "PSG",
+      "away_candidate_raw": "Marseille",
+      "home_match": {
+        "name": "PSG",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Marseille",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "PSG vs Marseille\n2-1\n",
+        "psm7": "‘ Marseille\n"
+      }
+    },
+    "adaptive": {
+      "ocr_text": "PSG vs Marseille\n2 = 1\n\n=. . Marseille\n",
+      "cleaned_text": "psg vs marseille 2 1 marseille",
+      "scores_found": [],
+      "home_candidate_raw": "PSG",
+      "away_candidate_raw": "Marseille",
+      "home_match": {
+        "name": "PSG",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Marseille",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "PSG vs Marseille\n2 = 1\n",
+        "psm7": "=. . Marseille\n"
+      }
+    },
+    "sharpen": {
+      "ocr_text": "PSG vs Marseille\n2-1\n\n>. u Marseille\n",
+      "cleaned_text": "psg vs marseille 2-1 u marseille",
+      "scores_found": [
+        "2-1"
+      ],
+      "home_candidate_raw": "PSG",
+      "away_candidate_raw": "Marseille",
+      "home_match": {
+        "name": "PSG",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Marseille",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "PSG vs Marseille\n2-1\n",
+        "psm7": ">. u Marseille\n"
+      }
+    },
+    "denoise": {
+      "ocr_text": "PSG vs Marseille\n2-1\n\n>. : Marseille\n",
+      "cleaned_text": "psg vs marseille 2-1 : marseille",
+      "scores_found": [
+        "2-1"
+      ],
+      "home_candidate_raw": "PSG",
+      "away_candidate_raw": "Marseille",
+      "home_match": {
+        "name": "PSG",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Marseille",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "PSG vs Marseille\n2-1\n",
+        "psm7": ">. : Marseille\n"
+      }
+    },
+    "morph_open": {
+      "ocr_text": "PSG vs Marseille\n2-1\n\n>. u Marseille\n",
+      "cleaned_text": "psg vs marseille 2-1 u marseille",
+      "scores_found": [
+        "2-1"
+      ],
+      "home_candidate_raw": "PSG",
+      "away_candidate_raw": "Marseille",
+      "home_match": {
+        "name": "PSG",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Marseille",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "PSG vs Marseille\n2-1\n",
+        "psm7": ">. u Marseille\n"
+      }
+    }
+  }
+}

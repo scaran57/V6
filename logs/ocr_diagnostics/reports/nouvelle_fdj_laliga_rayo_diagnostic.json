@@ -1,0 +1,347 @@
+{
+  "file": "nouvelle_fdj_laliga_rayo.jpg",
+  "variants": {
+    "orig": {
+      "ocr_text": "15:55& OCH i © 85x\n< ©\ne LaLiga\n> À 16h15 C2:\nRayo .\n¥° G - 8 Real Madrid\nVallecano\n=) al\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 @\n100 CE\n= O <\n\n",
+      "cleaned_text": "15:55 och i 85x e laliga à 16h15 c2: rayo g - 8 real madrid vallecano al urmesure 1-0 0-0 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 2 100 ce o",
+      "scores_found": [
+        "15-55",
+        "1-0",
+        "0-0",
+        "0-1",
+        "2-0",
+        "1-1",
+        "0-2",
+        "2-1",
+        "2-2",
+        "1-2",
+        "3-0",
+        "3-3",
+        "0-3",
+        "3-1",
+        "4-4",
+        "1-3",
+        "3-2",
+        "2-3",
+        "4-0",
+        "0-4",
+        "4-1",
+        "1-4",
+        "4-2"
+      ],
+      "home_candidate_raw": "¥° G",
+      "away_candidate_raw": "8 Real Madrid",
+      "home_match": {
+        "name": "PSG",
+        "score": 50
+      },
+      "away_match": {
+        "name": "Real Madrid",
+        "score": 92
+      },
+      "texts": {
+        "psm6": "15:55& OCH i © 85x\n< ©\ne LaLiga\n> À 16h15 C2:\nRayo .\n¥° G - 8 Real Madrid\nVallecano\n=) al\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 @\n100 CE\n= O <\n",
+        "psm7": ""
+      }
+    },
+    "resize_2x": {
+      "ocr_text": "15:55 5% © CHA ii © 85x\n< O\n2 LaLiga\n® À 16h15 1229\nRayo\nY° G - 8 Real Madrid\nVallecano\nte) a\nParis Parisurmesure Stats Compos\n1-0 0-0 O-1\n17 16 7,50\n2-0 1-1 0-2\n354 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 A\n100 S\n= O <\n\n",
+      "cleaned_text": "15:55 5 cha ii 85x o 2 laliga à 16h15 1229 rayo y g - 8 real madrid vallecano te a urmesure 1-0 0-0 o-1 17 16 7 50 2-0 1-1 0-2 354 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 a 100 s o",
+      "scores_found": [
+        "15-55",
+        "1-0",
+        "0-0",
+        "2-0",
+        "1-1",
+        "0-2",
+        "2-1",
+        "2-2",
+        "1-2",
+        "3-0",
+        "3-3",
+        "0-3",
+        "3-1",
+        "4-4",
+        "1-3",
+        "3-2",
+        "2-3",
+        "4-0",
+        "0-4",
+        "4-1",
+        "1-4",
+        "4-2"
+      ],
+      "home_candidate_raw": "Y° G",
+      "away_candidate_raw": "8 Real Madrid",
+      "home_match": {
+        "name": "PSG",
+        "score": 33
+      },
+      "away_match": {
+        "name": "Real Madrid",
+        "score": 92
+      },
+      "texts": {
+        "psm6": "15:55 5% © CHA ii © 85x\n< O\n2 LaLiga\n® À 16h15 1229\nRayo\nY° G - 8 Real Madrid\nVallecano\nte) a\nParis Parisurmesure Stats Compos\n1-0 0-0 O-1\n17 16 7,50\n2-0 1-1 0-2\n354 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 A\n100 S\n= O <\n",
+        "psm7": ""
+      }
+    },
+    "gray": {
+      "ocr_text": "15:55& OCH 1 © 85x\n< 2)\n2 LaLiga\n& A 16h15 GY\nRayo .\nY° @- Real Madrid\nVallecano\n8\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 on\n100 3.\n\n",
+      "cleaned_text": "15:55 och 1 85x 2 2 laliga a 16h15 gy rayo y - real madrid vallecano 8 urmesure 1-0 0-0 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 2 on 100 3",
+      "scores_found": [
+        "15-55",
+        "1-0",
+        "0-0",
+        "0-1",
+        "2-0",
+        "1-1",
+        "0-2",
+        "2-1",
+        "2-2",
+        "1-2",
+        "3-0",
+        "3-3",
+        "0-3",
+        "3-1",
+        "4-4",
+        "1-3",
+        "3-2",
+        "2-3",
+        "4-0",
+        "0-4",
+        "4-1",
+        "1-4",
+        "4-2"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "15:55& OCH 1 © 85x\n< 2)\n2 LaLiga\n& A 16h15 GY\nRayo .\nY° @- Real Madrid\nVallecano\n8\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 on\n100 3.\n",
+        "psm7": ""
+      }
+    },
+    "binar_otsu": {
+      "ocr_text": "1555® OCH 1 © 85:\n< O\n- LaLiga\nd À16h15 GSI\nRayo .\nYO @-S Real Madrid\nVallecano\n=)\nParis  Parisur mesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 z &\n100 3.\n\ni\n",
+      "cleaned_text": "1555 och 1 85: o - laliga d à16h15 gsi rayo yo -s real madrid vallecano ur mesure 1-0 0-0 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 z 100 3 i",
+      "scores_found": [
+        "1-0",
+        "0-0",
+        "0-1",
+        "2-0",
+        "1-1",
+        "0-2",
+        "2-1",
+        "2-2",
+        "1-2",
+        "3-0",
+        "3-3",
+        "0-3",
+        "3-1",
+        "4-4",
+        "1-3",
+        "3-2",
+        "2-3",
+        "4-0",
+        "0-4",
+        "4-1",
+        "1-4",
+        "4-2"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "1555® OCH 1 © 85:\n< O\n- LaLiga\nd À16h15 GSI\nRayo .\nYO @-S Real Madrid\nVallecano\n=)\nParis  Parisur mesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 z &\n100 3.\n",
+        "psm7": "i\n"
+      }
+    },
+    "adaptive": {
+      "ocr_text": "156660 fi CE\n<\n= LaLiga\nS À 16h15 EI\nRayo .\nYO @-@ Real Madrid\nVallecano\n(=) TP\nParis | Pari sur mesure Stats Compos\n1-0 ){ 0-0 1 { 0-1 )\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,7O\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n/,\n100\n= O <\n\ni\n",
+      "cleaned_text": "156660 fi ce laliga s à 16h15 ei rayo yo - real madrid vallecano tp pari sur mesure 1-0 0-0 1 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 7o 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 / 100 o i",
+      "scores_found": [
+        "1-0",
+        "0-0",
+        "0-1",
+        "2-0",
+        "1-1",
+        "0-2",
+        "2-1",
+        "2-2",
+        "1-2",
+        "3-0",
+        "3-3",
+        "0-3",
+        "3-1",
+        "4-4",
+        "1-3",
+        "3-2",
+        "2-3",
+        "4-0",
+        "0-4",
+        "4-1",
+        "1-4"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "156660 fi CE\n<\n= LaLiga\nS À 16h15 EI\nRayo .\nYO @-@ Real Madrid\nVallecano\n(=) TP\nParis | Pari sur mesure Stats Compos\n1-0 ){ 0-0 1 { 0-1 )\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,7O\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n/,\n100\n= O <\n",
+        "psm7": "i\n"
+      }
+    },
+    "sharpen": {
+      "ocr_text": "15:55 0 © C EH i © 85%\n< ©\ne LaLiga\nes À 16h15 I:\nRayo .\n¥° G - 8 Real Madrid\nVallecano\n® Le\nParis Parisur mesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 a }\n100 3,\n= O <\n\n",
+      "cleaned_text": "15:55 0 c eh i 85 e laliga es à 16h15 i: rayo g - 8 real madrid vallecano le ur mesure 1-0 0-0 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 2 a 100 3 o",
+      "scores_found": [
+        "15-55",
+        "1-0",
+        "0-0",
+        "0-1",
+        "2-0",
+        "1-1",
+        "0-2",
+        "2-1",
+        "2-2",
+        "1-2",
+        "3-0",
+        "3-3",
+        "0-3",
+        "3-1",
+        "4-4",
+        "1-3",
+        "3-2",
+        "2-3",
+        "4-0",
+        "0-4",
+        "4-1",
+        "1-4",
+        "4-2"
+      ],
+      "home_candidate_raw": "¥° G",
+      "away_candidate_raw": "8 Real Madrid",
+      "home_match": {
+        "name": "PSG",
+        "score": 50
+      },
+      "away_match": {
+        "name": "Real Madrid",
+        "score": 92
+      },
+      "texts": {
+        "psm6": "15:55 0 © C EH i © 85%\n< ©\ne LaLiga\nes À 16h15 I:\nRayo .\n¥° G - 8 Real Madrid\nVallecano\n® Le\nParis Parisur mesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 a }\n100 3,\n= O <\n",
+        "psm7": ""
+      }
+    },
+    "denoise": {
+      "ocr_text": "15:55 OCH 1 © 85x\n< ©\n2 LaLiga\nes À 16h15 12:72\nRayo .\nY° @- Real Madrid\nVallecano\ne a\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 À @\n100 >»\n= O <\n\n",
+      "cleaned_text": "15:55 och 1 85x 2 laliga es à 16h15 12:72 rayo y - real madrid vallecano e a urmesure 1-0 0-0 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 à 100 o",
+      "scores_found": [
+        "15-55",
+        "12-72",
+        "1-0",
+        "0-0",
+        "0-1",
+        "2-0",
+        "1-1",
+        "0-2",
+        "2-1",
+        "2-2",
+        "1-2",
+        "3-0",
+        "3-3",
+        "0-3",
+        "3-1",
+        "4-4",
+        "1-3",
+        "3-2",
+        "2-3",
+        "4-0",
+        "0-4",
+        "4-1",
+        "1-4",
+        "4-2"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "15:55 OCH 1 © 85x\n< ©\n2 LaLiga\nes À 16h15 12:72\nRayo .\nY° @- Real Madrid\nVallecano\ne a\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 À @\n100 >»\n= O <\n",
+        "psm7": ""
+      }
+    },
+    "morph_open": {
+      "ocr_text": "15:55& © CE 4 ‘8:85\n< O\n= LaLiga\nd A 16h15 GSI\nRayo .\nY° @-§ Real Madrid\nVallecano\n©\nParis Pari sur mesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 &\n100 3,\n\n",
+      "cleaned_text": "15:55 ce 4 8:85 o laliga d a 16h15 gsi rayo y - real madrid vallecano pari sur mesure 1-0 0-0 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 2 100 3",
+      "scores_found": [
+        "15-55",
+        "8-85",
+        "1-0",
+        "0-0",
+        "0-1",
+        "2-0",
+        "1-1",
+        "0-2",
+        "2-1",
+        "2-2",
+        "1-2",
+        "3-0",
+        "3-3",
+        "0-3",
+        "3-1",
+        "4-4",
+        "1-3",
+        "3-2",
+        "2-3",
+        "4-0",
+        "0-4",
+        "4-1",
+        "1-4",
+        "4-2"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "15:55& © CE 4 ‘8:85\n< O\n= LaLiga\nd A 16h15 GSI\nRayo .\nY° @-§ Real Madrid\nVallecano\n©\nParis Pari sur mesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 &\n100 3,\n",
+        "psm7": ""
+      }
+    }
+  }
+}

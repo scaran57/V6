@@ -1,0 +1,171 @@
+{
+  "file": "test_ajax_feyenoord.png",
+  "variants": {
+    "orig": {
+      "ocr_text": "Ajax vs Feyenoord\n1-1\n\n_ | Feyenoord\n",
+      "cleaned_text": "ajax vs feyenoord 1-1 feyenoord",
+      "scores_found": [
+        "1-1"
+      ],
+      "home_candidate_raw": "Ajax",
+      "away_candidate_raw": "Feyenoord",
+      "home_match": {
+        "name": "Ajax",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Feyenoord",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "Ajax vs Feyenoord\n1-1\n",
+        "psm7": "_ | Feyenoord\n"
+      }
+    },
+    "resize_2x": {
+      "ocr_text": "Ajax vs Feyenoord\n1-1\n\n_ | Feyenoord\n",
+      "cleaned_text": "ajax vs feyenoord 1-1 feyenoord",
+      "scores_found": [
+        "1-1"
+      ],
+      "home_candidate_raw": "Ajax",
+      "away_candidate_raw": "Feyenoord",
+      "home_match": {
+        "name": "Ajax",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Feyenoord",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "Ajax vs Feyenoord\n1-1\n",
+        "psm7": "_ | Feyenoord\n"
+      }
+    },
+    "gray": {
+      "ocr_text": "Ajax vs Feyenoord\n1-1\n\n_ | Feyenoord\n",
+      "cleaned_text": "ajax vs feyenoord 1-1 feyenoord",
+      "scores_found": [
+        "1-1"
+      ],
+      "home_candidate_raw": "Ajax",
+      "away_candidate_raw": "Feyenoord",
+      "home_match": {
+        "name": "Ajax",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Feyenoord",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "Ajax vs Feyenoord\n1-1\n",
+        "psm7": "_ | Feyenoord\n"
+      }
+    },
+    "binar_otsu": {
+      "ocr_text": "Ajax vs Feyenoord\n1-1\n\n- | Feyenoord\n",
+      "cleaned_text": "ajax vs feyenoord 1-1 - feyenoord",
+      "scores_found": [
+        "1-1"
+      ],
+      "home_candidate_raw": "Ajax",
+      "away_candidate_raw": "Feyenoord",
+      "home_match": {
+        "name": "Ajax",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Feyenoord",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "Ajax vs Feyenoord\n1-1\n",
+        "psm7": "- | Feyenoord\n"
+      }
+    },
+    "adaptive": {
+      "ocr_text": "Ajax vs Feyenoord\nL-1\n\n_ . Feyenoord\n",
+      "cleaned_text": "ajax vs feyenoord l-1 feyenoord",
+      "scores_found": [],
+      "home_candidate_raw": "Ajax",
+      "away_candidate_raw": "Feyenoord",
+      "home_match": {
+        "name": "Ajax",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Feyenoord",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "Ajax vs Feyenoord\nL-1\n",
+        "psm7": "_ . Feyenoord\n"
+      }
+    },
+    "sharpen": {
+      "ocr_text": "Ajax vs Feyenoord\n1-1\n\n_ | Feyenoord\n",
+      "cleaned_text": "ajax vs feyenoord 1-1 feyenoord",
+      "scores_found": [
+        "1-1"
+      ],
+      "home_candidate_raw": "Ajax",
+      "away_candidate_raw": "Feyenoord",
+      "home_match": {
+        "name": "Ajax",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Feyenoord",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "Ajax vs Feyenoord\n1-1\n",
+        "psm7": "_ | Feyenoord\n"
+      }
+    },
+    "denoise": {
+      "ocr_text": "Ajax vs Feyenoord\n1-1\n\n_ | Feyenoord\n",
+      "cleaned_text": "ajax vs feyenoord 1-1 feyenoord",
+      "scores_found": [
+        "1-1"
+      ],
+      "home_candidate_raw": "Ajax",
+      "away_candidate_raw": "Feyenoord",
+      "home_match": {
+        "name": "Ajax",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Feyenoord",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "Ajax vs Feyenoord\n1-1\n",
+        "psm7": "_ | Feyenoord\n"
+      }
+    },
+    "morph_open": {
+      "ocr_text": "Ajax vs Feyenoord\n1-1\n\n. | Feyenoord\n",
+      "cleaned_text": "ajax vs feyenoord 1-1 feyenoord",
+      "scores_found": [
+        "1-1"
+      ],
+      "home_candidate_raw": "Ajax",
+      "away_candidate_raw": "Feyenoord",
+      "home_match": {
+        "name": "Ajax",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Feyenoord",
+        "score": 100
+      },
+      "texts": {
+        "psm6": "Ajax vs Feyenoord\n1-1\n",
+        "psm7": ". | Feyenoord\n"
+      }
+    }
+  }
+}

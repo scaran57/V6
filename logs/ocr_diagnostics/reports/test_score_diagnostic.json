@@ -1,0 +1,181 @@
+{
+  "file": "test_score.png",
+  "variants": {
+    "orig": {
+      "ocr_text": "2-1\n\n2-1\n",
+      "cleaned_text": "2-1 2-1",
+      "scores_found": [
+        "2-1",
+        "2-1"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "2-1\n",
+        "psm7": "2-1\n"
+      }
+    },
+    "resize_2x": {
+      "ocr_text": "2-1\n\n2-1\n",
+      "cleaned_text": "2-1 2-1",
+      "scores_found": [
+        "2-1",
+        "2-1"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "2-1\n",
+        "psm7": "2-1\n"
+      }
+    },
+    "gray": {
+      "ocr_text": "2-1\n\n2-1\n",
+      "cleaned_text": "2-1 2-1",
+      "scores_found": [
+        "2-1",
+        "2-1"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "2-1\n",
+        "psm7": "2-1\n"
+      }
+    },
+    "binar_otsu": {
+      "ocr_text": "2-1\n\n2-1\n",
+      "cleaned_text": "2-1 2-1",
+      "scores_found": [
+        "2-1",
+        "2-1"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "2-1\n",
+        "psm7": "2-1\n"
+      }
+    },
+    "adaptive": {
+      "ocr_text": "2-1\n\n2-1\n",
+      "cleaned_text": "2-1 2-1",
+      "scores_found": [
+        "2-1",
+        "2-1"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "2-1\n",
+        "psm7": "2-1\n"
+      }
+    },
+    "sharpen": {
+      "ocr_text": "2-1\n\n2-1\n",
+      "cleaned_text": "2-1 2-1",
+      "scores_found": [
+        "2-1",
+        "2-1"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "2-1\n",
+        "psm7": "2-1\n"
+      }
+    },
+    "denoise": {
+      "ocr_text": "2-1\n\n2-1\n",
+      "cleaned_text": "2-1 2-1",
+      "scores_found": [
+        "2-1",
+        "2-1"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "2-1\n",
+        "psm7": "2-1\n"
+      }
+    },
+    "morph_open": {
+      "ocr_text": "2-1\n\n2-1\n",
+      "cleaned_text": "2-1 2-1",
+      "scores_found": [
+        "2-1",
+        "2-1"
+      ],
+      "home_candidate_raw": null,
+      "away_candidate_raw": null,
+      "home_match": {
+        "name": null,
+        "score": 0
+      },
+      "away_match": {
+        "name": null,
+        "score": 0
+      },
+      "texts": {
+        "psm6": "2-1\n",
+        "psm7": "2-1\n"
+      }
+    }
+  }
+}

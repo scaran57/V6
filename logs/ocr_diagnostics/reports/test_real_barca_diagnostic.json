@@ -1,0 +1,173 @@
+{
+  "file": "test_real_barca.png",
+  "variants": {
+    "orig": {
+      "ocr_text": "Real Madrid vs Barc\n3-2\n\nJ _ vs Barc\n",
+      "cleaned_text": "real madrid vs barc 3-2 j vs barc",
+      "scores_found": [
+        "3-2"
+      ],
+      "home_candidate_raw": "Real Madrid",
+      "away_candidate_raw": "Barc",
+      "home_match": {
+        "name": "Real Madrid",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Barca",
+        "score": 89
+      },
+      "texts": {
+        "psm6": "Real Madrid vs Barc\n3-2\n",
+        "psm7": "J _ vs Barc\n"
+      }
+    },
+    "resize_2x": {
+      "ocr_text": "Real Madrid vs Barc\n3 - 2\n\nM _ vs Barc\n",
+      "cleaned_text": "real madrid vs barc 3 - 2 m vs barc",
+      "scores_found": [
+        "3-2"
+      ],
+      "home_candidate_raw": "Real Madrid",
+      "away_candidate_raw": "Barc",
+      "home_match": {
+        "name": "Real Madrid",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Barca",
+        "score": 89
+      },
+      "texts": {
+        "psm6": "Real Madrid vs Barc\n3 - 2\n",
+        "psm7": "M _ vs Barc\n"
+      }
+    },
+    "gray": {
+      "ocr_text": "Real Madrid vs Barc\n3-2\n\nJ _ vs Barc\n",
+      "cleaned_text": "real madrid vs barc 3-2 j vs barc",
+      "scores_found": [
+        "3-2"
+      ],
+      "home_candidate_raw": "Real Madrid",
+      "away_candidate_raw": "Barc",
+      "home_match": {
+        "name": "Real Madrid",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Barca",
+        "score": 89
+      },
+      "texts": {
+        "psm6": "Real Madrid vs Barc\n3-2\n",
+        "psm7": "J _ vs Barc\n"
+      }
+    },
+    "binar_otsu": {
+      "ocr_text": "Real Madrid vs Barc\n3-2\n\n. _ vs Barc\n",
+      "cleaned_text": "real madrid vs barc 3-2 vs barc",
+      "scores_found": [
+        "3-2"
+      ],
+      "home_candidate_raw": "Real Madrid",
+      "away_candidate_raw": "Barc",
+      "home_match": {
+        "name": "Real Madrid",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Barca",
+        "score": 89
+      },
+      "texts": {
+        "psm6": "Real Madrid vs Barc\n3-2\n",
+        "psm7": ". _ vs Barc\n"
+      }
+    },
+    "adaptive": {
+      "ocr_text": "Real Madrid vs Bart\n3-2\n\n_ vs Bart\n",
+      "cleaned_text": "real madrid vs bart 3-2 vs bart",
+      "scores_found": [
+        "3-2"
+      ],
+      "home_candidate_raw": "Real Madrid",
+      "away_candidate_raw": "Bart",
+      "home_match": {
+        "name": "Real Madrid",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Barça",
+        "score": 75
+      },
+      "texts": {
+        "psm6": "Real Madrid vs Bart\n3-2\n",
+        "psm7": "_ vs Bart\n"
+      }
+    },
+    "sharpen": {
+      "ocr_text": "Real Madrid vs Bart\n3-2\n\n. _ vs Barc\n",
+      "cleaned_text": "real madrid vs bart 3-2 vs barc",
+      "scores_found": [
+        "3-2"
+      ],
+      "home_candidate_raw": "Real Madrid",
+      "away_candidate_raw": "Bart",
+      "home_match": {
+        "name": "Real Madrid",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Barça",
+        "score": 75
+      },
+      "texts": {
+        "psm6": "Real Madrid vs Bart\n3-2\n",
+        "psm7": ". _ vs Barc\n"
+      }
+    },
+    "denoise": {
+      "ocr_text": "Real Madrid vs Barc\n3-2\n\nJ _ vs Barc\n",
+      "cleaned_text": "real madrid vs barc 3-2 j vs barc",
+      "scores_found": [
+        "3-2"
+      ],
+      "home_candidate_raw": "Real Madrid",
+      "away_candidate_raw": "Barc",
+      "home_match": {
+        "name": "Real Madrid",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Barca",
+        "score": 89
+      },
+      "texts": {
+        "psm6": "Real Madrid vs Barc\n3-2\n",
+        "psm7": "J _ vs Barc\n"
+      }
+    },
+    "morph_open": {
+      "ocr_text": "Real Madrid vs Barc\n3-2\n\nJ _ vs Barc\n",
+      "cleaned_text": "real madrid vs barc 3-2 j vs barc",
+      "scores_found": [
+        "3-2"
+      ],
+      "home_candidate_raw": "Real Madrid",
+      "away_candidate_raw": "Barc",
+      "home_match": {
+        "name": "Real Madrid",
+        "score": 100
+      },
+      "away_match": {
+        "name": "Barca",
+        "score": 89
+      },
+      "texts": {
+        "psm6": "Real Madrid vs Barc\n3-2\n",
+        "psm7": "J _ vs Barc\n"
+      }
+    }
+  }
+}

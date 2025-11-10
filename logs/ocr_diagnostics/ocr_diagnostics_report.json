@@ -1,0 +1,1453 @@
+{
+  "run_time": "2025-11-10T00:35:18.898701Z",
+  "total_files": 6,
+  "variant_stats": {
+    "orig": {
+      "files": 6,
+      "scores_found": 6,
+      "teams_found": 5
+    },
+    "resize_2x": {
+      "files": 6,
+      "scores_found": 6,
+      "teams_found": 5
+    },
+    "gray": {
+      "files": 6,
+      "scores_found": 6,
+      "teams_found": 4
+    },
+    "binar_otsu": {
+      "files": 6,
+      "scores_found": 6,
+      "teams_found": 4
+    },
+    "adaptive": {
+      "files": 6,
+      "scores_found": 4,
+      "teams_found": 4
+    },
+    "sharpen": {
+      "files": 6,
+      "scores_found": 6,
+      "teams_found": 5
+    },
+    "denoise": {
+      "files": 6,
+      "scores_found": 6,
+      "teams_found": 4
+    },
+    "morph_open": {
+      "files": 6,
+      "scores_found": 6,
+      "teams_found": 4
+    }
+  },
+  "files": [
+    {
+      "file": "nouvelle_fdj_laliga_rayo.jpg",
+      "variants": {
+        "orig": {
+          "ocr_text": "15:55& OCH i © 85x\n< ©\ne LaLiga\n> À 16h15 C2:\nRayo .\n¥° G - 8 Real Madrid\nVallecano\n=) al\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 @\n100 CE\n= O <\n\n",
+          "cleaned_text": "15:55 och i 85x e laliga à 16h15 c2: rayo g - 8 real madrid vallecano al urmesure 1-0 0-0 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 2 100 ce o",
+          "scores_found": [
+            "15-55",
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2"
+          ],
+          "home_candidate_raw": "¥° G",
+          "away_candidate_raw": "8 Real Madrid",
+          "home_match": {
+            "name": "PSG",
+            "score": 50
+          },
+          "away_match": {
+            "name": "Real Madrid",
+            "score": 92
+          },
+          "texts": {
+            "psm6": "15:55& OCH i © 85x\n< ©\ne LaLiga\n> À 16h15 C2:\nRayo .\n¥° G - 8 Real Madrid\nVallecano\n=) al\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 @\n100 CE\n= O <\n",
+            "psm7": ""
+          }
+        },
+        "resize_2x": {
+          "ocr_text": "15:55 5% © CHA ii © 85x\n< O\n2 LaLiga\n® À 16h15 1229\nRayo\nY° G - 8 Real Madrid\nVallecano\nte) a\nParis Parisurmesure Stats Compos\n1-0 0-0 O-1\n17 16 7,50\n2-0 1-1 0-2\n354 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 A\n100 S\n= O <\n\n",
+          "cleaned_text": "15:55 5 cha ii 85x o 2 laliga à 16h15 1229 rayo y g - 8 real madrid vallecano te a urmesure 1-0 0-0 o-1 17 16 7 50 2-0 1-1 0-2 354 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 a 100 s o",
+          "scores_found": [
+            "15-55",
+            "1-0",
+            "0-0",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2"
+          ],
+          "home_candidate_raw": "Y° G",
+          "away_candidate_raw": "8 Real Madrid",
+          "home_match": {
+            "name": "PSG",
+            "score": 33
+          },
+          "away_match": {
+            "name": "Real Madrid",
+            "score": 92
+          },
+          "texts": {
+            "psm6": "15:55 5% © CHA ii © 85x\n< O\n2 LaLiga\n® À 16h15 1229\nRayo\nY° G - 8 Real Madrid\nVallecano\nte) a\nParis Parisurmesure Stats Compos\n1-0 0-0 O-1\n17 16 7,50\n2-0 1-1 0-2\n354 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 A\n100 S\n= O <\n",
+            "psm7": ""
+          }
+        },
+        "gray": {
+          "ocr_text": "15:55& OCH 1 © 85x\n< 2)\n2 LaLiga\n& A 16h15 GY\nRayo .\nY° @- Real Madrid\nVallecano\n8\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 on\n100 3.\n\n",
+          "cleaned_text": "15:55 och 1 85x 2 2 laliga a 16h15 gy rayo y - real madrid vallecano 8 urmesure 1-0 0-0 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 2 on 100 3",
+          "scores_found": [
+            "15-55",
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "15:55& OCH 1 © 85x\n< 2)\n2 LaLiga\n& A 16h15 GY\nRayo .\nY° @- Real Madrid\nVallecano\n8\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 on\n100 3.\n",
+            "psm7": ""
+          }
+        },
+        "binar_otsu": {
+          "ocr_text": "1555® OCH 1 © 85:\n< O\n- LaLiga\nd À16h15 GSI\nRayo .\nYO @-S Real Madrid\nVallecano\n=)\nParis  Parisur mesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 z &\n100 3.\n\ni\n",
+          "cleaned_text": "1555 och 1 85: o - laliga d à16h15 gsi rayo yo -s real madrid vallecano ur mesure 1-0 0-0 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 z 100 3 i",
+          "scores_found": [
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "1555® OCH 1 © 85:\n< O\n- LaLiga\nd À16h15 GSI\nRayo .\nYO @-S Real Madrid\nVallecano\n=)\nParis  Parisur mesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 z &\n100 3.\n",
+            "psm7": "i\n"
+          }
+        },
+        "adaptive": {
+          "ocr_text": "156660 fi CE\n<\n= LaLiga\nS À 16h15 EI\nRayo .\nYO @-@ Real Madrid\nVallecano\n(=) TP\nParis | Pari sur mesure Stats Compos\n1-0 ){ 0-0 1 { 0-1 )\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,7O\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n/,\n100\n= O <\n\ni\n",
+          "cleaned_text": "156660 fi ce laliga s à 16h15 ei rayo yo - real madrid vallecano tp pari sur mesure 1-0 0-0 1 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 7o 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 / 100 o i",
+          "scores_found": [
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "156660 fi CE\n<\n= LaLiga\nS À 16h15 EI\nRayo .\nYO @-@ Real Madrid\nVallecano\n(=) TP\nParis | Pari sur mesure Stats Compos\n1-0 ){ 0-0 1 { 0-1 )\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,7O\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n/,\n100\n= O <\n",
+            "psm7": "i\n"
+          }
+        },
+        "sharpen": {
+          "ocr_text": "15:55 0 © C EH i © 85%\n< ©\ne LaLiga\nes À 16h15 I:\nRayo .\n¥° G - 8 Real Madrid\nVallecano\n® Le\nParis Parisur mesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 a }\n100 3,\n= O <\n\n",
+          "cleaned_text": "15:55 0 c eh i 85 e laliga es à 16h15 i: rayo g - 8 real madrid vallecano le ur mesure 1-0 0-0 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 2 a 100 3 o",
+          "scores_found": [
+            "15-55",
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2"
+          ],
+          "home_candidate_raw": "¥° G",
+          "away_candidate_raw": "8 Real Madrid",
+          "home_match": {
+            "name": "PSG",
+            "score": 50
+          },
+          "away_match": {
+            "name": "Real Madrid",
+            "score": 92
+          },
+          "texts": {
+            "psm6": "15:55 0 © C EH i © 85%\n< ©\ne LaLiga\nes À 16h15 I:\nRayo .\n¥° G - 8 Real Madrid\nVallecano\n® Le\nParis Parisur mesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 a }\n100 3,\n= O <\n",
+            "psm7": ""
+          }
+        },
+        "denoise": {
+          "ocr_text": "15:55 OCH 1 © 85x\n< ©\n2 LaLiga\nes À 16h15 12:72\nRayo .\nY° @- Real Madrid\nVallecano\ne a\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 À @\n100 >»\n= O <\n\n",
+          "cleaned_text": "15:55 och 1 85x 2 laliga es à 16h15 12:72 rayo y - real madrid vallecano e a urmesure 1-0 0-0 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 à 100 o",
+          "scores_found": [
+            "15-55",
+            "12-72",
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "15:55 OCH 1 © 85x\n< ©\n2 LaLiga\nes À 16h15 12:72\nRayo .\nY° @- Real Madrid\nVallecano\ne a\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 À @\n100 >»\n= O <\n",
+            "psm7": ""
+          }
+        },
+        "morph_open": {
+          "ocr_text": "15:55& © CE 4 ‘8:85\n< O\n= LaLiga\nd A 16h15 GSI\nRayo .\nY° @-§ Real Madrid\nVallecano\n©\nParis Pari sur mesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 &\n100 3,\n\n",
+          "cleaned_text": "15:55 ce 4 8:85 o laliga d a 16h15 gsi rayo y - real madrid vallecano pari sur mesure 1-0 0-0 0-1 17 16 7 50 2-0 1-1 0-2 34 7 80 6 70 2-1 2-2 1-2 15 14 6 80 3-0 3-3 0-3 100 55 8 80 3-1 4-4 1-3 46 100 8 90 3-2 2-3 40 18 4-0 0-4 100 15 4-1 1-4 100 16 4-2 2 100 3",
+          "scores_found": [
+            "15-55",
+            "8-85",
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "15:55& © CE 4 ‘8:85\n< O\n= LaLiga\nd A 16h15 GSI\nRayo .\nY° @-§ Real Madrid\nVallecano\n©\nParis Pari sur mesure Stats Compos\n1-0 0-0 0-1\n17 16 7,50\n2-0 1-1 0-2\n34 7,80 6,70\n2-1 2-2 1-2\n15 14 6,80\n3-0 3-3 0-3\n100 55 8,80\n3-1 4-4 1-3\n46 100 8,90\n3-2 2-3\n40 18\n4-0 0-4\n100 15\n4-1 1-4\n100 16\n4-2 2 &\n100 3,\n",
+            "psm7": ""
+          }
+        }
+      }
+    },
+    {
+      "file": "nouvelle_fdj_ligue1_angers.jpg",
+      "variants": {
+        "orig": {
+          "ocr_text": "15:54@ © CH ul © 85x\n< O\na Ligue 1 McDonalds\nÀ 17h15 neue 1e\nAngers 8 - 8 Auxerre\n=) al\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n23 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 1G\n4-3 3-4\n= O <\n\n#\n",
+          "cleaned_text": "15:54 ch ul 85x o a ligue 1 mcdonalds à 17h15 neue 1e angers 8 - 8 auxerre al urmesure 1-0 0-0 0-1 5 40 5 50 6 10 2-0 1-1 0-2 9 00 4 70 11 50 2-1 2-2 1-2 8 70 14 50 9 70 3-0 3-3 0-3 23 100 32 3-1 4-4 1-3 22 100 27 3-2 2-3 42 47 4-0 0-4 76 100 4-1 1-4 74 100 4-2 2 100 1g 4-3 3-4 o",
+          "scores_found": [
+            "15-54",
+            "8-8",
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2",
+            "4-3",
+            "3-4"
+          ],
+          "home_candidate_raw": "Angers 8",
+          "away_candidate_raw": "8 Auxerre",
+          "home_match": {
+            "name": "Angers",
+            "score": 86
+          },
+          "away_match": {
+            "name": "Auxerre",
+            "score": 88
+          },
+          "texts": {
+            "psm6": "15:54@ © CH ul © 85x\n< O\na Ligue 1 McDonalds\nÀ 17h15 neue 1e\nAngers 8 - 8 Auxerre\n=) al\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n23 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 1G\n4-3 3-4\n= O <\n",
+            "psm7": "#\n"
+          }
+        },
+        "resize_2x": {
+          "ocr_text": "15:54 © C EH hi © 85x\n< O\na Ligue 1 McDonalds\nÀ 17h15 neue 14\nAngers 8 - @ Auxerre\ne a\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n25 100 52\n3-1 4-4 1-3\n22 100 2?\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 1\n4-3 3-4\n= O <\n\ni\n",
+          "cleaned_text": "15:54 c eh hi 85x o a ligue 1 mcdonalds à 17h15 neue 14 angers 8 - auxerre e a urmesure 1-0 0-0 0-1 5 40 5 50 6 10 2-0 1-1 0-2 9 00 4 70 11 50 2-1 2-2 1-2 8 70 14 50 9 70 3-0 3-3 0-3 25 100 52 3-1 4-4 1-3 22 100 2 3-2 2-3 42 47 4-0 0-4 76 100 4-1 1-4 74 100 4-2 2 100 1 4-3 3-4 o i",
+          "scores_found": [
+            "15-54",
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2",
+            "4-3",
+            "3-4"
+          ],
+          "home_candidate_raw": "Angers 8",
+          "away_candidate_raw": "@ Auxerre",
+          "home_match": {
+            "name": "Angers",
+            "score": 86
+          },
+          "away_match": {
+            "name": "Auxerre",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "15:54 © C EH hi © 85x\n< O\na Ligue 1 McDonalds\nÀ 17h15 neue 14\nAngers 8 - @ Auxerre\ne a\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n25 100 52\n3-1 4-4 1-3\n22 100 2?\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 1\n4-3 3-4\n= O <\n",
+            "psm7": "i\n"
+          }
+        },
+        "gray": {
+          "ocr_text": "15:54@ © CH ul © 85x\n< ©\n« Ligue 1 McDonalds\n© À 17h15 LICE 1+\nAngers 8 - 8 Auxerre\n(=)\nParis Pari sur mesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n23 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 1\n4-3 3-4\n\ne\n",
+          "cleaned_text": "15:54 ch ul 85x ligue 1 mcdonalds à 17h15 lice 1 angers 8 - 8 auxerre pari sur mesure 1-0 0-0 0-1 5 40 5 50 6 10 2-0 1-1 0-2 9 00 4 70 11 50 2-1 2-2 1-2 8 70 14 50 9 70 3-0 3-3 0-3 23 100 32 3-1 4-4 1-3 22 100 27 3-2 2-3 42 47 4-0 0-4 76 100 4-1 1-4 74 100 4-2 2 100 1 4-3 3-4 e",
+          "scores_found": [
+            "15-54",
+            "8-8",
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2",
+            "4-3",
+            "3-4"
+          ],
+          "home_candidate_raw": "Angers 8",
+          "away_candidate_raw": "8 Auxerre",
+          "home_match": {
+            "name": "Angers",
+            "score": 86
+          },
+          "away_match": {
+            "name": "Auxerre",
+            "score": 88
+          },
+          "texts": {
+            "psm6": "15:54@ © CH ul © 85x\n< ©\n« Ligue 1 McDonalds\n© À 17h15 LICE 1+\nAngers 8 - 8 Auxerre\n(=)\nParis Pari sur mesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n23 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 1\n4-3 3-4\n",
+            "psm7": "e\n"
+          }
+        },
+        "binar_otsu": {
+          "ocr_text": "1554R OCH Un © 85:\n< O\n« Ligue 1 McDonalds\n© À 17h15 DIRE le\nAngers 8 - & Auxerre\n=)\nParis  Parisur mesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n23 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 16\n4-3 3-4\n\nË\n",
+          "cleaned_text": "1554r och un 85: o ligue 1 mcdonalds à 17h15 dire le angers 8 - auxerre ur mesure 1-0 0-0 0-1 5 40 5 50 6 10 2-0 1-1 0-2 9 00 4 70 11 50 2-1 2-2 1-2 8 70 14 50 9 70 3-0 3-3 0-3 23 100 32 3-1 4-4 1-3 22 100 27 3-2 2-3 42 47 4-0 0-4 76 100 4-1 1-4 74 100 4-2 2 100 16 4-3 3-4",
+          "scores_found": [
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2",
+            "4-3",
+            "3-4"
+          ],
+          "home_candidate_raw": "Angers 8",
+          "away_candidate_raw": "& Auxerre",
+          "home_match": {
+            "name": "Angers",
+            "score": 86
+          },
+          "away_match": {
+            "name": "Auxerre",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "1554R OCH Un © 85:\n< O\n« Ligue 1 McDonalds\n© À 17h15 DIRE le\nAngers 8 - & Auxerre\n=)\nParis  Parisur mesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n23 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 16\n4-3 3-4\n",
+            "psm7": "Ë\n"
+          }
+        },
+        "adaptive": {
+          "ocr_text": "PERS\n<\na Ligue 1 McDonalds\nA 17h15 (iene 12)\nAngers & - & Auxerre\n(=) TP\nParis | Pari sur mesure Stats Compos\n\n1-0 0-0 0-1\n\n5,40 5,50 6,10\n2-0 1-1 0-2\n\n9,00 4,70 17,50\n2-1 2-2 1-2\n\n8,70 14,50 9,70\n3-0 3-3 0-3\n25 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 AT\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n\n100 (8)\n\n= O <\n\nc\n",
+          "cleaned_text": "pers a ligue 1 mcdonalds a 17h15 iene 12 angers - auxerre tp pari sur mesure 1-0 0-0 0-1 5 40 5 50 6 10 2-0 1-1 0-2 9 00 4 70 17 50 2-1 2-2 1-2 8 70 14 50 9 70 3-0 3-3 0-3 25 100 32 3-1 4-4 1-3 22 100 27 3-2 2-3 42 at 4-0 0-4 76 100 4-1 1-4 74 100 4-2 2 100 8 o c",
+          "scores_found": [
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2"
+          ],
+          "home_candidate_raw": "Angers &",
+          "away_candidate_raw": "& Auxerre",
+          "home_match": {
+            "name": "Angers",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Auxerre",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "PERS\n<\na Ligue 1 McDonalds\nA 17h15 (iene 12)\nAngers & - & Auxerre\n(=) TP\nParis | Pari sur mesure Stats Compos\n\n1-0 0-0 0-1\n\n5,40 5,50 6,10\n2-0 1-1 0-2\n\n9,00 4,70 17,50\n2-1 2-2 1-2\n\n8,70 14,50 9,70\n3-0 3-3 0-3\n25 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 AT\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n\n100 (8)\n\n= O <\n",
+            "psm7": "c\n"
+          }
+        },
+        "sharpen": {
+          "ocr_text": "15:54® © CH Si © 85\n< O\na Ligue 1 McDonalds\nÀ 17h15 eue rs\nAngers 8 - 8 Auxerre\n=) Le\nParis Parisur mesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n23 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 1,\nAnh 32\n= O <\n\n#\n",
+          "cleaned_text": "15:54 ch si 85 o a ligue 1 mcdonalds à 17h15 eue rs angers 8 - 8 auxerre le ur mesure 1-0 0-0 0-1 5 40 5 50 6 10 2-0 1-1 0-2 9 00 4 70 11 50 2-1 2-2 1-2 8 70 14 50 9 70 3-0 3-3 0-3 23 100 32 3-1 4-4 1-3 22 100 27 3-2 2-3 42 47 4-0 0-4 76 100 4-1 1-4 74 100 4-2 2 100 1 anh 32 o",
+          "scores_found": [
+            "15-54",
+            "8-8",
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2"
+          ],
+          "home_candidate_raw": "Angers 8",
+          "away_candidate_raw": "8 Auxerre",
+          "home_match": {
+            "name": "Angers",
+            "score": 86
+          },
+          "away_match": {
+            "name": "Auxerre",
+            "score": 88
+          },
+          "texts": {
+            "psm6": "15:54® © CH Si © 85\n< O\na Ligue 1 McDonalds\nÀ 17h15 eue rs\nAngers 8 - 8 Auxerre\n=) Le\nParis Parisur mesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n23 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 1,\nAnh 32\n= O <\n",
+            "psm7": "#\n"
+          }
+        },
+        "denoise": {
+          "ocr_text": "15:54R © CH ul © 85x\n< =\na Ligue 1 McDonalds\nÀ 17h15 tienes\nAngers 8 - 8 Auxerre\ne a\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n23 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 1\n4-3 3-4\n= O <\n\n#\n",
+          "cleaned_text": "15:54r ch ul 85x a ligue 1 mcdonalds à 17h15 tienes angers 8 - 8 auxerre e a urmesure 1-0 0-0 0-1 5 40 5 50 6 10 2-0 1-1 0-2 9 00 4 70 11 50 2-1 2-2 1-2 8 70 14 50 9 70 3-0 3-3 0-3 23 100 32 3-1 4-4 1-3 22 100 27 3-2 2-3 42 47 4-0 0-4 76 100 4-1 1-4 74 100 4-2 2 100 1 4-3 3-4 o",
+          "scores_found": [
+            "8-8",
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2",
+            "4-3",
+            "3-4"
+          ],
+          "home_candidate_raw": "Angers 8",
+          "away_candidate_raw": "8 Auxerre",
+          "home_match": {
+            "name": "Angers",
+            "score": 86
+          },
+          "away_match": {
+            "name": "Auxerre",
+            "score": 88
+          },
+          "texts": {
+            "psm6": "15:54R © CH ul © 85x\n< =\na Ligue 1 McDonalds\nÀ 17h15 tienes\nAngers 8 - 8 Auxerre\ne a\nParis Parisurmesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n23 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 1\n4-3 3-4\n= O <\n",
+            "psm7": "#\n"
+          }
+        },
+        "morph_open": {
+          "ocr_text": "1554R © CH ral Sm 85\n< O\na Ligue 1 McDonalds\nÀ 17h15 neue ra\nAngers 8 - 8 Auxerre\n=)\nParis Pari sur mesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n23 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 1\n4-3 3-4\n\n",
+          "cleaned_text": "1554r ch ral sm 85 o a ligue 1 mcdonalds à 17h15 neue ra angers 8 - 8 auxerre pari sur mesure 1-0 0-0 0-1 5 40 5 50 6 10 2-0 1-1 0-2 9 00 4 70 11 50 2-1 2-2 1-2 8 70 14 50 9 70 3-0 3-3 0-3 23 100 32 3-1 4-4 1-3 22 100 27 3-2 2-3 42 47 4-0 0-4 76 100 4-1 1-4 74 100 4-2 2 100 1 4-3 3-4",
+          "scores_found": [
+            "8-8",
+            "1-0",
+            "0-0",
+            "0-1",
+            "2-0",
+            "1-1",
+            "0-2",
+            "2-1",
+            "2-2",
+            "1-2",
+            "3-0",
+            "3-3",
+            "0-3",
+            "3-1",
+            "4-4",
+            "1-3",
+            "3-2",
+            "2-3",
+            "4-0",
+            "0-4",
+            "4-1",
+            "1-4",
+            "4-2",
+            "4-3",
+            "3-4"
+          ],
+          "home_candidate_raw": "Angers 8",
+          "away_candidate_raw": "8 Auxerre",
+          "home_match": {
+            "name": "Angers",
+            "score": 86
+          },
+          "away_match": {
+            "name": "Auxerre",
+            "score": 88
+          },
+          "texts": {
+            "psm6": "1554R © CH ral Sm 85\n< O\na Ligue 1 McDonalds\nÀ 17h15 neue ra\nAngers 8 - 8 Auxerre\n=)\nParis Pari sur mesure Stats Compos\n1-0 0-0 0-1\n5,40 5,50 6,10\n2-0 1-1 0-2\n9,00 4,70 11,50\n2-1 2-2 1-2\n8,70 14,50 9,70\n3-0 3-3 0-3\n23 100 32\n3-1 4-4 1-3\n22 100 27\n3-2 2-3\n42 47\n4-0 0-4\n76 100\n4-1 1-4\n74 100\n4-2 2\n100 1\n4-3 3-4\n",
+            "psm7": ""
+          }
+        }
+      }
+    },
+    {
+      "file": "test_ajax_feyenoord.png",
+      "variants": {
+        "orig": {
+          "ocr_text": "Ajax vs Feyenoord\n1-1\n\n_ | Feyenoord\n",
+          "cleaned_text": "ajax vs feyenoord 1-1 feyenoord",
+          "scores_found": [
+            "1-1"
+          ],
+          "home_candidate_raw": "Ajax",
+          "away_candidate_raw": "Feyenoord",
+          "home_match": {
+            "name": "Ajax",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Feyenoord",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "Ajax vs Feyenoord\n1-1\n",
+            "psm7": "_ | Feyenoord\n"
+          }
+        },
+        "resize_2x": {
+          "ocr_text": "Ajax vs Feyenoord\n1-1\n\n_ | Feyenoord\n",
+          "cleaned_text": "ajax vs feyenoord 1-1 feyenoord",
+          "scores_found": [
+            "1-1"
+          ],
+          "home_candidate_raw": "Ajax",
+          "away_candidate_raw": "Feyenoord",
+          "home_match": {
+            "name": "Ajax",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Feyenoord",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "Ajax vs Feyenoord\n1-1\n",
+            "psm7": "_ | Feyenoord\n"
+          }
+        },
+        "gray": {
+          "ocr_text": "Ajax vs Feyenoord\n1-1\n\n_ | Feyenoord\n",
+          "cleaned_text": "ajax vs feyenoord 1-1 feyenoord",
+          "scores_found": [
+            "1-1"
+          ],
+          "home_candidate_raw": "Ajax",
+          "away_candidate_raw": "Feyenoord",
+          "home_match": {
+            "name": "Ajax",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Feyenoord",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "Ajax vs Feyenoord\n1-1\n",
+            "psm7": "_ | Feyenoord\n"
+          }
+        },
+        "binar_otsu": {
+          "ocr_text": "Ajax vs Feyenoord\n1-1\n\n- | Feyenoord\n",
+          "cleaned_text": "ajax vs feyenoord 1-1 - feyenoord",
+          "scores_found": [
+            "1-1"
+          ],
+          "home_candidate_raw": "Ajax",
+          "away_candidate_raw": "Feyenoord",
+          "home_match": {
+            "name": "Ajax",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Feyenoord",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "Ajax vs Feyenoord\n1-1\n",
+            "psm7": "- | Feyenoord\n"
+          }
+        },
+        "adaptive": {
+          "ocr_text": "Ajax vs Feyenoord\nL-1\n\n_ . Feyenoord\n",
+          "cleaned_text": "ajax vs feyenoord l-1 feyenoord",
+          "scores_found": [],
+          "home_candidate_raw": "Ajax",
+          "away_candidate_raw": "Feyenoord",
+          "home_match": {
+            "name": "Ajax",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Feyenoord",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "Ajax vs Feyenoord\nL-1\n",
+            "psm7": "_ . Feyenoord\n"
+          }
+        },
+        "sharpen": {
+          "ocr_text": "Ajax vs Feyenoord\n1-1\n\n_ | Feyenoord\n",
+          "cleaned_text": "ajax vs feyenoord 1-1 feyenoord",
+          "scores_found": [
+            "1-1"
+          ],
+          "home_candidate_raw": "Ajax",
+          "away_candidate_raw": "Feyenoord",
+          "home_match": {
+            "name": "Ajax",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Feyenoord",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "Ajax vs Feyenoord\n1-1\n",
+            "psm7": "_ | Feyenoord\n"
+          }
+        },
+        "denoise": {
+          "ocr_text": "Ajax vs Feyenoord\n1-1\n\n_ | Feyenoord\n",
+          "cleaned_text": "ajax vs feyenoord 1-1 feyenoord",
+          "scores_found": [
+            "1-1"
+          ],
+          "home_candidate_raw": "Ajax",
+          "away_candidate_raw": "Feyenoord",
+          "home_match": {
+            "name": "Ajax",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Feyenoord",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "Ajax vs Feyenoord\n1-1\n",
+            "psm7": "_ | Feyenoord\n"
+          }
+        },
+        "morph_open": {
+          "ocr_text": "Ajax vs Feyenoord\n1-1\n\n. | Feyenoord\n",
+          "cleaned_text": "ajax vs feyenoord 1-1 feyenoord",
+          "scores_found": [
+            "1-1"
+          ],
+          "home_candidate_raw": "Ajax",
+          "away_candidate_raw": "Feyenoord",
+          "home_match": {
+            "name": "Ajax",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Feyenoord",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "Ajax vs Feyenoord\n1-1\n",
+            "psm7": ". | Feyenoord\n"
+          }
+        }
+      }
+    },
+    {
+      "file": "test_psg_marseille.png",
+      "variants": {
+        "orig": {
+          "ocr_text": "PSG vs Marseille\n2-1\n\n>. u Marseille\n",
+          "cleaned_text": "psg vs marseille 2-1 u marseille",
+          "scores_found": [
+            "2-1"
+          ],
+          "home_candidate_raw": "PSG",
+          "away_candidate_raw": "Marseille",
+          "home_match": {
+            "name": "PSG",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Marseille",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "PSG vs Marseille\n2-1\n",
+            "psm7": ">. u Marseille\n"
+          }
+        },
+        "resize_2x": {
+          "ocr_text": "PSG vs Marseille\n2-1\n\n>. , Marseille\n",
+          "cleaned_text": "psg vs marseille 2-1 marseille",
+          "scores_found": [
+            "2-1"
+          ],
+          "home_candidate_raw": "PSG",
+          "away_candidate_raw": "Marseille",
+          "home_match": {
+            "name": "PSG",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Marseille",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "PSG vs Marseille\n2-1\n",
+            "psm7": ">. , Marseille\n"
+          }
+        },
+        "gray": {
+          "ocr_text": "PSG vs Marseille\n2-1\n\n>. u Marseille\n",
+          "cleaned_text": "psg vs marseille 2-1 u marseille",
+          "scores_found": [
+            "2-1"
+          ],
+          "home_candidate_raw": "PSG",
+          "away_candidate_raw": "Marseille",
+          "home_match": {
+            "name": "PSG",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Marseille",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "PSG vs Marseille\n2-1\n",
+            "psm7": ">. u Marseille\n"
+          }
+        },
+        "binar_otsu": {
+          "ocr_text": "PSG vs Marseille\n2-1\n\n‘ Marseille\n",
+          "cleaned_text": "psg vs marseille 2-1 marseille",
+          "scores_found": [
+            "2-1"
+          ],
+          "home_candidate_raw": "PSG",
+          "away_candidate_raw": "Marseille",
+          "home_match": {
+            "name": "PSG",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Marseille",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "PSG vs Marseille\n2-1\n",
+            "psm7": "‘ Marseille\n"
+          }
+        },
+        "adaptive": {
+          "ocr_text": "PSG vs Marseille\n2 = 1\n\n=. . Marseille\n",
+          "cleaned_text": "psg vs marseille 2 1 marseille",
+          "scores_found": [],
+          "home_candidate_raw": "PSG",
+          "away_candidate_raw": "Marseille",
+          "home_match": {
+            "name": "PSG",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Marseille",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "PSG vs Marseille\n2 = 1\n",
+            "psm7": "=. . Marseille\n"
+          }
+        },
+        "sharpen": {
+          "ocr_text": "PSG vs Marseille\n2-1\n\n>. u Marseille\n",
+          "cleaned_text": "psg vs marseille 2-1 u marseille",
+          "scores_found": [
+            "2-1"
+          ],
+          "home_candidate_raw": "PSG",
+          "away_candidate_raw": "Marseille",
+          "home_match": {
+            "name": "PSG",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Marseille",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "PSG vs Marseille\n2-1\n",
+            "psm7": ">. u Marseille\n"
+          }
+        },
+        "denoise": {
+          "ocr_text": "PSG vs Marseille\n2-1\n\n>. : Marseille\n",
+          "cleaned_text": "psg vs marseille 2-1 : marseille",
+          "scores_found": [
+            "2-1"
+          ],
+          "home_candidate_raw": "PSG",
+          "away_candidate_raw": "Marseille",
+          "home_match": {
+            "name": "PSG",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Marseille",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "PSG vs Marseille\n2-1\n",
+            "psm7": ">. : Marseille\n"
+          }
+        },
+        "morph_open": {
+          "ocr_text": "PSG vs Marseille\n2-1\n\n>. u Marseille\n",
+          "cleaned_text": "psg vs marseille 2-1 u marseille",
+          "scores_found": [
+            "2-1"
+          ],
+          "home_candidate_raw": "PSG",
+          "away_candidate_raw": "Marseille",
+          "home_match": {
+            "name": "PSG",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Marseille",
+            "score": 100
+          },
+          "texts": {
+            "psm6": "PSG vs Marseille\n2-1\n",
+            "psm7": ">. u Marseille\n"
+          }
+        }
+      }
+    },
+    {
+      "file": "test_real_barca.png",
+      "variants": {
+        "orig": {
+          "ocr_text": "Real Madrid vs Barc\n3-2\n\nJ _ vs Barc\n",
+          "cleaned_text": "real madrid vs barc 3-2 j vs barc",
+          "scores_found": [
+            "3-2"
+          ],
+          "home_candidate_raw": "Real Madrid",
+          "away_candidate_raw": "Barc",
+          "home_match": {
+            "name": "Real Madrid",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Barca",
+            "score": 89
+          },
+          "texts": {
+            "psm6": "Real Madrid vs Barc\n3-2\n",
+            "psm7": "J _ vs Barc\n"
+          }
+        },
+        "resize_2x": {
+          "ocr_text": "Real Madrid vs Barc\n3 - 2\n\nM _ vs Barc\n",
+          "cleaned_text": "real madrid vs barc 3 - 2 m vs barc",
+          "scores_found": [
+            "3-2"
+          ],
+          "home_candidate_raw": "Real Madrid",
+          "away_candidate_raw": "Barc",
+          "home_match": {
+            "name": "Real Madrid",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Barca",
+            "score": 89
+          },
+          "texts": {
+            "psm6": "Real Madrid vs Barc\n3 - 2\n",
+            "psm7": "M _ vs Barc\n"
+          }
+        },
+        "gray": {
+          "ocr_text": "Real Madrid vs Barc\n3-2\n\nJ _ vs Barc\n",
+          "cleaned_text": "real madrid vs barc 3-2 j vs barc",
+          "scores_found": [
+            "3-2"
+          ],
+          "home_candidate_raw": "Real Madrid",
+          "away_candidate_raw": "Barc",
+          "home_match": {
+            "name": "Real Madrid",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Barca",
+            "score": 89
+          },
+          "texts": {
+            "psm6": "Real Madrid vs Barc\n3-2\n",
+            "psm7": "J _ vs Barc\n"
+          }
+        },
+        "binar_otsu": {
+          "ocr_text": "Real Madrid vs Barc\n3-2\n\n. _ vs Barc\n",
+          "cleaned_text": "real madrid vs barc 3-2 vs barc",
+          "scores_found": [
+            "3-2"
+          ],
+          "home_candidate_raw": "Real Madrid",
+          "away_candidate_raw": "Barc",
+          "home_match": {
+            "name": "Real Madrid",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Barca",
+            "score": 89
+          },
+          "texts": {
+            "psm6": "Real Madrid vs Barc\n3-2\n",
+            "psm7": ". _ vs Barc\n"
+          }
+        },
+        "adaptive": {
+          "ocr_text": "Real Madrid vs Bart\n3-2\n\n_ vs Bart\n",
+          "cleaned_text": "real madrid vs bart 3-2 vs bart",
+          "scores_found": [
+            "3-2"
+          ],
+          "home_candidate_raw": "Real Madrid",
+          "away_candidate_raw": "Bart",
+          "home_match": {
+            "name": "Real Madrid",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Barça",
+            "score": 75
+          },
+          "texts": {
+            "psm6": "Real Madrid vs Bart\n3-2\n",
+            "psm7": "_ vs Bart\n"
+          }
+        },
+        "sharpen": {
+          "ocr_text": "Real Madrid vs Bart\n3-2\n\n. _ vs Barc\n",
+          "cleaned_text": "real madrid vs bart 3-2 vs barc",
+          "scores_found": [
+            "3-2"
+          ],
+          "home_candidate_raw": "Real Madrid",
+          "away_candidate_raw": "Bart",
+          "home_match": {
+            "name": "Real Madrid",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Barça",
+            "score": 75
+          },
+          "texts": {
+            "psm6": "Real Madrid vs Bart\n3-2\n",
+            "psm7": ". _ vs Barc\n"
+          }
+        },
+        "denoise": {
+          "ocr_text": "Real Madrid vs Barc\n3-2\n\nJ _ vs Barc\n",
+          "cleaned_text": "real madrid vs barc 3-2 j vs barc",
+          "scores_found": [
+            "3-2"
+          ],
+          "home_candidate_raw": "Real Madrid",
+          "away_candidate_raw": "Barc",
+          "home_match": {
+            "name": "Real Madrid",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Barca",
+            "score": 89
+          },
+          "texts": {
+            "psm6": "Real Madrid vs Barc\n3-2\n",
+            "psm7": "J _ vs Barc\n"
+          }
+        },
+        "morph_open": {
+          "ocr_text": "Real Madrid vs Barc\n3-2\n\nJ _ vs Barc\n",
+          "cleaned_text": "real madrid vs barc 3-2 j vs barc",
+          "scores_found": [
+            "3-2"
+          ],
+          "home_candidate_raw": "Real Madrid",
+          "away_candidate_raw": "Barc",
+          "home_match": {
+            "name": "Real Madrid",
+            "score": 100
+          },
+          "away_match": {
+            "name": "Barca",
+            "score": 89
+          },
+          "texts": {
+            "psm6": "Real Madrid vs Barc\n3-2\n",
+            "psm7": "J _ vs Barc\n"
+          }
+        }
+      }
+    },
+    {
+      "file": "test_score.png",
+      "variants": {
+        "orig": {
+          "ocr_text": "2-1\n\n2-1\n",
+          "cleaned_text": "2-1 2-1",
+          "scores_found": [
+            "2-1",
+            "2-1"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "2-1\n",
+            "psm7": "2-1\n"
+          }
+        },
+        "resize_2x": {
+          "ocr_text": "2-1\n\n2-1\n",
+          "cleaned_text": "2-1 2-1",
+          "scores_found": [
+            "2-1",
+            "2-1"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "2-1\n",
+            "psm7": "2-1\n"
+          }
+        },
+        "gray": {
+          "ocr_text": "2-1\n\n2-1\n",
+          "cleaned_text": "2-1 2-1",
+          "scores_found": [
+            "2-1",
+            "2-1"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "2-1\n",
+            "psm7": "2-1\n"
+          }
+        },
+        "binar_otsu": {
+          "ocr_text": "2-1\n\n2-1\n",
+          "cleaned_text": "2-1 2-1",
+          "scores_found": [
+            "2-1",
+            "2-1"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "2-1\n",
+            "psm7": "2-1\n"
+          }
+        },
+        "adaptive": {
+          "ocr_text": "2-1\n\n2-1\n",
+          "cleaned_text": "2-1 2-1",
+          "scores_found": [
+            "2-1",
+            "2-1"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "2-1\n",
+            "psm7": "2-1\n"
+          }
+        },
+        "sharpen": {
+          "ocr_text": "2-1\n\n2-1\n",
+          "cleaned_text": "2-1 2-1",
+          "scores_found": [
+            "2-1",
+            "2-1"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "2-1\n",
+            "psm7": "2-1\n"
+          }
+        },
+        "denoise": {
+          "ocr_text": "2-1\n\n2-1\n",
+          "cleaned_text": "2-1 2-1",
+          "scores_found": [
+            "2-1",
+            "2-1"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "2-1\n",
+            "psm7": "2-1\n"
+          }
+        },
+        "morph_open": {
+          "ocr_text": "2-1\n\n2-1\n",
+          "cleaned_text": "2-1 2-1",
+          "scores_found": [
+            "2-1",
+            "2-1"
+          ],
+          "home_candidate_raw": null,
+          "away_candidate_raw": null,
+          "home_match": {
+            "name": null,
+            "score": 0
+          },
+          "away_match": {
+            "name": null,
+            "score": 0
+          },
+          "texts": {
+            "psm6": "2-1\n",
+            "psm7": "2-1\n"
+          }
+        }
+      }
+    }
+  ]
+}
