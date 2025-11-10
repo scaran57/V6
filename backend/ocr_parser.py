@@ -540,6 +540,14 @@ def extract_match_info(image_path: str,
     """
     Fonction principale d'extraction.
     
+    MODE OPTIMISÉ (OCR_MODE=optimized):
+    - Auto-crop zone utile
+    - Teste variantes (orig, resize_2x, sharpen)
+    - Choisit meilleur résultat
+    
+    MODE LEGACY (OCR_MODE=legacy):
+    - Ancien comportement
+    
     Returns dict:
     {
       'home_team': str|None,
@@ -548,11 +556,30 @@ def extract_match_info(image_path: str,
       'home_goals': int|None,
       'away_goals': int|None,
       'raw_text': str,
-      'timestamp': iso
+      'timestamp': iso,
+      'ocr_variant': str (si optimized)
     }
     """
-    # OCR du texte (GARDE le texte complet avec marqueurs de ligues)
-    text = ocr_read(image_path)
+    # MODE OPTIMISÉ
+    if OCR_MODE == "optimized":
+        try:
+            # Charger le team_map pour l'analyse optimisée
+            team_map = TEAM_TO_LEAGUE_MAP
+            
+            # Analyse avec variantes optimisées
+            ocr_result = analyze_image_auto(image_path, team_map)
+            text = ocr_result["text"]
+            ocr_variant = ocr_result["variant"]
+            
+            print(f"[OCR Optimized] Variant: {ocr_variant}, Confidence: {ocr_result['confidence']}")
+        except Exception as e:
+            print(f"[OCR Optimized] Erreur, fallback sur legacy: {e}")
+            text = ocr_read(image_path)
+            ocr_variant = "legacy_fallback"
+    else:
+        # MODE LEGACY
+        text = ocr_read(image_path)
+        ocr_variant = "legacy"
     
     # Détection du score (optionnel)
     home_goals, away_goals = parse_score(text)
