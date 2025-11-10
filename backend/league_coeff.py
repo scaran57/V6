@@ -488,6 +488,70 @@ def update_league_coefficients(perf_file):
     elif isinstance(perf_file, str):
         if not os.path.exists(perf_file):
             log_coeff("❌ Aucun rapport de performance trouvé.")
+            return {}
+        
+        with open(perf_file, "r", encoding="utf-8") as f:
+            perf_data = json.load(f)
+    else:
+        log_coeff("❌ Format de perf_file invalide.")
+        return {}
+    
+    if not perf_data:
+        log_coeff("❌ Rapport de performance vide.")
+        return {}
+    
+    # Charger les coefficients actuels
+    coeffs = load_league_coeffs()
+    
+    # Calculer la moyenne globale des performances
+    accuracies = [v.get("accuracy", 0.0) for v in perf_data.values() if isinstance(v, dict)]
+    if not accuracies:
+        log_coeff("⚠️  Aucune donnée de performance trouvée — aucun ajustement effectué.")
+        return coeffs
+    
+    avg_accuracy = sum(accuracies) / len(accuracies)
+    
+    log_coeff(f"📊 Moyenne globale des performances: {avg_accuracy:.1f}%")
+    log_coeff(f"📥 {len(perf_data)} ligues à ajuster")
+    
+    updated = 0
+    
+    for league, stats in perf_data.items():
+        accuracy = stats.get("accuracy", 0.0)
+        matches = stats.get("matches", 0)
+        
+        # Calculer l'écart par rapport à la moyenne
+        diff = accuracy - avg_accuracy
+        
+        # Ajustement progressif: ±0.002 par point de pourcentage
+        adjust = round(diff * 0.002, 4)
+        
+        # Obtenir le coefficient actuel (ou 1.0 par défaut)
+        current_coeff = coeffs.get(league, 1.0)
+        
+        # Calculer le nouveau coefficient
+        new_coeff = round(current_coeff + adjust, 4)
+        
+        # Limiter les coefficients entre MIN_COEFF et MAX_COEFF
+        new_coeff = max(MIN_COEFF, min(MAX_COEFF, new_coeff))
+        
+        # Ne sauvegarder que si l'ajustement est significatif
+        if abs(adjust) > 0.0005:
+            coeffs[league] = new_coeff
+            updated += 1
+            
+            # Log l'ajustement
+            log_coeff(f"⚙️  {league}: {accuracy:.1f}% ({matches} matchs) → {current_coeff:.3f} → {new_coeff:.3f} ({adjust:+.4f})")
+    
+    # 🔄 Sauvegarde automatique après ajustement
+    save_league_coeffs(coeffs)
+    
+    log_coeff("=" * 70)
+    log_coeff(f"✅ {updated} ligues ajustées selon performances.")
+    log_coeff(f"💾 Coefficients sauvegardés: {COEFF_PATH}")
+    log_coeff("=" * 70)
+    
+    return coeffs
 
 
 # =============================================================================
