@@ -171,6 +171,7 @@ class LeagueScheduler:
             if result and "teams" in result:
                 num_teams = len(result["teams"])
                 logger.info(f"✅ Coefficients FIFA mis à jour: {num_teams} équipes nationales")
+                self.last_fifa_update = datetime.now()  # Sauvegarder la date de mise à jour
             else:
                 logger.warning("⚠️ Mise à jour FIFA: utilisation du fallback")
                 
