@@ -397,6 +397,142 @@ def clean_team_name(name: str) -> str:
     
     return cleaned
 
+# --- FONCTIONS OPTIMISÉES (basées sur diagnostic OCR) ---
+
+def preprocess_variant(img, variant: str):
+    """
+    Applique une variante de prétraitement OpenCV.
+    Variantes supportées: orig, resize_2x, gray, binar_otsu, adaptive, sharpen, denoise, morph_open
+    """
+    if img is None:
+        return None
+        
+    h, w = img.shape[:2]
+    
+    if variant == "orig":
+        return img
+    elif variant == "resize_2x":
+        return cv2.resize(img, (w*2, h*2), interpolation=cv2.INTER_CUBIC)
+    elif variant == "gray":
+        return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    elif variant == "binar_otsu":
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        blur = cv2.GaussianBlur(gray, (5,5), 0)
+        _, th = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        return th
+    elif variant == "adaptive":
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        th = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                   cv2.THRESH_BINARY, 11, 2)
+        return th
+    elif variant == "sharpen":
+        kernel = np.array([[0,-1,0],[-1,5,-1],[0,-1,0]])
+        return cv2.filter2D(img, -1, kernel)
+    elif variant == "denoise":
+        return cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 21)
+    elif variant == "morph_open":
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        _, th = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        kernel = np.ones((3,3), np.uint8)
+        opened = cv2.morphologyEx(th, cv2.MORPH_OPEN, kernel)
+        return opened
+    return img
+
+def ocr_image_optimized(img, psm=6, lang="fra+eng"):
+    """OCR optimisé avec Tesseract."""
+    config = f"--oem 1 --psm {psm}"
+    text = pytesseract.image_to_string(img, lang=lang, config=config)
+    return text
+
+def find_scores_optimized(text: str) -> List[str]:
+    """Trouve les scores dans le texte."""
+    score_regex = re.compile(r"(\b\d{1,2}\s*[-:]\s*\d{1,2}\b)")
+    scores = score_regex.findall(text)
+    return [s.replace(" ", "").replace(":", "-") for s in scores]
+
+def analyze_image_auto(img_path: str, team_map: Dict[str, str]) -> Dict:
+    """
+    Analyse automatique avec variantes optimisées.
+    
+    - Auto-crop la zone utile (30-70% de l'image)
+    - Teste les meilleures variantes (orig, resize_2x, sharpen)
+    - Choisit la meilleure sortie basée sur le score de confiance
+    
+    Returns:
+        dict avec variant, text, cleaned, scores, confidence
+    """
+    img = cv2.imread(img_path)
+    if img is None:
+        raise ValueError(f"Impossible de lire {img_path}")
+    
+    h, w = img.shape[:2]
+    # Auto crop (centrer sur zone utile FDJ)
+    y1, y2 = int(h*0.3), int(h*0.7)
+    cropped = img[y1:y2, :]
+    
+    best_result = None
+    best_score = -1
+    
+    for v in GOOD_VARIANTS:
+        try:
+            proc = preprocess_variant(cropped.copy(), v)
+            if proc is None:
+                continue
+                
+            text = ocr_image_optimized(proc, psm=6)
+            cleaned = text.lower()
+            
+            # Nettoyage basique
+            for word in ["paris", "stats", "compos", "pari sur mesure"]:
+                cleaned = cleaned.replace(word, " ")
+            cleaned = re.sub(r"\s+", " ", cleaned).strip()
+            
+            scores = find_scores_optimized(text)
+            team_score = 0
+            
+            # Fuzzy matching avec team_map
+            for t in team_map.keys():
+                if t.lower() in cleaned.lower():
+                    team_score += 1
+            
+            # Score de confiance
+            confidence = team_score * 10 + len(scores) * 5
+            
+            if confidence > best_score:
+                best_score = confidence
+                best_result = {
+                    "variant": v,
+                    "text": text,
+                    "cleaned": cleaned,
+                    "scores": scores,
+                    "confidence": confidence
+                }
+        except Exception as e:
+            print(f"[OCR] Erreur variant {v}: {e}")
+            continue
+    
+    if best_result is None:
+        # Fallback sur l'image originale sans crop
+        try:
+            text = ocr_image_optimized(img, psm=6)
+            best_result = {
+                "variant": "fallback",
+                "text": text,
+                "cleaned": text.lower(),
+                "scores": find_scores_optimized(text),
+                "confidence": 0
+            }
+        except:
+            best_result = {
+                "variant": "error",
+                "text": "",
+                "cleaned": "",
+                "scores": [],
+                "confidence": -1
+            }
+    
+    return best_result
+
 def extract_match_info(image_path: str,
                        manual_home: Optional[str] = None,
                        manual_away: Optional[str] = None,
