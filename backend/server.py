@@ -20,6 +20,9 @@ from ocr_engine import extract_odds, extract_match_info as extract_match_info_le
 from ocr_parser import extract_match_info as extract_match_info_advanced
 from score_predictor import calculate_probabilities, calculate_probabilities_v2
 from learning import update_model, get_diff_expected
+
+# Import du router des coefficients FIFA
+from ufa.api_world_coeffs import router as world_coeffs_router
 from matches_memory import (
     analyze_match_stable, 
     get_match_result, 
