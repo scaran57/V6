@@ -1,0 +1,31 @@
+{
+  "updated": 1731199065,
+  "source": "manual_fallback",
+  "teams": {
+    "Argentina": {"rank": 1, "coeff": 1.30},
+    "France": {"rank": 2, "coeff": 1.293},
+    "Spain": {"rank": 3, "coeff": 1.287},
+    "England": {"rank": 4, "coeff": 1.280},
+    "Brazil": {"rank": 5, "coeff": 1.273},
+    "Belgium": {"rank": 6, "coeff": 1.267},
+    "Portugal": {"rank": 7, "coeff": 1.260},
+    "Netherlands": {"rank": 8, "coeff": 1.253},
+    "Italy": {"rank": 9, "coeff": 1.247},
+    "Germany": {"rank": 10, "coeff": 1.240},
+    "Croatia": {"rank": 11, "coeff": 1.233},
+    "Uruguay": {"rank": 12, "coeff": 1.227},
+    "Morocco": {"rank": 13, "coeff": 1.220},
+    "Colombia": {"rank": 14, "coeff": 1.213},
+    "Switzerland": {"rank": 15, "coeff": 1.207},
+    "Mexico": {"rank": 16, "coeff": 1.200},
+    "Japan": {"rank": 17, "coeff": 1.193},
+    "USA": {"rank": 18, "coeff": 1.187},
+    "Denmark": {"rank": 19, "coeff": 1.180},
+    "Senegal": {"rank": 20, "coeff": 1.173},
+    "Austria": {"rank": 21, "coeff": 1.167},
+    "Australia": {"rank": 22, "coeff": 1.160},
+    "Ukraine": {"rank": 23, "coeff": 1.153},
+    "Poland": {"rank": 24, "coeff": 1.147},
+    "South Korea": {"rank": 25, "coeff": 1.140}
+  }
+}
