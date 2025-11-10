@@ -147,6 +147,9 @@ class LeagueScheduler:
     def _perform_initial_update(self):
         """Effectue une mise à jour initiale au démarrage (si nécessaire)"""
         try:
+            # ÉTAPE 0 : Mise à jour des coefficients FIFA
+            self._update_fifa_rankings()
+            
             # ÉTAPE 1 : Migration automatique du cache d'analyse
             self._run_migration_cache()
             
