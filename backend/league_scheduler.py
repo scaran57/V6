@@ -125,6 +125,35 @@ class LeagueScheduler:
         
         return time_match
     
+    def _should_update_fifa(self, now):
+        """
+        Détermine si une mise à jour FIFA hebdomadaire doit être effectuée.
+        Se lance chaque lundi à 03:05.
+        
+        Args:
+            now: datetime actuel
+        
+        Returns:
+            bool: True si mise à jour FIFA nécessaire
+        """
+        # Vérifier si c'est lundi (weekday() = 0)
+        is_monday = now.weekday() == 0
+        
+        # Vérifier l'heure (03:05)
+        is_correct_time = now.hour == 3 and now.minute == 5
+        
+        if is_monday and is_correct_time:
+            # Vérifier si on a déjà fait une mise à jour cette semaine
+            if self.last_fifa_update:
+                days_since_update = (now - self.last_fifa_update).days
+                # Si moins de 6 jours, on a déjà fait la mise à jour cette semaine
+                if days_since_update < 6:
+                    return False
+            
+            return True
+        
+        return False
+    
     def _update_fifa_rankings(self):
         """
         Mise à jour des coefficients FIFA pour les matchs internationaux.
