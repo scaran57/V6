@@ -591,16 +591,21 @@ def extract_match_info(image_path: str,
             ocr_result = analyze_image_auto(image_path, team_map)
             text = ocr_result["text"]
             ocr_variant = ocr_result["variant"]
+            best_match_line = ocr_result.get("best_match_line", "")
             
             print(f"[OCR Optimized] Variant: {ocr_variant}, Confidence: {ocr_result['confidence']}")
+            if best_match_line:
+                print(f"[OCR Optimized] Best match line: {best_match_line[:60]}")
         except Exception as e:
             print(f"[OCR Optimized] Erreur, fallback sur legacy: {e}")
             text = ocr_read(image_path)
             ocr_variant = "legacy_fallback"
+            best_match_line = ""
     else:
         # MODE LEGACY
         text = ocr_read(image_path)
         ocr_variant = "legacy"
+        best_match_line = ""
     
     # Détection du score (optionnel)
     home_goals, away_goals = parse_score(text)
