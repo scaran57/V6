@@ -1,0 +1,13 @@
+{
+  "Ligue1": 1.0,
+  "LaLiga": 1.0,
+  "PremierLeague": 1.0,
+  "Bundesliga": 1.0,
+  "SerieA": 1.0,
+  "Championship": 0.95,
+  "Eredivisie": 0.97,
+  "PrimeiraLiga": 0.96,
+  "WorldCup": 1.1,
+  "Euro": 1.08,
+  "NationsLeague": 1.05
+}
