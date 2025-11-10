@@ -493,7 +493,24 @@ def analyze_image_auto(img_path: str, team_map: Dict[str, str], use_crop: bool =
             scores = find_scores_optimized(text)
             team_score = 0
             
-            # Fuzzy matching avec team_map
+            # Chercher la ligne contenant les noms d'équipes
+            # (ligne avec " - " ou " vs " et contenant des noms connus)
+            lines = text.split('\n')
+            best_line = ""
+            best_line_score = 0
+            
+            for line in lines:
+                if any(sep in line for sep in [" - ", " vs ", " – "]):
+                    line_score = 0
+                    line_lower = line.lower()
+                    for t in team_map.keys():
+                        if t.lower() in line_lower:
+                            line_score += 10
+                    if line_score > best_line_score:
+                        best_line_score = line_score
+                        best_line = line
+            
+            # Fuzzy matching avec team_map sur le texte complet
             for t in team_map.keys():
                 if t.lower() in cleaned.lower():
                     team_score += 1
