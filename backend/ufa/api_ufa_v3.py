@@ -150,31 +150,33 @@ def ufa_v3_status():
 
 
 @router.post('/api/ufa/v3/retrain')
-def ufa_v3_trigger_retrain(walltime_minutes: int = 60):
+def ufa_v3_trigger_retrain(incremental: bool = True, max_time_minutes: int = 30):
     """
     Déclenche un réentraînement manuel.
     
     Args:
-        walltime_minutes: Limite de temps
+        incremental: Mode incrémental (fine-tuning) ou complet
+        max_time_minutes: Limite de temps en minutes
     
     Returns:
         Message de confirmation
     """
     try:
-        from ufa.ufa_v3_for_emergent import auto_retrain
+        from ufa.ufa_v3_for_emergent import train_model
         import threading
         
         # Lancer en arrière-plan
-        thread = threading.Thread(
-            target=auto_retrain,
-            args=(walltime_minutes,)
-        )
+        def run_training():
+            train_model(incremental=incremental, max_time_minutes=max_time_minutes)
+        
+        thread = threading.Thread(target=run_training)
         thread.daemon = True
         thread.start()
         
         return {
             'status': 'started',
-            'message': f'Retraining started in background (walltime: {walltime_minutes}min)',
+            'message': f'Retraining started in background (incremental={incremental}, max_time={max_time_minutes}min)',
+            'mode': 'incremental' if incremental else 'full',
             'check_logs': '/app/logs/ufa_v3_training.log'
         }
         
