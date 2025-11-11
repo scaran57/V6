@@ -1,0 +1,58 @@
+{
+  "datetime": "2025-11-11 13:32:26.369619",
+  "checks": {
+    "Structure de projet": [
+      "✅ Fichier trouvé : /app/data",
+      "✅ Fichier trouvé : /app/models",
+      "✅ Fichier trouvé : /app/backend",
+      "✅ Fichier trouvé : /app/logs"
+    ],
+    "Fichiers essentiels": [
+      "✅ Fichier trouvé : /app/data/league_coefficients.json",
+      "✅ Fichier trouvé : /app/data/world_coeffs.json",
+      "✅ Fichier trouvé : /app/data/real_scores.jsonl",
+      "✅ Fichier trouvé : /app/models/ufa_model_v3.pt"
+    ],
+    "Modules Python": [
+      "✅ Module ufa.world_coeffs_updater importé avec succès",
+      "✅ Module ufa.ufa_v3_for_emergent importé avec succès",
+      "✅ Module league_scheduler importé avec succès",
+      "✅ Module ocr_parser importé avec succès",
+      "✅ Module score_predictor importé avec succès"
+    ],
+    "Contenu Coefficients": [
+      "✅ Lecture OK (13 entrées)",
+      "✅ Ligues disponibles : Ligue1, LaLiga, PremierLeague, Bundesliga, SerieA, Championship, Eredivisie, PrimeiraLiga, WorldCup, Euro, NationsLeague, EuropaLeague, ChampionsLeague",
+      "✅ Lecture OK (3 entrées)",
+      "✅ Équipes internationales : 25"
+    ],
+    "Modèle UFAv3": [
+      "✅ Fichier trouvé : /app/models/ufa_model_v3_meta.json",
+      "✅ Lecture OK (2 entrées)",
+      "✅ Teams dans vocabulaire : 45",
+      "✅ Ligues dans vocabulaire : 5",
+      "✅ Dernière formation : N/A",
+      "✅ Fichier trouvé : /app/models/ufa_model_v3.pt",
+      "✅ Taille du modèle : 0.09 MB"
+    ],
+    "Scheduler & Logs": [
+      "✅ Fichier trouvé : /var/log/supervisor/backend.err.log",
+      "✅ Log backend.err.log → activité: scheduler, UFA, FIFA",
+      "✅ Fichier trouvé : /var/log/supervisor/backend.out.log",
+      "✅ Log backend.out.log → activité: aucune"
+    ],
+    "Datasets": [
+      "✅ Analysis cache: 31 lignes",
+      "✅ Real scores: 198 lignes",
+      "✅ Training set: 24 lignes"
+    ],
+    "API Endpoints": [
+      "✅ API /api/ufa/v3/status → available: True",
+      "✅ API → 45 teams, 5 leagues"
+    ],
+    "État du Scheduler": [
+      "✅ Backend supervisord → RUNNING"
+    ]
+  },
+  "errors": []
+}
