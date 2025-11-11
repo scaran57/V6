@@ -21,17 +21,39 @@ def adjust_coeffs_from_results(results_file="/app/data/real_scores.jsonl"):
     if not os.path.exists(DATA_PATH):
         print("[FIFA] Création du fichier de coefficients...")
         base = {
-            "France": 1.28, "Brazil": 1.27, "Argentina": 1.26,
-            "England": 1.25, "Germany": 1.24, "Spain": 1.22,
-            "Portugal": 1.21, "Italy": 1.20, "Croatia": 1.18,
-            "Netherlands": 1.17, "Belgium": 1.16, "Uruguay": 1.15
+            "updated": int(os.time.time()),
+            "source": "auto_adjusted",
+            "teams": {
+                "France": {"rank": 1, "coeff": 1.28},
+                "Brazil": {"rank": 2, "coeff": 1.27},
+                "Argentina": {"rank": 3, "coeff": 1.26},
+                "England": {"rank": 4, "coeff": 1.25},
+                "Germany": {"rank": 5, "coeff": 1.24},
+                "Spain": {"rank": 6, "coeff": 1.22},
+                "Portugal": {"rank": 7, "coeff": 1.21},
+                "Italy": {"rank": 8, "coeff": 1.20},
+                "Croatia": {"rank": 9, "coeff": 1.18},
+                "Netherlands": {"rank": 10, "coeff": 1.17},
+                "Belgium": {"rank": 11, "coeff": 1.16},
+                "Uruguay": {"rank": 12, "coeff": 1.15}
+            }
         }
         with open(DATA_PATH, "w", encoding="utf-8") as f:
             json.dump(base, f, indent=2, ensure_ascii=False)
 
     # Charger les coefficients actuels
     with open(DATA_PATH, "r", encoding="utf-8") as f:
-        coeffs = json.load(f)
+        data = json.load(f)
+    
+    # Gérer les deux formats possibles
+    if "teams" in data:
+        # Format avec métadonnées
+        coeffs = {team: info.get("coeff", 1.0) for team, info in data["teams"].items()}
+        has_metadata = True
+    else:
+        # Format simple
+        coeffs = data
+        has_metadata = False
 
     # Vérifier que le fichier de résultats existe
     if not os.path.exists(results_file):
