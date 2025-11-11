@@ -23,6 +23,8 @@ from learning import update_model, get_diff_expected
 
 # Import du router des coefficients FIFA
 from ufa.api_world_coeffs import router as world_coeffs_router
+# Import du router UFA v3 (PyTorch)
+from ufa.api_ufa_v3 import router as ufa_v3_router
 from matches_memory import (
     analyze_match_stable, 
     get_match_result, 
