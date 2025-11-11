@@ -108,10 +108,28 @@ def adjust_coeffs_from_results(results_file="/app/data/real_scores.jsonl"):
         coeffs[a] = max(0.80, min(1.35, coeffs[a]))
 
     # Sauvegarder les coefficients mis à jour
-    with open(DATA_PATH, "w", encoding="utf-8") as f:
-        json.dump(coeffs, f, indent=2, ensure_ascii=False)
+    if has_metadata:
+        # Reconstruire le format avec métadonnées
+        teams_data = {}
+        for i, (team, coeff) in enumerate(sorted(coeffs.items(), key=lambda x: -x[1]), 1):
+            teams_data[team] = {
+                "rank": i,
+                "coeff": round(coeff, 3)
+            }
+        
+        output = {
+            "updated": int(os.path.getctime(DATA_PATH) if os.path.exists(DATA_PATH) else 0),
+            "source": "auto_adjusted",
+            "teams": teams_data
+        }
+    else:
+        # Format simple
+        output = coeffs
     
-    print(f"[FIFA] Mise à jour automatique terminée. {updated_count} ajustements effectués.")
+    with open(DATA_PATH, "w", encoding="utf-8") as f:
+        json.dump(output, f, indent=2, ensure_ascii=False)
+    
+    print(f"[FIFA] Mise à jour automatique terminée. {updated_count} ajustements effectués sur {len(coeffs)} équipes.")
     return coeffs
 
 
