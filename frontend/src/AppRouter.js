@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import UFAUnifiedAnalyzer from "./components/UFAUnifiedAnalyzer";
 import TestMode from "./TestMode";
 import MatchAnalyzer from "./components/MatchAnalyzer";
+import UfaDashboard from "./components/UfaDashboard";
 
 function AppRouter() {
   const [mode, setMode] = useState("unified"); // "unified", "test", ou "analyzer"
