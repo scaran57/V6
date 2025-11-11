@@ -247,6 +247,18 @@ class LeagueScheduler:
             logger.info("✅ Réentraînement UFA v3 terminé avec succès")
             self.last_ufa_v3_retrain = datetime.now()
             
+            # Ajustement automatique des coefficients FIFA
+            try:
+                logger.info("🌍 Ajustement automatique des coefficients FIFA...")
+                from ufa.world_coeffs_updater import adjust_coeffs_from_results
+                
+                coeffs = adjust_coeffs_from_results("/app/data/real_scores.jsonl")
+                logger.info(f"✅ Coefficients FIFA ajustés automatiquement ({len(coeffs)} équipes)")
+            except ImportError as e:
+                logger.error(f"❌ Erreur import world_coeffs_updater: {e}")
+            except Exception as e:
+                logger.error(f"❌ Erreur ajustement coefficients FIFA: {e}")
+            
         except ImportError as e:
             logger.error(f"❌ Erreur import ufa_v3_for_emergent: {e}")
         except Exception as e:
