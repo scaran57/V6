@@ -53,6 +53,13 @@ class LeagueScheduler:
         self.thread.start()
         
         logger.info("✅ Planificateur démarré en arrière-plan")
+        
+        # Lancer le keep-alive automatiquement
+        try:
+            from league_scheduler import ensure_keep_alive_running
+            ensure_keep_alive_running()
+        except Exception as e:
+            logger.warning(f"Keep-alive non lancé: {e}")
     
     def stop(self):
         """Arrête le planificateur"""
