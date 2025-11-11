@@ -21,15 +21,7 @@ class PredictWithOddsRequest(BaseModel):
     topk: int = 10
 
 
-class PredictWithOddsResponse(BaseModel):
-    model: str
-    duration_sec: float
-    top_scores: list
-    odds: dict = None
-    delta: dict
-
-
-@router.post("/api/ufa/v3/predict-with-odds", response_model=PredictWithOddsResponse)
+@router.post("/api/ufa/v3/predict-with-odds")
 def predict_with_odds(req: PredictWithOddsRequest):
     """
     Prédiction UFAv3 enrichie avec comparaison aux cotes du marché.
