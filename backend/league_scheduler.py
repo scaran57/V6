@@ -563,6 +563,35 @@ def trigger_manual_update():
     scheduler.trigger_manual_update()
 
 
+# === AUTO-INTEGRATION: UFA KEEP-ALIVE SUPPORT ===
+import subprocess
+
+KEEP_ALIVE_PATH = "/app/backend/tools/ufa_keep_alive.py"
+KEEP_ALIVE_LOG = "/app/logs/keep_alive_auto.log"
+
+def ensure_keep_alive_running():
+    """Vérifie si le keep-alive tourne déjà, sinon le démarre"""
+    try:
+        # Vérifie s'il tourne déjà
+        result = subprocess.run(
+            ["pgrep", "-f", "ufa_keep_alive.py"],
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE
+        )
+        if result.returncode != 0:
+            # Pas encore lancé, on le démarre
+            subprocess.Popen(
+                ["nohup", "python3", KEEP_ALIVE_PATH],
+                stdout=open(KEEP_ALIVE_LOG, "a"),
+                stderr=open(KEEP_ALIVE_LOG, "a"),
+            )
+            logger.info("[UFA Scheduler] Keep-Alive lancé automatiquement ✅")
+        else:
+            logger.info("[UFA Scheduler] Keep-Alive déjà actif 🟢")
+    except Exception as e:
+        logger.warning(f"[UFA Scheduler] Erreur lancement keep-alive: {e}")
+
+
 if __name__ == "__main__":
     # Test du planificateur
     logging.basicConfig(
