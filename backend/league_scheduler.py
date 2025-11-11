@@ -190,6 +190,70 @@ class LeagueScheduler:
             import traceback
             logger.error(traceback.format_exc())
     
+    def _should_retrain_ufa_v3(self, now):
+        """
+        Détermine si un réentraînement UFA v3 doit être effectué.
+        Se lance quotidiennement à 03:05.
+        
+        Args:
+            now: datetime actuel
+        
+        Returns:
+            bool: True si réentraînement UFA v3 nécessaire
+        """
+        # Vérifier l'heure (03:05)
+        is_correct_time = now.hour == 3 and now.minute == 5
+        
+        if is_correct_time:
+            # Vérifier si on a déjà fait un réentraînement aujourd'hui
+            if self.last_ufa_v3_retrain:
+                days_since_retrain = (now - self.last_ufa_v3_retrain).days
+                # Si c'est le même jour, ne pas ré-entraîner
+                if days_since_retrain < 1:
+                    return False
+            
+            return True
+        
+        return False
+    
+    def _retrain_ufa_v3(self):
+        """
+        Réentraînement incrémental du modèle UFA v3.
+        S'exécute quotidiennement à 03:05.
+        """
+        try:
+            logger.info("🤖 Démarrage du réentraînement UFA v3...")
+            
+            sys.path.insert(0, '/app/backend')
+            from ufa.ufa_v3_for_emergent import train_model_incremental, TRAINING_SET
+            
+            # Vérifier que le fichier d'entraînement existe
+            import os
+            if not os.path.exists(TRAINING_SET):
+                logger.warning(f"⚠️ Fichier d'entraînement non trouvé: {TRAINING_SET}")
+                return
+            
+            # Lancer l'entraînement incrémental
+            # Paramètres: 5 epochs, wallcap de 45 min (2700 secondes)
+            train_model_incremental(
+                train_path=TRAINING_SET,
+                epochs=5,
+                batch_size=64,
+                lr=1e-4,
+                wallcap_seconds=2700,  # 45 minutes max
+                patience=3
+            )
+            
+            logger.info("✅ Réentraînement UFA v3 terminé avec succès")
+            self.last_ufa_v3_retrain = datetime.now()
+            
+        except ImportError as e:
+            logger.error(f"❌ Erreur import ufa_v3_for_emergent: {e}")
+        except Exception as e:
+            logger.error(f"❌ Erreur réentraînement UFA v3: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+    
     def _run_migration_cache(self):
         """
         Migration automatique des anciennes analyses (UEFA/Production) vers le cache unifié.
