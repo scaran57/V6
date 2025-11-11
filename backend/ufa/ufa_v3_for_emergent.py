@@ -277,10 +277,24 @@ def train_model(epochs: int = 20, batch_size: int = 64, lr: float = 1e-3, weight
         # save best
         if avg_val_loss < best_val:
             best_val = avg_val_loss
+            best_acc = acc
             torch.save(model.state_dict(), os.path.join(MODELS_DIR, MODEL_FILE))
             save_meta({'team2idx': team2idx, 'league2idx': league2idx})
             print('Saved best model')
 
+    # Enregistrer performance dans l'historique
+    try:
+        perf_history_path = "/app/logs/performance_history.jsonl"
+        perf_record = {
+            "date": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
+            "accuracy": round(best_acc * 100, 2) if 'best_acc' in locals() else 0.0
+        }
+        with open(perf_history_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(perf_record) + "\n")
+        print(f"Performance enregistrée: {perf_record['accuracy']}%")
+    except Exception as e:
+        print(f"Erreur enregistrement performance: {e}")
+    
     print('Training finished')
 
 
