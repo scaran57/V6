@@ -22,7 +22,7 @@ def adjust_coeffs_from_results(results_file="/app/data/real_scores.jsonl"):
     if not os.path.exists(DATA_PATH):
         print("[FIFA] Création du fichier de coefficients...")
         base = {
-            "updated": int(os.time.time()),
+            "updated": int(time.time()),
             "source": "auto_adjusted",
             "teams": {
                 "France": {"rank": 1, "coeff": 1.28},
