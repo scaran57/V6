@@ -80,7 +80,15 @@ function AppRouter() {
 
       {/* Contenu selon le mode */}
       <div>
-        {mode === "unified" ? <UFAUnifiedAnalyzer /> : mode === "test" ? <TestMode /> : <MatchAnalyzer />}
+        {mode === "unified" ? (
+          <UFAUnifiedAnalyzer />
+        ) : mode === "test" ? (
+          <TestMode />
+        ) : mode === "analyzer" ? (
+          <MatchAnalyzer />
+        ) : mode === "dashboard" ? (
+          <UfaDashboard />
+        ) : null}
       </div>
     </div>
   );
