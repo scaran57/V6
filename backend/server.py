@@ -1494,6 +1494,7 @@ async def api_add_result(
 app.include_router(api_router)
 app.include_router(world_coeffs_router)
 app.include_router(ufa_v3_router)
+app.include_router(dashboard_router)
 
 app.add_middleware(
     CORSMiddleware,
