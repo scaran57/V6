@@ -120,11 +120,12 @@ def ufa_v3_status():
         Informations sur le modèle
     """
     import torch
-    from ufa.ufa_v3_for_emergent import MODEL_PATH, load_meta
+    from ufa.ufa_v3_for_emergent import get_model_status
     
-    available = os.path.exists(MODEL_PATH)
+    # Utiliser la fonction de status du module
+    status = get_model_status()
     
-    if not available:
+    if not status.get('model_exists', False):
         return {
             'available': False,
             'version': '3.0',
@@ -135,17 +136,15 @@ def ufa_v3_status():
             'device': 'none'
         }
     
-    # Charger métadonnées
-    meta = load_meta()
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
     return {
         'available': True,
-        'version': meta.get('version', '3.0'),
-        'last_trained': meta.get('last_trained'),
-        'total_samples': meta.get('total_samples', 0),
-        'num_teams': meta.get('num_teams', 0),
-        'num_leagues': meta.get('num_leagues', 0),
+        'version': status.get('version', '3.0'),
+        'last_trained': status.get('last_trained'),
+        'total_samples': status.get('total_samples', 0),
+        'num_teams': status.get('num_teams', 0),
+        'num_leagues': status.get('num_leagues', 0),
         'device': device
     }
 
