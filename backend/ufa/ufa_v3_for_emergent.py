@@ -572,5 +572,112 @@ def main():
         for s,p in res:
             print(f"{s} -> {p:.4f}")
 
+# --------------------------- Odds Comparison Functions ---------------------------
+
+def compute_confidence_delta(model_probs: dict, market_probs: dict) -> dict:
+    """
+    Calcule la différence entre les probabilités du modèle et du marché.
+    
+    Args:
+        model_probs: Dict score -> prob (ex: {'2-1':0.15,...})
+        market_probs: Dict outcome -> prob (home, away, draw)
+    
+    Returns:
+        Dict avec model_mass, market_mass, delta
+    """
+    # Agréger les probabilités du modèle en catégories (home/draw/away)
+    def result_of_score(score):
+        try:
+            h, a = score.split('-')
+            h = int(h)
+            a = int(a)
+            if h > a:
+                return "home"
+            if a > h:
+                return "away"
+            return "draw"
+        except:
+            return None
+    
+    model_mass = {"home": 0.0, "away": 0.0, "draw": 0.0}
+    for sc, p in model_probs.items():
+        r = result_of_score(sc)
+        if r:
+            model_mass[r] = model_mass.get(r, 0.0) + p
+    
+    market_mass = {
+        "home": market_probs.get("home_prob", 0.0),
+        "away": market_probs.get("away_prob", 0.0),
+        "draw": market_probs.get("draw_prob", 0.0)
+    }
+    
+    delta = {
+        k: round(model_mass.get(k, 0.0) - market_mass.get(k, 0.0), 6)
+        for k in ["home", "away", "draw"]
+    }
+    
+    return {
+        "model_mass": model_mass,
+        "market_mass": market_mass,
+        "delta": delta
+    }
+
+
+def predict_single_with_odds(home: str, away: str, league: str, home_coeff: float, away_coeff: float, topk: int = 10) -> dict:
+    """
+    Prédit les scores ET compare avec les cotes du marché.
+    
+    Args:
+        home: Équipe à domicile
+        away: Équipe à l'extérieur
+        league: Ligue
+        home_coeff: Coefficient domicile
+        away_coeff: Coefficient extérieur
+        topk: Nombre de scores à retourner
+    
+    Returns:
+        Dict avec top_scores, odds, delta
+    """
+    # Réutiliser predict_single existant
+    scored = predict_single(home, away, league, home_coeff, away_coeff, topk=topk)
+    model_probs = {s: p for s, p in scored}
+    
+    # Récupérer les cotes du marché
+    try:
+        import sys
+        sys.path.insert(0, '/app/backend')
+        from tools.odds_api_integration import get_latest_odds_for_match
+        
+        odds = get_latest_odds_for_match(home, away, league)
+        market_probs = {}
+        
+        if odds and "markets" in odds and odds["markets"].get("h2h"):
+            market_probs = {
+                "home_prob": odds["markets"]["h2h"].get("home_prob", 0.0),
+                "away_prob": odds["markets"]["h2h"].get("away_prob", 0.0),
+                "draw_prob": odds["markets"]["h2h"].get("draw_prob", 0.0)
+            }
+        else:
+            market_probs = {"home_prob": 0.0, "away_prob": 0.0, "draw_prob": 0.0}
+            odds = None
+    except Exception as e:
+        print(f"Warning: Could not load odds data: {e}")
+        odds = None
+        market_probs = {"home_prob": 0.0, "away_prob": 0.0, "draw_prob": 0.0}
+    
+    # Calculer delta
+    delta = compute_confidence_delta(model_probs, market_probs)
+    
+    # Retourner top K scores + odds + delta
+    scored_sorted = sorted([(s, p) for s, p in model_probs.items()], key=lambda x: x[1], reverse=True)
+    top = scored_sorted[:topk]
+    
+    return {
+        "top_scores": top,
+        "odds": odds,
+        "delta": delta
+    }
+
+
 if __name__ == '__main__':
     main()
