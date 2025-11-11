@@ -514,6 +514,7 @@ def train_model_incremental(train_path: str, epochs: int = 5, batch_size: int = 
         if avg_val_loss < best_val:
             best_val = avg_val_loss
             best_epoch = epoch
+            best_acc = acc  # Sauvegarder la meilleure précision
             no_improve = 0
         else:
             no_improve += 1
@@ -532,6 +533,20 @@ def train_model_incremental(train_path: str, epochs: int = 5, batch_size: int = 
         try:
             os.replace(final_tmp, model_path)
             print('[INCREMENTAL] Model saved atomically to', model_path)
+            
+            # Enregistrer performance dans l'historique
+            try:
+                perf_history_path = "/app/logs/performance_history.jsonl"
+                perf_record = {
+                    "date": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
+                    "accuracy": round(best_acc * 100, 2) if 'best_acc' in locals() else 0.0
+                }
+                with open(perf_history_path, "a", encoding="utf-8") as f:
+                    f.write(json.dumps(perf_record) + "\n")
+                print(f"[INCREMENTAL] Performance enregistrée: {perf_record['accuracy']}%")
+            except Exception as e:
+                print(f"[INCREMENTAL] Erreur enregistrement performance: {e}")
+                
         except Exception as e:
             print('[INCREMENTAL] Error saving final model:', e)
     else:
