@@ -148,24 +148,23 @@ def ufa_v3_status():
 
 
 @router.post('/api/ufa/v3/retrain')
-def ufa_v3_trigger_retrain(incremental: bool = True, max_time_minutes: int = 30):
+def ufa_v3_trigger_retrain(epochs: int = 10):
     """
     Déclenche un réentraînement manuel.
     
     Args:
-        incremental: Mode incrémental (fine-tuning) ou complet
-        max_time_minutes: Limite de temps en minutes
+        epochs: Nombre d'époques d'entraînement
     
     Returns:
         Message de confirmation
     """
     try:
-        from ufa.ufa_v3_for_emergent import train_model
+        from ufa.ufa_v3_for_emergent import auto_retrain
         import threading
         
         # Lancer en arrière-plan
         def run_training():
-            train_model(incremental=incremental, max_time_minutes=max_time_minutes)
+            auto_retrain(epochs=epochs)
         
         thread = threading.Thread(target=run_training)
         thread.daemon = True
@@ -173,9 +172,9 @@ def ufa_v3_trigger_retrain(incremental: bool = True, max_time_minutes: int = 30)
         
         return {
             'status': 'started',
-            'message': f'Retraining started in background (incremental={incremental}, max_time={max_time_minutes}min)',
-            'mode': 'incremental' if incremental else 'full',
-            'check_logs': '/app/logs/ufa_v3_training.log'
+            'message': f'Retraining started in background (epochs={epochs})',
+            'epochs': epochs,
+            'check_logs': 'Check console output or backend logs'
         }
         
     except Exception as e:
