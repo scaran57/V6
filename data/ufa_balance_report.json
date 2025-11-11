@@ -1,14 +1,14 @@
 {
-  "timestamp": "2025-11-09T23:12:46.213257",
-  "total_matches": 183,
-  "unknown_ratio": 0.39344262295081966,
+  "timestamp": "2025-11-11T12:45:48.893744",
+  "total_matches": 198,
+  "unknown_ratio": 0.36363636363636365,
   "top_score": {
     "score": "1-0",
-    "frequency": 0.23497267759562843
+    "frequency": 0.26262626262626265
   },
   "results_distribution": {
-    "home": 102,
-    "draw": 47,
+    "home": 111,
+    "draw": 53,
     "away": 34
   },
   "league_stats": {
@@ -19,16 +19,16 @@
       "status": "✅"
     },
     "Ligue1": {
-      "avg_goals": 5,
-      "std_dev": 6.102571532587294,
-      "matches": 30,
+      "avg_goals": 6.675675675675675,
+      "std_dev": 6.908344608169545,
+      "matches": 37,
       "status": "⚠️"
     },
     "LaLiga": {
-      "avg_goals": 2.3076923076923075,
-      "std_dev": 1.702185623672077,
-      "matches": 13,
-      "status": "✅"
+      "avg_goals": 1.894736842105263,
+      "std_dev": 1.5236920380774406,
+      "matches": 19,
+      "status": "⚠️"
     },
     "Eredivisie": {
       "avg_goals": 2.076923076923077,
@@ -43,10 +43,16 @@
       "status": "✅"
     },
     "Bundesliga": {
-      "avg_goals": 2.888888888888889,
-      "std_dev": 1.7638342073763937,
-      "matches": 9,
+      "avg_goals": 2.7,
+      "std_dev": 1.766981104093143,
+      "matches": 10,
       "status": "✅"
+    },
+    "PrimeiraLiga": {
+      "avg_goals": 1,
+      "std_dev": 0.0,
+      "matches": 6,
+      "status": "⚠️"
     },
     "PremierLeague": {
       "avg_goals": 3,
@@ -63,12 +69,6 @@
     "Campeonato Brasileiro Série A": {
       "avg_goals": 3.4,
       "std_dev": 1.949358868961793,
-      "matches": 5,
-      "status": "⚠️"
-    },
-    "PrimeiraLiga": {
-      "avg_goals": 1,
-      "std_dev": 0.0,
       "matches": 5,
       "status": "⚠️"
     },
@@ -110,6 +110,7 @@
     }
   },
   "alerts": [
-    "Ratio Unknown trop élevé: 39.3%"
+    "Ratio Unknown trop élevé: 36.4%",
+    "Score 1-0 trop fréquent: 26.3%"
   ]
 }
