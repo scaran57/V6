@@ -91,6 +91,12 @@ class LeagueScheduler:
                     logger.info("⏰ Heure de mise à jour FIFA hebdomadaire atteinte (lundi)")
                     self._update_fifa_rankings()
                     time.sleep(120)
+                
+                # Vérifier si c'est l'heure du réentraînement UFA v3 (03:05)
+                elif self._should_retrain_ufa_v3(now):
+                    logger.info("⏰ Heure de réentraînement UFA v3 atteinte")
+                    self._retrain_ufa_v3()
+                    time.sleep(120)
                 else:
                     # Vérifier toutes les 60 secondes
                     time.sleep(60)
