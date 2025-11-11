@@ -26,6 +26,7 @@ from ufa.api_world_coeffs import router as world_coeffs_router
 # Import du router UFA v3 (PyTorch)
 from ufa.api_ufa_v3 import router as ufa_v3_router
 from api.dashboard_status import router as dashboard_router
+from api.predict_with_odds import router as predict_odds_router
 from matches_memory import (
     analyze_match_stable, 
     get_match_result, 
