@@ -266,6 +266,19 @@ class LeagueScheduler:
             except Exception as e:
                 logger.error(f"❌ Erreur ajustement coefficients FIFA: {e}")
             
+            # Récupération des cotes The Odds API
+            try:
+                logger.info("🎲 Récupération des cotes depuis The Odds API...")
+                sys.path.insert(0, '/app/backend')
+                from tools.odds_api_integration import ingest_odds_once
+                
+                count = ingest_odds_once()
+                logger.info(f"✅ {count} matchs avec cotes récupérés")
+            except ImportError as e:
+                logger.error(f"❌ Erreur import odds_api_integration: {e}")
+            except Exception as e:
+                logger.error(f"❌ Erreur récupération cotes: {e}")
+            
         except ImportError as e:
             logger.error(f"❌ Erreur import ufa_v3_for_emergent: {e}")
         except Exception as e:
