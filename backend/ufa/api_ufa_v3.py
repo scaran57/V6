@@ -61,26 +61,19 @@ def ufa_v3_predict(req: PredictRequest):
         # Import du module UFA v3
         from ufa.ufa_v3_for_emergent import predict_single
         
-        # Prédiction (retourne liste de dicts)
+        # Prédiction (retourne liste de tuples (score_str, probability))
         results = predict_single(
             req.home_team,
             req.away_team,
             req.league,
             req.home_coeff,
-            req.away_coeff
+            req.away_coeff,
+            topk=req.topk
         )
-        
-        # Prendre top K
-        top_results = results[:req.topk]
         
         # Convertir en réponse
         top = []
-        for result in top_results:
-            home_score = result['home_score']
-            away_score = result['away_score']
-            prob = result['probability']
-            score = f"{home_score}-{away_score}"
-            
+        for score, prob in results:
             # Calculer cotes (odds = 1/probability)
             odds = round(1.0 / prob, 2) if prob > 0 else 999.0
             top.append({
