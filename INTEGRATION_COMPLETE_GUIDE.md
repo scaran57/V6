@@ -84,7 +84,7 @@
 
 1. **Accédez à l'application**
    ```
-   https://clean-ocr-engine.preview.emergentagent.com/
+   https://aiscore-oracle.preview.emergentagent.com/
    ```
 
 2. **Interface principale**
@@ -115,13 +115,13 @@
 
 ```bash
 # Upload et analyse
-curl -X POST "https://clean-ocr-engine.preview.emergentagent.com/api/unified/analyze" \
+curl -X POST "https://aiscore-oracle.preview.emergentagent.com/api/unified/analyze" \
   -F "file=@/path/to/image.jpg" \
   -F "persist_cache=true" \
   | jq '.'
 
 # Health check
-curl "https://clean-ocr-engine.preview.emergentagent.com/api/unified/health" | jq '.'
+curl "https://aiscore-oracle.preview.emergentagent.com/api/unified/health" | jq '.'
 ```
 
 **2. Intégration React (déjà fait)**
@@ -198,7 +198,7 @@ cat /app/data/analysis_cache.jsonl | jq -r '.league' | sort | uniq -c
 
 ### ✅ Test 2 : Frontend Interface
 
-**URL :** https://clean-ocr-engine.preview.emergentagent.com/
+**URL :** https://aiscore-oracle.preview.emergentagent.com/
 
 **Éléments vérifiés :**
 - ✅ Bouton "Analyser & Sauvegarder (UFA)" affiché
@@ -305,7 +305,7 @@ UFA Training                 ✅        Actif
    cat /app/data/analysis_cache.jsonl | wc -l
    
    # Health check
-   curl https://clean-ocr-engine.preview.emergentagent.com/api/unified/health | jq '.'
+   curl https://aiscore-oracle.preview.emergentagent.com/api/unified/health | jq '.'
    ```
 
 2. **Maintenance**
@@ -443,7 +443,7 @@ L'intégration du **Unified Analyzer** est **100% complète et opérationnelle**
 
 ---
 
-**URL de l'application :** https://clean-ocr-engine.preview.emergentagent.com/
+**URL de l'application :** https://aiscore-oracle.preview.emergentagent.com/
 
 **Support :** Consultez les guides de dépannage ou vérifiez les logs
 

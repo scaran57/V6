@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 
 # Configuration
-BASE_URL = "https://clean-ocr-engine.preview.emergentagent.com/api"
+BASE_URL = "https://aiscore-oracle.preview.emergentagent.com/api"
 
 class OCRFilteringTester:
     def __init__(self):

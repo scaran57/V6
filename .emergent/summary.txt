@@ -1,61 +1,54 @@
 <analysis>
-The AI engineer's work evolved the score prediction app from a basic MVP to a sophisticated system. Initial efforts fixed OCR caching with image hashes and improved frontend routing. A significant phase implemented a unified league coefficient system, scraping data for national and European leagues, calculating team coefficients, and scheduling automatic updates. Prediction validation was integrated, and the UI was updated. The system was then audited and stabilized. Subsequent work focused on migrating and unifying the learning system, creating a new UFA architecture for league-specific training, and developing advanced OCR for automatic real-score input with fuzzy team/league detection and immediate auto-training. The core challenge was ensuring learning consistency across different prediction modes and accurately migrating historical data.
+The previous AI engineer meticulously built a football score prediction application from scratch, leveraging OCR, adaptive learning, and a dynamic coefficient system. Initially, the focus was on robust OCR integration and a unified analysis endpoint. A significant step was the introduction of an auto-validation system and a unified analysis UI. The core problem faced was the inaccurate OCR extraction of team names and leagues, specifically from noisy screenshots. The engineer implemented an intelligent filtering mechanism, which was later reverted due to over-aggressiveness. This led to a detailed diagnostic revealing the root cause: disparate image formats (small cropped PNGs vs. large mobile JPG screenshots). Subsequent work involved implementing an OCR optimization patch, a FIFA world ranking coefficient system for international matches, a comprehensive UFA model retraining script, and an automated daily retraining and adaptive coefficient adjustment scheduler. The latest work transitioned to a PyTorch-based UFAv3 model with incremental training and robust performance features.
 </analysis>
 
 <product_requirements>
-The application's core function is to predict scores from bookmaker images using OCR, adaptive algorithms, and dynamic learning. The user requested: clear UI display of match info with manual input fallback; a secure, atomic learning system with an append-only log; a  endpoint with cache controls and  for uniqueness; a league coefficient system with daily updates, European league expansion, and fallback logic; a prediction validation system with frontend display; a full system audit and documentation. Most recently, the user requested integrating additional European leagues, unifying the Phase 1 and Phase 2 league systems, migrating existing real scores to a new UFA learning architecture, and implementing an OCR-based auto-importer for real scores with team/league detection and immediate auto-training.
+The application's primary goal is to predict football scores from bookmaker images using OCR, adaptive algorithms, and dynamic learning. It requires a user-friendly UI with manual input fallback, a secure append-only learning log, cache controls, and a comprehensive league coefficient system. This system must include daily updates and support European and international leagues. A prediction validation system and full system audit were also critical. More recently, the focus shifted to unifying league systems (Phase 1 and Phase 2), migrating real scores to a new UFA learning architecture, and implementing an OCR-based auto-importer with fuzzy team/league detection and immediate auto-training. The ongoing challenge centers on inaccurate league detection and extraneous text in team names from OCR, particularly with varied image inputs, and the need for a robust, continuously learning prediction model. The user explicitly requested filtering unwanted OCR text like timestamps and UI elements, then later a complete diagnostic for OCR degradation. Finally, a robust, incremental, PyTorch-based prediction model with dynamic coefficient adjustment was requested.
 </product_requirements>
 
 <key_technical_concepts>
--   **FastAPI & React:** Core backend and frontend.
--   **PyTesseract & PIL:** OCR and image processing.
--   **Adaptive Learning (diffExpected & UFA):** Global and league-specific model refinement.
--   **Analysis Cache:** Stores match data, secured by .
--   **League Coefficient System:** Dynamic adjustment of prediction odds.
--   **Prediction Validation:** Measures model accuracy.
--   **Beautiful Soup & Requests:** Web scraping.
--   **APScheduler:** Background task management.
--   **FuzzyWuzzy:** Fuzzy string matching for team detection.
+-   **FastAPI & React**: Backend and frontend frameworks.
+-   **PyTesseract & OpenCV**: OCR and image preprocessing.
+-   **PyTorch**: Deep learning framework for UFAv3 model.
+-   **FuzzyWuzzy**: Fuzzy string matching for team/league detection.
+-   **MongoDB**: Database for persistent data.
+-   **FIFA & Football-Data.org APIs**: External data sources for real scores and rankings.
+-   **APScheduler/Cron-like tasks**: Background task management for daily updates/training.
+-   **Adaptive Learning (UFA)**: League-specific and global model refinement.
 </key_technical_concepts>
 
 <code_architecture>
-The application uses a FastAPI backend and a React frontend within a Dockerized environment, managed by Supervisor.
+The application utilizes a FastAPI backend and a React frontend, orchestrated within a Dockerized environment and managed by Supervisor.
 
 
 
 **Key Files and Changes:**
-
--   : Central FastAPI app. Routes added for unified league management (), prediction validation (), and new UFA modules (, ). Key integrations include scheduler startup, league coefficient handling in , and  import fix.
--   : Core prediction logic.  now accepts  and .
--   : Manages daily updates. Modified to call the  (formerly ),  from , and  from .
--   : Scrapes league standings.  updated to include new European leagues.
--    (Renamed from ): Now contains all league fetching and coefficient calculation logic for both Phase 1 and Phase 2 leagues, ensuring a single, unified update process.
--    (New): Records real match scores into  for the UFA system.
--    (New): Base for UFA predictions and adjustments. Includes  and  methods.
--    (New): Orchestrates league-specific training, loading real scores, calculating losses, and adjusting priors. Fix included  for subprocess calls.
--    (New): A script to manually trigger UFA training.
--    (New): Analyzes real scores for balance, detecting Unknown ratios, score repetition, and average goals per league. API endpoint  added.
--    (New, v3): Automates real score input via OCR, detects teams/leagues using fuzzy matching, adds to , and immediately triggers UFA training. API endpoint  added.
--    (New): Robust OCR parsing module for extracting match info (scores, teams, league) from images, with fuzzy matching and manual overrides.
--    (New): Script to migrate legacy  data to the new  format, using team names to detect leagues.
--   : Added route for  for UEFA analysis.
--   : UI for league analysis, coefficient display, and prediction validation.
+*   : Central FastAPI app. Integrated  endpoint. Recently integrated  and .
+*   : Handles OCR processing. Initially enhanced with  and league detection. Later received an optimized patch () with image preprocessing variants, dynamic cropping, and best match line logic.  .env variable introduced.
+*   : Manages background tasks. Integrated  (v1 and v2), , and recently  for FIFA rankings. Also manages .
+*   : Calculates coefficients. Modified to include  to differentiate between club and international matches using FIFA rankings. The  function was made more robust with thread-safety and atomic writes.
+*   : **(NEW)** Fetches FIFA rankings from an external API (or uses fallback), parses them, and computes coefficients.
+*   : **(NEW)** Utility functions to load and retrieve FIFA world coefficients.
+*   : **(NEW)** FastAPI router for exposing FIFA world coefficients via .
+*   : **(NEW)** Script to combine predicted and real scores, correct inconsistencies, and retrain the UFA model.
+*   : **(NEW)** Tracks model performance metrics for different leagues.
+*   : **(NEW)** Automates daily retraining, performance evaluation, and adaptive coefficient adjustment.
+*   : Modified to include a  wrapper function for the UFA model.
+*   : **(NEW)** A comprehensive diagnostic tool for OCR preprocessing variants and analysis.
+*   : **(NEW)** PyTorch-based UFAv3 model implementation, including dataset loader, model definition, train/eval/predict CLI, and save/load functions. Designed for incremental training with wall-clock caps and atomic model saving.
+*   : **(NEW)** FastAPI router for the UFAv3 model's prediction endpoint () and status endpoint.
+*   : Updated with  and FIFA API related variables (e.g., , , ).
+*   : , , , ,  were added or are managed here.
 </code_architecture>
 
 <pending_tasks>
-The immediate next step, based on the trajectory, is to integrate the new  and  into the main  endpoint in  to ensure robust OCR, team/league detection, and correct coefficient application during predictions.
+- The immediate next task is to replace the existing  with the updated, more robust version provided by the user.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary, the AI engineer was addressing a critical issue where league coefficients were not being correctly applied during predictions, specifically in the Analyzer UEFA mode. The problem was diagnosed to be an issue with team and league extraction from the OCR text, resulting in Unknown teams, which prevented coefficient application.
-
-To resolve this, the user provided two new modules:
-1.  : This module is designed for robust OCR text processing, capable of extracting scores, detecting team names, and automatically mapping them to leagues using fuzzy matching. It also supports manual overrides for home/away teams and leagues.
-2.  : This module provides an integration snippet that leverages  to extract match information, persists detected real scores to the database if available, and then makes predictions by passing the correctly detected league and teams to the predictor, ensuring that coefficients are applied.
-
-The AI engineer has successfully received these two new modules (Chat Message 501) and stated the intention to implement them. This is the direct continuation of resolving the coefficient application problem.
+Immediately prior to this summary, the AI engineer had successfully implemented and integrated the UFAv3 prediction model based on PyTorch. This involved creating the  file containing the dataset loader, model architecture (embeddings + MLP), and train/eval/predict functionalities. A corresponding FastAPI endpoint ( and ) was created in  and integrated into . The required PyTorch dependency was confirmed to be installed. Initial training of the UFAv3 model was performed, and its status endpoint confirmed availability, model version, and dataset statistics. A prediction was successfully made through the API, demonstrating the end-to-end functionality of the new PyTorch-based model. The last message from the user provided an updated and more robust version of  which includes incremental training, wall-clock caps, early stopping, and atomic saving. The AI engineer agreed to replace the currently implemented version with this improved one.
 </current_work>
 
 <optional_next_step>
-Implement  and  to correctly extract match details and apply coefficients in .
+Replace the current  with the more robust version provided in Chat Message 423.
 </optional_next_step>

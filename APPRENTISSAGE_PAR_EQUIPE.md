@@ -76,7 +76,7 @@ Limité entre 0 et 3
 
 **Exemple** :
 ```bash
-curl -X POST https://clean-ocr-engine.preview.emergentagent.com/api/learn \
+curl -X POST https://aiscore-oracle.preview.emergentagent.com/api/learn \
   -F "predicted=3-0" \
   -F "real=3-0" \
   -F "home_team=Ajax Amsterdam" \
@@ -121,7 +121,7 @@ GET /api/teams/{team_name}
 
 **Exemple** :
 ```bash
-curl "https://clean-ocr-engine.preview.emergentagent.com/api/teams/Ajax%20Amsterdam"
+curl "https://aiscore-oracle.preview.emergentagent.com/api/teams/Ajax%20Amsterdam"
 ```
 
 ---
