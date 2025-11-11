@@ -285,14 +285,9 @@ def train_model(epochs: int = 20, batch_size: int = 64, lr: float = 1e-3, weight
 
     # Enregistrer performance dans l'historique
     try:
-        perf_history_path = "/app/logs/performance_history.jsonl"
-        perf_record = {
-            "date": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
-            "accuracy": round(best_acc * 100, 2) if 'best_acc' in locals() else 0.0
-        }
-        with open(perf_history_path, "a", encoding="utf-8") as f:
-            f.write(json.dumps(perf_record) + "\n")
-        print(f"Performance enregistrée: {perf_record['accuracy']}%")
+        from ufa.performance_logger import log_performance
+        accuracy = best_acc * 100 if 'best_acc' in locals() else 0.0
+        log_performance(accuracy, matches=len(train_records), mode="train")
     except Exception as e:
         print(f"Erreur enregistrement performance: {e}")
     
