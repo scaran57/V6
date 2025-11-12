@@ -728,6 +728,85 @@ agent_communication:
     stuck_count: 0
     priority: "high"
     needs_retesting: false
+
+  - task: "Système de Correction OCR Automatique via Fuzzy-Matching"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/tools/ocr_corrector.py, /app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          ✅ SYSTÈME DE CORRECTION OCR IMPLÉMENTÉ
+          
+          Problème résolu:
+          - Les noms d'équipes et ligues mal reconnus par l'OCR ne sont pas corrigés
+          - Manque de validation contre les données en temps réel
+          
+          Solution implémentée:
+          1. Créé ocr_corrector.py (architecture multi-source extensible):
+             - Fonction correct_team_name() avec fuzzy-matching
+             - Fonction correct_league_name() avec fuzzy-matching
+             - Fonction correct_match_info() pour correction complète
+             - Système de cache intelligent (TTL 12h)
+             - Logging enrichi (confidence, type, timestamp, hash)
+             - Seuils configurables (auto: ≥85%, suggested: 70-84%, ignored: <70%)
+          
+          2. Modifié /api/analyze dans server.py:
+             - Ajout du paramètre enable_ocr_correction (défaut: False)
+             - Correction appliquée après extract_match_info_advanced()
+             - Corrections intégrées dans la réponse JSON
+          
+          3. Créé endpoints de test et diagnostic:
+             - POST /api/ocr/correct : Test standalone
+             - GET /api/ocr/correction-stats : Statistiques globales
+             - GET /api/ocr/recent-corrections : Historique des corrections
+          
+          Architecture multi-source:
+          - SOURCES = ["odds_api"] (extensible)
+          - Préparé pour Football-Data.org dans le futur
+          - Cache intelligent avec refresh automatique si > 12h
+          
+          Logging enrichi:
+          - confidence_score (0-100)
+          - correction_type ("auto", "suggested", "ignored")
+          - timestamp + match_hash pour traçabilité
+          - Stats globales : total, auto, suggested, ignored, avg_confidence
+          
+          Tests requis (testing agent):
+          FOCUS: Vérifier que la correction OCR fonctionne correctement
+          
+          1. Test avec enable_ocr_correction=false (défaut):
+             - Vérifier que le système fonctionne normalement
+             - Aucune correction appliquée
+          
+          2. Test avec enable_ocr_correction=true:
+             - Vérifier que les corrections sont appliquées
+             - Vérifier les logs de correction
+             - Tester avec noms bruités (ex: "Mnachester Untd" → "Manchester United")
+          
+          3. Test endpoints standalone:
+             - POST /api/ocr/correct avec noms bruités
+             - GET /api/ocr/correction-stats
+             - GET /api/ocr/recent-corrections
+          
+          4. Tests de régression:
+             - /api/health
+             - /api/analyze (sans enable_ocr_correction)
+             - Autres endpoints existants
+          
+          Configuration:
+          - Backend redémarré: À faire
+          - Imports vérifiés: ✅
+          - fuzzywuzzy déjà installé: ✅
+          - ocr_corrector.py créé: ✅
+          - Aucune erreur au démarrage: À vérifier
+          
+          NOTE CRITIQUE: La correction OCR est OPTIONNELLE par défaut.
+          Pour l'activer: ?enable_ocr_correction=true dans /api/analyze
     status_history:
       - working: "NA"
         agent: "main"
