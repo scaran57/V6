@@ -1,1 +1,42 @@
-{}
+{
+  "ÿinformationsdumatchmatch11.811top3des_bookmakerinconnu_785f7f2c": {
+    "match_id": "ÿinformationsdumatchmatch11.811top3des_bookmakerinconnu_785f7f2c",
+    "match_name": "Ÿ Informations du Match Match - 11.8 11 Top 3 des",
+    "bookmaker": "Bookmaker inconnu",
+    "extracted_scores": [
+      {
+        "score": "3-2",
+        "odds": 11.8
+      },
+      {
+        "score": "2-3",
+        "odds": 19.67
+      },
+      {
+        "score": "3-3",
+        "odds": 17.4
+      }
+    ],
+    "probabilities": {
+      "3-2": 45.46,
+      "2-3": 27.27,
+      "3-3": 27.27
+    },
+    "confidence": 0.415,
+    "top3": [
+      {
+        "score": "3-2",
+        "probability": 45.46
+      },
+      {
+        "score": "2-3",
+        "probability": 27.27
+      },
+      {
+        "score": "3-3",
+        "probability": 27.27
+      }
+    ],
+    "analyzed_at": "2025-11-12T18:08:54.087828"
+  }
+}
