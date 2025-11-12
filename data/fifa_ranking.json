@@ -67,7 +67,10 @@
     "IRL": {"rank": 62, "points": 1401.18, "name": "Ireland", "name_fr": "Irlande"},
     "BFA": {"rank": 63, "points": 1398.05, "name": "Burkina Faso", "name_fr": "Burkina Faso"},
     "HON": {"rank": 64, "points": 1396.23, "name": "Honduras", "name_fr": "Honduras"},
-    "MKD": {"rank": 65, "points": 1390.6, "name": "North Macedonia", "name_fr": "Macédoine du Nord"}
+    "MKD": {"rank": 65, "points": 1390.6, "name": "North Macedonia", "name_fr": "Macédoine du Nord"},
+    "EST": {"rank": 118, "points": 1205.67, "name": "Estonia", "name_fr": "Estonie"},
+    "ISL": {"rank": 72, "points": 1350.0, "name": "Iceland", "name_fr": "Islande"},
+    "AZE": {"rank": 95, "points": 1280.0, "name": "Azerbaijan", "name_fr": "Azerbaïdjan"}
   },
   "name_mappings": {
     "Spain": "ESP",
