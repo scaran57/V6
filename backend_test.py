@@ -1558,7 +1558,7 @@ class ScorePredictorTester:
             with open(image_path, 'rb') as f:
                 files = {'file': ('test_bookmaker_v2.jpg', f, 'image/jpeg')}
                 response = requests.post(
-                    f"{BASE_URL}/analyze?enable_ocr_correction=false",
+                    f"{BASE_URL}/analyze?enable_ocr_correction=false&disable_cache=true",
                     files=files,
                     timeout=30
                 )
