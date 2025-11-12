@@ -22,3 +22,6 @@
 {"timestamp": "2025-11-12T16:48:26.561676", "entity_type": "team", "raw_text": "Équipe XYZ", "corrected_text": "Équipe XYZ", "confidence_score": 38, "correction_type": "ignored", "match_hash": null}
 {"timestamp": "2025-11-12T16:48:26.619621", "entity_type": "team", "raw_text": "Team ABC", "corrected_text": "Team ABC", "confidence_score": 50, "correction_type": "ignored", "match_hash": null}
 {"timestamp": "2025-11-12T16:48:26.676300", "entity_type": "league", "raw_text": "Unknown League", "corrected_text": "Unknown League", "confidence_score": 50, "correction_type": "ignored", "match_hash": null}
+{"timestamp": "2025-11-12T18:07:08.621330", "entity_type": "team", "raw_text": "Norvege", "corrected_text": "Norvège", "confidence_score": 92, "correction_type": "auto", "match_hash": null}
+{"timestamp": "2025-11-12T18:07:08.690320", "entity_type": "team", "raw_text": "Estonie", "corrected_text": "Estonie", "confidence_score": 100, "correction_type": "auto", "match_hash": null}
+{"timestamp": "2025-11-12T18:07:08.756202", "entity_type": "league", "raw_text": "World Cup", "corrected_text": "World Cup", "confidence_score": 100, "correction_type": "auto", "match_hash": null}
