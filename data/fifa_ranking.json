@@ -73,6 +73,7 @@
     "AZE": {"rank": 95, "points": 1280.0, "name": "Azerbaijan", "name_fr": "Azerbaïdjan"}
   },
   "name_mappings": {
+    "total_teams_updated": 68,
     "Spain": "ESP",
     "Espagne": "ESP",
     "Argentina": "ARG",
