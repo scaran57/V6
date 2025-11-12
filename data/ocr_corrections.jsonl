@@ -28,3 +28,6 @@
 {"timestamp": "2025-11-12T18:07:17.882193", "entity_type": "team", "raw_text": "Norvège", "corrected_text": "Norvège", "confidence_score": 100, "correction_type": "auto", "match_hash": null}
 {"timestamp": "2025-11-12T18:07:17.980552", "entity_type": "team", "raw_text": "Estonie", "corrected_text": "Estonie", "confidence_score": 100, "correction_type": "auto", "match_hash": null}
 {"timestamp": "2025-11-12T18:07:18.051115", "entity_type": "league", "raw_text": "Coupe du Monde", "corrected_text": "Qualif Coupe du Monde", "confidence_score": 80, "correction_type": "suggested", "match_hash": null}
+{"timestamp": "2025-11-12T18:07:29.614021", "entity_type": "team", "raw_text": "Azerbaidjan", "corrected_text": "Azerbaïdjan", "confidence_score": 95, "correction_type": "auto", "match_hash": null}
+{"timestamp": "2025-11-12T18:07:29.678736", "entity_type": "team", "raw_text": "Islande", "corrected_text": "Islande", "confidence_score": 100, "correction_type": "auto", "match_hash": null}
+{"timestamp": "2025-11-12T18:07:29.742822", "entity_type": "league", "raw_text": "WC Qualification", "corrected_text": "WC Qualification", "confidence_score": 100, "correction_type": "auto", "match_hash": null}
