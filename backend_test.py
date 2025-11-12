@@ -8,6 +8,7 @@ import requests
 import json
 import os
 import time
+import re
 from pathlib import Path
 
 # Configuration
