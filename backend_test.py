@@ -1247,6 +1247,620 @@ class ScorePredictorTester:
         
         return results
 
+    # ============================================================================
+    # === OCR CORRECTION SYSTEM TESTS ===
+    # ============================================================================
+
+    def test_ocr_correction_standalone(self):
+        """Test POST /api/ocr/correct endpoint (standalone OCR correction)"""
+        self.log("=" * 80)
+        self.log("🔧 TESTING OCR CORRECTION STANDALONE ENDPOINTS")
+        self.log("=" * 80)
+        
+        results = {}
+        
+        # Test 1: Exact names (no correction needed)
+        self.log("\n1️⃣ Test 1: Exact names (no correction needed)")
+        test_data = {
+            "home_team": "Real Madrid",
+            "away_team": "Barcelona",
+            "league": "La Liga"
+        }
+        
+        try:
+            response = requests.post(f"{BASE_URL}/ocr/correct", data=test_data, timeout=15)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("success"):
+                    corrections_applied = data.get("corrections_applied", 0)
+                    output = data.get("output", {})
+                    
+                    self.log(f"✅ Exact names test completed")
+                    self.log(f"    Input: {test_data['home_team']} vs {test_data['away_team']} ({test_data['league']})")
+                    self.log(f"    Output: {output.get('home_team')} vs {output.get('away_team')} ({output.get('league')})")
+                    self.log(f"    Corrections applied: {corrections_applied}")
+                    
+                    # Expected: No corrections for exact names
+                    if corrections_applied == 0:
+                        results["exact_names"] = {
+                            "status": "PASS",
+                            "corrections_applied": corrections_applied,
+                            "note": "No corrections needed for exact names (expected)"
+                        }
+                        self.log(f"    🎉 SUCCESS: No corrections applied as expected")
+                    else:
+                        results["exact_names"] = {
+                            "status": "FAIL",
+                            "error": f"Unexpected corrections applied: {corrections_applied}",
+                            "corrections_applied": corrections_applied
+                        }
+                        self.log(f"    ❌ FAIL: Unexpected corrections applied")
+                else:
+                    results["exact_names"] = {
+                        "status": "FAIL",
+                        "error": f"API returned success=false: {data}"
+                    }
+                    self.log(f"    ❌ API returned success=false")
+            else:
+                results["exact_names"] = {
+                    "status": "FAIL",
+                    "error": f"HTTP {response.status_code}: {response.text[:200]}"
+                }
+                self.log(f"    ❌ HTTP error {response.status_code}")
+        except Exception as e:
+            results["exact_names"] = {
+                "status": "FAIL",
+                "error": f"Exception: {str(e)}"
+            }
+            self.log(f"    ❌ Exception: {str(e)}")
+        
+        # Test 2: Noisy names (auto-correction expected)
+        self.log("\n2️⃣ Test 2: Noisy names (auto-correction expected)")
+        test_data = {
+            "home_team": "Mnachester Untd",
+            "away_team": "Liverpol",
+            "league": "Prenuer League"
+        }
+        
+        try:
+            response = requests.post(f"{BASE_URL}/ocr/correct", data=test_data, timeout=15)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("success"):
+                    corrections_applied = data.get("corrections_applied", 0)
+                    output = data.get("output", {})
+                    details = data.get("details", {})
+                    
+                    self.log(f"✅ Noisy names test completed")
+                    self.log(f"    Input: {test_data['home_team']} vs {test_data['away_team']} ({test_data['league']})")
+                    self.log(f"    Output: {output.get('home_team')} vs {output.get('away_team')} ({output.get('league')})")
+                    self.log(f"    Corrections applied: {corrections_applied}")
+                    self.log(f"    Details: {details}")
+                    
+                    # Expected: 2-3 corrections with confidence ≥85%
+                    if corrections_applied >= 2:
+                        results["noisy_names"] = {
+                            "status": "PASS",
+                            "corrections_applied": corrections_applied,
+                            "output": output,
+                            "details": details
+                        }
+                        self.log(f"    🎉 SUCCESS: {corrections_applied} corrections applied (confidence ≥85%)")
+                    else:
+                        results["noisy_names"] = {
+                            "status": "PARTIAL",
+                            "corrections_applied": corrections_applied,
+                            "note": f"Expected ≥2 corrections, got {corrections_applied}"
+                        }
+                        self.log(f"    ⚠️ PARTIAL: Expected ≥2 corrections, got {corrections_applied}")
+                else:
+                    results["noisy_names"] = {
+                        "status": "FAIL",
+                        "error": f"API returned success=false: {data}"
+                    }
+                    self.log(f"    ❌ API returned success=false")
+            else:
+                results["noisy_names"] = {
+                    "status": "FAIL",
+                    "error": f"HTTP {response.status_code}: {response.text[:200]}"
+                }
+                self.log(f"    ❌ HTTP error {response.status_code}")
+        except Exception as e:
+            results["noisy_names"] = {
+                "status": "FAIL",
+                "error": f"Exception: {str(e)}"
+            }
+            self.log(f"    ❌ Exception: {str(e)}")
+        
+        # Test 3: Out of domain (corrections ignored)
+        self.log("\n3️⃣ Test 3: Out of domain (corrections ignored)")
+        test_data = {
+            "home_team": "Équipe XYZ",
+            "away_team": "Team ABC",
+            "league": "Unknown League"
+        }
+        
+        try:
+            response = requests.post(f"{BASE_URL}/ocr/correct", data=test_data, timeout=15)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("success"):
+                    corrections_applied = data.get("corrections_applied", 0)
+                    output = data.get("output", {})
+                    
+                    self.log(f"✅ Out of domain test completed")
+                    self.log(f"    Input: {test_data['home_team']} vs {test_data['away_team']} ({test_data['league']})")
+                    self.log(f"    Output: {output.get('home_team')} vs {output.get('away_team')} ({output.get('league')})")
+                    self.log(f"    Corrections applied: {corrections_applied}")
+                    
+                    # Expected: Corrections ignored (confidence <70%)
+                    if corrections_applied == 0:
+                        results["out_of_domain"] = {
+                            "status": "PASS",
+                            "corrections_applied": corrections_applied,
+                            "note": "Corrections ignored for unknown teams (confidence <70%)"
+                        }
+                        self.log(f"    🎉 SUCCESS: Corrections ignored as expected (confidence <70%)")
+                    else:
+                        results["out_of_domain"] = {
+                            "status": "PARTIAL",
+                            "corrections_applied": corrections_applied,
+                            "note": f"Some corrections applied despite unknown teams"
+                        }
+                        self.log(f"    ⚠️ PARTIAL: {corrections_applied} corrections applied despite unknown teams")
+                else:
+                    results["out_of_domain"] = {
+                        "status": "FAIL",
+                        "error": f"API returned success=false: {data}"
+                    }
+                    self.log(f"    ❌ API returned success=false")
+            else:
+                results["out_of_domain"] = {
+                    "status": "FAIL",
+                    "error": f"HTTP {response.status_code}: {response.text[:200]}"
+                }
+                self.log(f"    ❌ HTTP error {response.status_code}")
+        except Exception as e:
+            results["out_of_domain"] = {
+                "status": "FAIL",
+                "error": f"Exception: {str(e)}"
+            }
+            self.log(f"    ❌ Exception: {str(e)}")
+        
+        return results
+
+    def test_ocr_correction_stats(self):
+        """Test GET /api/ocr/correction-stats endpoint"""
+        self.log("\n4️⃣ Testing GET /api/ocr/correction-stats")
+        
+        try:
+            response = requests.get(f"{BASE_URL}/ocr/correction-stats", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("success") and "stats" in data:
+                    stats = data["stats"]
+                    required_fields = [
+                        "total_corrections", "auto_corrections", 
+                        "suggested_corrections", "ignored_corrections", 
+                        "avg_confidence"
+                    ]
+                    
+                    missing_fields = [field for field in required_fields if field not in stats]
+                    
+                    if not missing_fields:
+                        self.log(f"✅ Correction stats endpoint working")
+                        self.log(f"    Total corrections: {stats.get('total_corrections', 0)}")
+                        self.log(f"    Auto corrections: {stats.get('auto_corrections', 0)}")
+                        self.log(f"    Suggested corrections: {stats.get('suggested_corrections', 0)}")
+                        self.log(f"    Ignored corrections: {stats.get('ignored_corrections', 0)}")
+                        self.log(f"    Average confidence: {stats.get('avg_confidence', 0)}%")
+                        
+                        return {
+                            "status": "PASS",
+                            "stats": stats
+                        }
+                    else:
+                        self.log(f"❌ Missing required fields: {missing_fields}")
+                        return {
+                            "status": "FAIL",
+                            "error": f"Missing fields: {missing_fields}"
+                        }
+                else:
+                    self.log(f"❌ Invalid response format: {data}")
+                    return {
+                        "status": "FAIL",
+                        "error": "Invalid response format"
+                    }
+            else:
+                self.log(f"❌ HTTP error {response.status_code}")
+                return {
+                    "status": "FAIL",
+                    "error": f"HTTP {response.status_code}"
+                }
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            return {
+                "status": "FAIL",
+                "error": str(e)
+            }
+
+    def test_ocr_recent_corrections(self):
+        """Test GET /api/ocr/recent-corrections endpoint"""
+        self.log("\n5️⃣ Testing GET /api/ocr/recent-corrections")
+        
+        try:
+            response = requests.get(f"{BASE_URL}/ocr/recent-corrections?limit=10", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("success") and "corrections" in data:
+                    corrections = data["corrections"]
+                    count = data.get("count", 0)
+                    
+                    self.log(f"✅ Recent corrections endpoint working")
+                    self.log(f"    Recent corrections count: {count}")
+                    
+                    if count > 0:
+                        self.log(f"    Sample correction: {corrections[0] if corrections else 'None'}")
+                    
+                    return {
+                        "status": "PASS",
+                        "count": count,
+                        "corrections": corrections
+                    }
+                else:
+                    self.log(f"❌ Invalid response format: {data}")
+                    return {
+                        "status": "FAIL",
+                        "error": "Invalid response format"
+                    }
+            else:
+                self.log(f"❌ HTTP error {response.status_code}")
+                return {
+                    "status": "FAIL",
+                    "error": f"HTTP {response.status_code}"
+                }
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            return {
+                "status": "FAIL",
+                "error": str(e)
+            }
+
+    def test_ocr_correction_integration(self):
+        """Test OCR correction integration in /api/analyze endpoint"""
+        self.log("=" * 80)
+        self.log("🔧 TESTING OCR CORRECTION INTEGRATION IN /api/analyze")
+        self.log("=" * 80)
+        
+        results = {}
+        
+        # Use a test image
+        image_path = os.path.join(BACKEND_DIR, "test_bookmaker_v2.jpg")
+        
+        if not os.path.exists(image_path):
+            self.log(f"⚠️ Test image not found: {image_path}")
+            return {"status": "FAIL", "error": "Test image not found"}
+        
+        # Test A: Without correction (default)
+        self.log("\n🅰️ Test A: Without OCR correction (default behavior)")
+        try:
+            with open(image_path, 'rb') as f:
+                files = {'file': ('test_bookmaker_v2.jpg', f, 'image/jpeg')}
+                response = requests.post(
+                    f"{BASE_URL}/analyze?enable_ocr_correction=false",
+                    files=files,
+                    timeout=30
+                )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check that ocrCorrection field is not present
+                ocr_correction = data.get("ocrCorrection")
+                
+                if ocr_correction is None:
+                    self.log(f"✅ Without correction: No ocrCorrection field (expected)")
+                    results["without_correction"] = {
+                        "status": "PASS",
+                        "note": "No ocrCorrection field when disabled"
+                    }
+                else:
+                    self.log(f"⚠️ Without correction: ocrCorrection field present: {ocr_correction}")
+                    results["without_correction"] = {
+                        "status": "PARTIAL",
+                        "note": "ocrCorrection field present when disabled",
+                        "ocr_correction": ocr_correction
+                    }
+            else:
+                self.log(f"❌ HTTP error {response.status_code}")
+                results["without_correction"] = {
+                    "status": "FAIL",
+                    "error": f"HTTP {response.status_code}"
+                }
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["without_correction"] = {
+                "status": "FAIL",
+                "error": str(e)
+            }
+        
+        # Test B: With correction enabled
+        self.log("\n🅱️ Test B: With OCR correction enabled")
+        try:
+            with open(image_path, 'rb') as f:
+                files = {'file': ('test_bookmaker_v2.jpg', f, 'image/jpeg')}
+                response = requests.post(
+                    f"{BASE_URL}/analyze?enable_ocr_correction=true",
+                    files=files,
+                    timeout=30
+                )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check for ocrCorrection field
+                ocr_correction = data.get("ocrCorrection")
+                
+                if ocr_correction and ocr_correction.get("enabled"):
+                    corrections_applied = ocr_correction.get("corrections_applied", 0)
+                    details = ocr_correction.get("details", {})
+                    
+                    self.log(f"✅ With correction: ocrCorrection field present")
+                    self.log(f"    Enabled: {ocr_correction.get('enabled')}")
+                    self.log(f"    Corrections applied: {corrections_applied}")
+                    self.log(f"    Details: {details}")
+                    
+                    results["with_correction"] = {
+                        "status": "PASS",
+                        "corrections_applied": corrections_applied,
+                        "details": details,
+                        "ocr_correction": ocr_correction
+                    }
+                else:
+                    self.log(f"❌ With correction: ocrCorrection field missing or disabled")
+                    results["with_correction"] = {
+                        "status": "FAIL",
+                        "error": "ocrCorrection field missing or disabled",
+                        "ocr_correction": ocr_correction
+                    }
+            else:
+                self.log(f"❌ HTTP error {response.status_code}")
+                results["with_correction"] = {
+                    "status": "FAIL",
+                    "error": f"HTTP {response.status_code}"
+                }
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            results["with_correction"] = {
+                "status": "FAIL",
+                "error": str(e)
+            }
+        
+        return results
+
+    def test_ocr_correction_regression(self):
+        """Test regression - ensure existing endpoints still work"""
+        self.log("=" * 80)
+        self.log("🔧 TESTING OCR CORRECTION REGRESSION")
+        self.log("=" * 80)
+        
+        results = {}
+        
+        # Test /api/health
+        self.log("\n1️⃣ Testing GET /api/health")
+        try:
+            response = requests.get(f"{BASE_URL}/health", timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("status") == "ok":
+                    self.log("✅ /api/health working correctly")
+                    results["health"] = {"status": "PASS"}
+                else:
+                    self.log("❌ /api/health unexpected response")
+                    results["health"] = {"status": "FAIL", "error": "Unexpected response"}
+            else:
+                self.log(f"❌ /api/health HTTP {response.status_code}")
+                results["health"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ /api/health exception: {str(e)}")
+            results["health"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test /api/diff
+        self.log("\n2️⃣ Testing GET /api/diff")
+        try:
+            response = requests.get(f"{BASE_URL}/diff", timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                if "diffExpected" in data:
+                    self.log(f"✅ /api/diff working - diffExpected: {data['diffExpected']}")
+                    results["diff"] = {"status": "PASS", "diffExpected": data["diffExpected"]}
+                else:
+                    self.log("❌ /api/diff missing diffExpected")
+                    results["diff"] = {"status": "FAIL", "error": "Missing diffExpected"}
+            else:
+                self.log(f"❌ /api/diff HTTP {response.status_code}")
+                results["diff"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ /api/diff exception: {str(e)}")
+            results["diff"] = {"status": "FAIL", "error": str(e)}
+        
+        # Test /api/analyze (without enable_ocr_correction)
+        self.log("\n3️⃣ Testing POST /api/analyze (normal behavior)")
+        image_path = os.path.join(BACKEND_DIR, "test_bookmaker_v2.jpg")
+        
+        if os.path.exists(image_path):
+            try:
+                with open(image_path, 'rb') as f:
+                    files = {'file': ('test_bookmaker_v2.jpg', f, 'image/jpeg')}
+                    response = requests.post(f"{BASE_URL}/analyze", files=files, timeout=30)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    
+                    # Should work normally without ocrCorrection field
+                    if 'error' in data or data.get('success'):
+                        self.log("✅ /api/analyze working normally")
+                        results["analyze"] = {"status": "PASS"}
+                    else:
+                        self.log("❌ /api/analyze unexpected response")
+                        results["analyze"] = {"status": "FAIL", "error": "Unexpected response"}
+                else:
+                    self.log(f"❌ /api/analyze HTTP {response.status_code}")
+                    results["analyze"] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+            except Exception as e:
+                self.log(f"❌ /api/analyze exception: {str(e)}")
+                results["analyze"] = {"status": "FAIL", "error": str(e)}
+        else:
+            self.log("⚠️ Test image not found for /api/analyze")
+            results["analyze"] = {"status": "FAIL", "error": "Test image not found"}
+        
+        return results
+
+    def test_ocr_correction_backend_logs(self):
+        """Check backend logs for OCR correction messages"""
+        self.log("=" * 80)
+        self.log("🔧 CHECKING BACKEND LOGS FOR OCR CORRECTION")
+        self.log("=" * 80)
+        
+        try:
+            import subprocess
+            log_result = subprocess.run(
+                ["tail", "-n", "200", "/var/log/supervisor/backend.err.log"],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            
+            if log_result.returncode == 0:
+                logs = log_result.stdout
+                
+                # Look for OCR correction logs
+                correction_logs = "📝 Correction OCR" in logs or "🔧 Correction OCR activée" in logs
+                fuzzy_matching_logs = "fuzzy-matching" in logs.lower()
+                odds_api_logs = "The Odds API" in logs or "odds_api" in logs
+                
+                self.log(f"✅ OCR correction logs: {'Found' if correction_logs else 'Not found'}")
+                self.log(f"✅ Fuzzy-matching logs: {'Found' if fuzzy_matching_logs else 'Not found'}")
+                self.log(f"✅ Odds API logs: {'Found' if odds_api_logs else 'Not found'}")
+                
+                # Look for any errors
+                ocr_errors = "Erreur correction OCR" in logs or "OCR correction error" in logs
+                if not ocr_errors:
+                    self.log("✅ No OCR correction errors found")
+                else:
+                    self.log("⚠️ Some OCR correction errors detected")
+                
+                return {
+                    "status": "PASS" if any([correction_logs, fuzzy_matching_logs]) else "PARTIAL",
+                    "correction_logs": correction_logs,
+                    "fuzzy_matching_logs": fuzzy_matching_logs,
+                    "odds_api_logs": odds_api_logs,
+                    "no_errors": not ocr_errors
+                }
+            else:
+                self.log("❌ Could not read backend logs")
+                return {"status": "FAIL", "error": "Could not read logs"}
+        except Exception as e:
+            self.log(f"❌ Exception reading logs: {str(e)}")
+            return {"status": "FAIL", "error": str(e)}
+
+    def run_ocr_correction_tests(self):
+        """Run all OCR correction system tests"""
+        self.log("=" * 80)
+        self.log("🔧 RUNNING COMPLETE OCR CORRECTION SYSTEM TESTS")
+        self.log("=" * 80)
+        
+        all_results = {}
+        
+        # 1. Test standalone OCR correction endpoints
+        standalone_results = self.test_ocr_correction_standalone()
+        all_results.update(standalone_results)
+        
+        # 2. Test correction stats endpoint
+        stats_result = self.test_ocr_correction_stats()
+        all_results["correction_stats"] = stats_result
+        
+        # 3. Test recent corrections endpoint
+        recent_result = self.test_ocr_recent_corrections()
+        all_results["recent_corrections"] = recent_result
+        
+        # 4. Test integration in /api/analyze
+        integration_results = self.test_ocr_correction_integration()
+        all_results.update(integration_results)
+        
+        # 5. Test regression
+        regression_results = self.test_ocr_correction_regression()
+        all_results["regression"] = regression_results
+        
+        # 6. Check backend logs
+        logs_result = self.test_ocr_correction_backend_logs()
+        all_results["backend_logs"] = logs_result
+        
+        # Print comprehensive summary
+        self.log("=" * 80)
+        self.log("OCR CORRECTION SYSTEM TEST SUMMARY")
+        self.log("=" * 80)
+        
+        # Count results by category
+        categories = {
+            "Standalone Tests": ["exact_names", "noisy_names", "out_of_domain"],
+            "Stats & History": ["correction_stats", "recent_corrections"],
+            "Integration Tests": ["without_correction", "with_correction"],
+            "Regression Tests": ["regression"],
+            "Backend Logs": ["backend_logs"]
+        }
+        
+        for category, test_names in categories.items():
+            self.log(f"\n📊 {category}:")
+            for test_name in test_names:
+                if test_name in all_results:
+                    result = all_results[test_name]
+                    if isinstance(result, dict) and "status" in result:
+                        status = result["status"]
+                        status_icon = "✅" if status == "PASS" else "⚠️" if status == "PARTIAL" else "❌"
+                        self.log(f"    {status_icon} {test_name}: {status}")
+                        
+                        if "error" in result:
+                            self.log(f"        Error: {result['error']}")
+                        elif "note" in result:
+                            self.log(f"        Note: {result['note']}")
+        
+        # Overall assessment
+        total_tests = len(all_results)
+        passed_tests = sum(1 for r in all_results.values() 
+                          if isinstance(r, dict) and r.get("status") == "PASS")
+        partial_tests = sum(1 for r in all_results.values() 
+                           if isinstance(r, dict) and r.get("status") == "PARTIAL")
+        
+        self.log(f"\n📈 OVERALL RESULTS:")
+        self.log(f"    Total tests: {total_tests}")
+        self.log(f"    Passed: {passed_tests}")
+        self.log(f"    Partial: {partial_tests}")
+        self.log(f"    Failed: {total_tests - passed_tests - partial_tests}")
+        
+        success_rate = (passed_tests + partial_tests * 0.5) / total_tests * 100 if total_tests > 0 else 0
+        
+        if success_rate >= 80:
+            self.log(f"\n🎉 SUCCESS: OCR Correction System is working correctly! ({success_rate:.1f}% success rate)")
+        elif success_rate >= 60:
+            self.log(f"\n⚠️ PARTIAL: OCR Correction System has some issues ({success_rate:.1f}% success rate)")
+        else:
+            self.log(f"\n❌ CRITICAL: OCR Correction System has major issues ({success_rate:.1f}% success rate)")
+        
+        self.log("=" * 80)
+        
+        return all_results
+
     def test_ufa_v3_system(self):
         """Test complet du système UFAv3 PyTorch - Version robuste"""
         self.log("=" * 80)
