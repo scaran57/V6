@@ -37,6 +37,30 @@ FUZZY_THRESHOLD_HIGH = 85   # Auto-correction automatique
 FUZZY_THRESHOLD_MEDIUM = 70 # Suggestion (log only)
 FUZZY_THRESHOLD_LOW = 60    # Alerte manuelle (no action)
 
+# === PATCH: Ajout des équipes nationales pour "World Cup Qualification" ===
+WORLD_CUP_TEAMS = [
+    "Norway", "Norvège", "Estonia", "Estonie", "Azerbaijan", "Azerbaïdjan",
+    "Iceland", "Islande", "France", "Germany", "Allemagne", "Spain", "Espagne",
+    "Portugal", "Italy", "Italie", "England", "Angleterre", "Belgium", "Belgique",
+    "Sweden", "Suède", "Denmark", "Danemark", "Finland", "Finlande",
+    "Poland", "Pologne", "Czech Republic", "Tchéquie", "Hungary", "Hongrie",
+    "Croatia", "Croatie", "Serbia", "Serbie", "Switzerland", "Suisse",
+    "Netherlands", "Pays-Bas", "Turkey", "Turquie", "Greece", "Grèce",
+    "Romania", "Roumanie", "Scotland", "Écosse", "Wales", "Pays de Galles",
+    "Ireland", "Irlande", "Slovakia", "Slovaquie", "Slovenia", "Slovénie",
+    "Ukraine", "Georgia", "Géorgie", "Bosnia", "Bosnie", "North Macedonia",
+    "Lithuania", "Lituanie", "Latvia", "Lettonie", "Luxembourg",
+    "Albania", "Albanie", "Kosovo", "Cyprus", "Chypre", "Malta", "Malte",
+    "Israel", "Israël"
+]
+
+WORLD_CUP_LEAGUES = [
+    "World Cup Qualification", "World Cup Qualifiers", "FIFA World Cup Qualifiers",
+    "WC Qualification", "Qualif Coupe du Monde", "World Cup", "FIFA World Cup",
+    "Coupe du Monde Qualification", "Eliminatoires Coupe du Monde"
+]
+# === Fin du patch ===
+
 # Configuration du logging
 logger = logging.getLogger(__name__)
 os.makedirs(DATA_DIR, exist_ok=True)
