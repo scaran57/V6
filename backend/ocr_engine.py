@@ -128,7 +128,8 @@ def preprocess_image(image_path: str, use_advanced: bool = None) -> list:
         green_buttons = cv2.bitwise_and(gray, gray, mask=mask_inv)
         versions.append(("green_buttons", green_buttons))
 
-    return versions
+    # Ajouter les versions avancées en premier (priorité)
+    return advanced_versions + versions
 
 
 def clean_score(score_str: str) -> str:
