@@ -1228,6 +1228,125 @@ async def diagnostic_system_status():
 
 
 # ============================================================================
+# === ENDPOINTS OCR CORRECTION ===
+# ============================================================================
+
+@api_router.post("/ocr/correct")
+async def api_correct_ocr(
+    home_team: str = Form(None),
+    away_team: str = Form(None),
+    league: str = Form(None)
+):
+    """
+    🔧 Endpoint de test standalone pour la correction OCR.
+    Corrige les noms d'équipes et ligues via fuzzy-matching.
+    
+    Args:
+        home_team: Nom de l'équipe à domicile (brut OCR)
+        away_team: Nom de l'équipe à l'extérieur (brut OCR)
+        league: Nom de la ligue (brut OCR)
+    
+    Returns:
+        JSON avec corrections appliquées et détails
+    """
+    try:
+        from tools.ocr_corrector import correct_match_info
+        
+        logger.info(f"🔧 Correction OCR manuelle: {home_team} vs {away_team} ({league})")
+        
+        result = correct_match_info(
+            home_team=home_team,
+            away_team=away_team,
+            league=league
+        )
+        
+        return JSONResponse({
+            "success": True,
+            "input": {
+                "home_team": home_team,
+                "away_team": away_team,
+                "league": league
+            },
+            "output": {
+                "home_team": result["home_team"],
+                "away_team": result["away_team"],
+                "league": result["league"]
+            },
+            "corrections_applied": result["corrections_applied"],
+            "details": result["details"]
+        })
+        
+    except Exception as e:
+        logger.error(f"Erreur correction OCR: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+
+@api_router.get("/ocr/correction-stats")
+async def api_get_correction_stats():
+    """
+    📊 Récupère les statistiques globales de correction OCR.
+    
+    Returns:
+        JSON avec:
+        - total_corrections: Nombre total de corrections
+        - auto_corrections: Corrections automatiques appliquées
+        - suggested_corrections: Suggestions (non appliquées)
+        - ignored_corrections: Corrections ignorées
+        - avg_confidence: Confiance moyenne
+        - last_update: Dernière mise à jour
+    """
+    try:
+        from tools.ocr_corrector import get_correction_stats
+        
+        stats = get_correction_stats()
+        
+        return JSONResponse({
+            "success": True,
+            "stats": stats
+        })
+        
+    except Exception as e:
+        logger.error(f"Erreur récupération stats correction: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+
+@api_router.get("/ocr/recent-corrections")
+async def api_get_recent_corrections(limit: int = Query(default=50, le=200)):
+    """
+    📝 Récupère les dernières corrections OCR effectuées.
+    
+    Args:
+        limit: Nombre maximum de corrections à retourner (max: 200)
+    
+    Returns:
+        Liste des corrections récentes avec détails
+    """
+    try:
+        from tools.ocr_corrector import get_recent_corrections
+        
+        corrections = get_recent_corrections(limit=limit)
+        
+        return JSONResponse({
+            "success": True,
+            "count": len(corrections),
+            "corrections": corrections
+        })
+        
+    except Exception as e:
+        logger.error(f"Erreur récupération corrections récentes: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+
+# ============================================================================
 # === ROUTES LEAGUE COEFFICIENT SYSTEM ===
 # ============================================================================
 
