@@ -677,27 +677,36 @@ def extract_match_info(image_path: str,
         home = t1
         away = t2
     
-    # Détection de la ligue - ORDRE DE PRIORITÉ MODIFIÉ:
+    # Détection de la ligue - ORDRE DE PRIORITÉ INTELLIGENT:
     # 1. Manuel (override)
-    # 2. Détection dans le texte OCR (NOUVEAU - PRIORITÉ MAXIMALE)
-    # 3. Mapping par équipe (fallback)
+    # 2. Mapping par équipe (PRIORITÉ pour équipes nationales)
+    # 3. Détection dans le texte OCR (fallback pour clubs)
     # 4. Unknown
     
     if manual_league:
         league = manual_league
         print(f"[OCR Parser] Ligue manuelle : {league}")
     else:
-        # NOUVEAU: Chercher d'abord dans le texte OCR
-        league_from_text = detect_league_from_text(text)
+        # NOUVEAU: Vérifier d'abord si ce sont des équipes nationales
+        league_from_teams = detect_league_from_teams(home, away)
         
-        if league_from_text:
-            league = league_from_text
-            print(f"[OCR Parser] ✅ Ligue détectée dans le texte : {league}")
+        # Si les équipes indiquent WorldCupQualification, cela prend PRIORITÉ
+        # sur toute détection OCR (évite les faux positifs comme "Eredivisie")
+        if league_from_teams == "WorldCupQualification":
+            league = league_from_teams
+            print(f"[OCR Parser] 🌍 Équipes nationales détectées → {league}")
         else:
-            # Fallback sur le mapping par équipe
-            league = detect_league_from_teams(home, away)
-            if league and league != "Unknown":
-                print(f"[OCR Parser] ⚠️ Ligue déduite des équipes : {league}")
+            # Sinon, chercher dans le texte OCR
+            league_from_text = detect_league_from_text(text)
+            
+            if league_from_text:
+                league = league_from_text
+                print(f"[OCR Parser] ✅ Ligue détectée dans le texte : {league}")
+            else:
+                # Fallback sur le mapping par équipe
+                league = league_from_teams if league_from_teams else "Unknown"
+                if league and league != "Unknown":
+                    print(f"[OCR Parser] ⚠️ Ligue déduite des équipes : {league}")
             else:
                 print(f"[OCR Parser] ❌ Ligue non détectée : Unknown")
     
