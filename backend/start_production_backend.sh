@@ -11,12 +11,11 @@ sleep 2
 # Créer le dossier logs si nécessaire
 mkdir -p /app/logs
 
-# Lancement sans reload ni debug
+# Lancement en mode production (pas de reload par défaut)
 cd /app/backend
 nohup python3 -m uvicorn server:app \
   --host 0.0.0.0 \
   --port 8001 \
-  --no-reload \
   --log-level info \
   --timeout-keep-alive 75 \
   > /app/logs/backend_production.log 2>&1 &
