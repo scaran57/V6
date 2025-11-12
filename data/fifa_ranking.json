@@ -121,7 +121,9 @@
     "NAM": {"rank": 116, "points": 1162.79, "name": "Namibia", "name_fr": "Namibie"},
     "GAM": {"rank": 117, "points": 1162.12, "name": "Gambia", "name_fr": "Gambie"},
     "EST": {"rank": 118, "points": 1157, "name": "Estonia", "name_fr": "Estonie"},
-    "AZE": {"rank": 95, "points": 1241.52, "name": "Azerbaijan", "name_fr": "Azerbaïdjan"}
+    "AZE": {"rank": 95, "points": 1241.52, "name": "Azerbaijan", "name_fr": "Azerbaïdjan"},
+    "AND": {"rank": 154, "points": 1050, "name": "Andorra", "name_fr": "Andorre"},
+    "IRL": {"rank": 62, "points": 1401.18, "name": "Ireland", "name_fr": "Irlande"}
   },
   "name_mappings": {
     "total_teams_updated": 68,
