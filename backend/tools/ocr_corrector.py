@@ -230,7 +230,11 @@ def _get_reference_teams(source: str = "odds_api") -> List[str]:
             if away:
                 teams.add(away)
         
-        logger.info(f"📊 {len(teams)} équipes de référence chargées depuis {source}")
+        # Ajouter les équipes nationales (World Cup)
+        for team in WORLD_CUP_TEAMS:
+            teams.add(team)
+        
+        logger.info(f"📊 {len(teams)} équipes de référence chargées depuis {source} (incluant équipes nationales)")
         return list(teams)
     
     # Placeholder pour futures sources
