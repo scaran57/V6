@@ -339,7 +339,7 @@ async def analyze(
             logger.info(f"⚠️ Cache désactivé - résultat NON sauvegardé (sera recalculé à chaque fois)")
             debug_message = f"Nouveau calcul effectué avec {algo_name} mais NON sauvegardé - sera recalculé à chaque analyse"
         
-        return JSONResponse({
+        response_data = {
             "success": True,
             "fromMemory": False,
             "cacheDisabled": disable_cache,
@@ -355,7 +355,17 @@ async def analyze(
             "confidence": result.get('confidence', 0.0),
             "top3": top3,
             "debug": debug_message
-        })
+        }
+        
+        # Ajouter les informations de correction OCR si activées
+        if enable_ocr_correction and ocr_corrections:
+            response_data["ocrCorrection"] = {
+                "enabled": True,
+                "corrections_applied": ocr_corrections.get("corrections_applied", 0),
+                "details": ocr_corrections.get("details", {})
+            }
+        
+        return JSONResponse(response_data)
         
     except Exception as e:
         logger.error(f"Erreur lors de l'analyse: {str(e)}")
