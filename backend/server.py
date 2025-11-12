@@ -149,7 +149,8 @@ async def analyze(
     disable_cache: bool = Query(default=False, description="Force un nouveau calcul (ignore le cache)"),
     use_combined_algo: bool = Query(default=False, description="Utiliser l'algorithme combiné (Poisson + ImpliedOdds)"),
     disable_league_coeff: bool = Query(default=False, description="Désactiver les coefficients de ligue"),
-    league: str = Query(default=None, description="Ligue (LaLiga, PremierLeague, etc.) - auto-détecté si non spécifié")
+    league: str = Query(default=None, description="Ligue (LaLiga, PremierLeague, etc.) - auto-détecté si non spécifié"),
+    enable_ocr_correction: bool = Query(default=False, description="Activer la correction OCR automatique via fuzzy-matching")
 ):
     """
     Analyse une image de bookmaker et prédit le score le plus probable.
@@ -160,11 +161,13 @@ async def analyze(
         use_combined_algo: Si True, utilise l'algorithme combiné avancé (défaut: False)
         disable_league_coeff: Si True, désactive les coefficients de ligue (défaut: False)
         league: Nom de la ligue (optionnel, auto-détecté si possible)
+        enable_ocr_correction: Si True, active la correction OCR automatique (défaut: False)
     
     Usage:
         curl -X POST "http://localhost:8001/api/analyze?disable_cache=true" -F "file=@image.jpg"
         curl -X POST "http://localhost:8001/api/analyze?disable_league_coeff=true" -F "file=@image.jpg"
         curl -X POST "http://localhost:8001/api/analyze?league=LaLiga" -F "file=@image.jpg"
+        curl -X POST "http://localhost:8001/api/analyze?enable_ocr_correction=true" -F "file=@image.jpg"
     """
     try:
         # Sauvegarder l'image temporairement
