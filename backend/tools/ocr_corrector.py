@@ -266,7 +266,11 @@ def _get_reference_leagues(source: str = "odds_api") -> List[str]:
             if league:
                 leagues.add(league)
         
-        logger.info(f"📊 {len(leagues)} ligues de référence chargées depuis {source}")
+        # Ajouter les ligues World Cup
+        for league in WORLD_CUP_LEAGUES:
+            leagues.add(league)
+        
+        logger.info(f"📊 {len(leagues)} ligues de référence chargées depuis {source} (incluant World Cup)")
         return list(leagues)
     
     elif source == "football_data":
