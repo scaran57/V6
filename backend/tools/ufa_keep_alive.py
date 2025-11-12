@@ -66,15 +66,17 @@ def check_backend_running():
     except Exception as e:
         return False, f"Erreur vérification backend: {e}"
 
+RESTART_CMD = "/app/backend/start_production_backend.sh"
+
 def restart_backend():
-    """Redémarre le backend via supervisord"""
+    """Redémarre le backend via le script de production"""
     try:
         subprocess.run(
-            ["supervisorctl", "restart", "backend"],
+            ["bash", RESTART_CMD],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-        log("Backend redémarré avec succès.")
+        log(f"Backend redémarré via {RESTART_CMD}")
         time.sleep(5)  # Attendre que le backend démarre
     except Exception as e:
         log(f"Erreur redémarrage backend: {e}")
