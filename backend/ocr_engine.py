@@ -15,6 +15,16 @@ pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 # Langues disponibles (multilingue)
 LANGS = "eng+fra+spa"
 
+# === NOUVEAU: Préprocesseur OCR avancé ===
+USE_ADVANCED_PREPROCESSOR = True  # Activer/désactiver le préprocesseur avancé
+
+try:
+    from tools.ocr_preprocessor import preprocess_for_ocr as advanced_preprocess
+    logger.info("✅ Préprocesseur OCR avancé chargé")
+except ImportError:
+    logger.warning("⚠️ Préprocesseur OCR avancé non disponible")
+    USE_ADVANCED_PREPROCESSOR = False
+
 def preprocess_image(image_path: str) -> list:
     """
     Transforme une image en plusieurs variantes prétraitées pour maximiser la lecture OCR.
