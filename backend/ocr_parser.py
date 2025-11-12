@@ -707,8 +707,8 @@ def extract_match_info(image_path: str,
                 league = league_from_teams if league_from_teams else "Unknown"
                 if league and league != "Unknown":
                     print(f"[OCR Parser] ⚠️ Ligue déduite des équipes : {league}")
-            else:
-                print(f"[OCR Parser] ❌ Ligue non détectée : Unknown")
+                else:
+                    print(f"[OCR Parser] ❌ Ligue non détectée : Unknown")
     
     result = {
         "home_team": home,
