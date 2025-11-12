@@ -191,7 +191,34 @@ async def analyze(
         away_team = advanced_info.get("away_team")
         detected_league = advanced_info.get("league", "Unknown")
         
-        # Construire le match_name à partir des équipes détectées
+        # Correction OCR optionnelle via fuzzy-matching
+        ocr_corrections = None
+        if enable_ocr_correction:
+            logger.info("🔧 Correction OCR activée - Fuzzy-matching en cours...")
+            try:
+                from tools.ocr_corrector import correct_match_info
+                
+                ocr_corrections = correct_match_info(
+                    home_team=home_team,
+                    away_team=away_team,
+                    league=detected_league,
+                    match_hash=image_hash
+                )
+                
+                # Appliquer les corrections
+                if ocr_corrections["corrections_applied"] > 0:
+                    logger.info(f"✅ {ocr_corrections['corrections_applied']} correction(s) appliquée(s)")
+                    home_team = ocr_corrections["home_team"]
+                    away_team = ocr_corrections["away_team"]
+                    detected_league = ocr_corrections["league"]
+                else:
+                    logger.info("ℹ️ Aucune correction nécessaire (confiance suffisante)")
+                    
+            except Exception as e:
+                logger.error(f"⚠️ Erreur lors de la correction OCR: {e}")
+                ocr_corrections = {"error": str(e)}
+        
+        # Construire le match_name à partir des équipes détectées (potentiellement corrigées)
         if home_team and away_team:
             match_name = f"{home_team} - {away_team}"
             logger.info(f"✅ Équipes détectées: {home_team} vs {away_team}")
