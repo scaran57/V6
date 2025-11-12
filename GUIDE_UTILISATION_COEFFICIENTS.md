@@ -22,7 +22,7 @@ D'après votre rapport, vous avez effectué :
 
 #### Option 1 : Mode Production (Recommandé)
 ```
-URL: https://aiscore-oracle.preview.emergentagent.com/
+URL: https://score-oracle-11.preview.emergentagent.com/
 ```
 
 **Étapes :**
@@ -40,7 +40,7 @@ URL: https://aiscore-oracle.preview.emergentagent.com/
 
 #### Option 2 : Analyzer UEFA (Pour analyses détaillées)
 ```
-URL: https://aiscore-oracle.preview.emergentagent.com/
+URL: https://score-oracle-11.preview.emergentagent.com/
 Cliquez sur "Analyzer UEFA" (orange)
 ```
 
@@ -58,7 +58,7 @@ Cliquez sur "Analyzer UEFA" (orange)
 
 #### Option 3 : Mode Test (Pour debugging)
 ```
-URL: https://aiscore-oracle.preview.emergentagent.com/
+URL: https://score-oracle-11.preview.emergentagent.com/
 Cliquez sur "Mode Test" (vert)
 ```
 
@@ -103,7 +103,7 @@ Cliquez sur "Mode Test" (vert)
 ### 1. Via l'API (Backend)
 ```bash
 # Tester avec une image
-curl -X POST https://aiscore-oracle.preview.emergentagent.com/api/analyze \
+curl -X POST https://score-oracle-11.preview.emergentagent.com/api/analyze \
   -F "file=@votre_image.jpg" \
   | jq '.leagueCoeffsApplied, .league, .matchName'
 ```
@@ -179,7 +179,7 @@ tail -10 /app/data/real_scores.jsonl
 
 ### Scénario 1 : Analyse Rapide (Mode Production)
 ```
-1. Ouvrir https://aiscore-oracle.preview.emergentagent.com/
+1. Ouvrir https://score-oracle-11.preview.emergentagent.com/
 2. Cliquer sur "Mode Production"
 3. Uploader l'image du bookmaker
 4. Voir immédiatement le Top 3 des scores

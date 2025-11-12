@@ -76,10 +76,10 @@ Pour créer le snapshot dans Emergent, veuillez:
 **Contrôle manuel:**
 ```bash
 # Vérifier le statut
-curl https://aiscore-oracle.preview.emergentagent.com/api/admin/league/scheduler-status
+curl https://score-oracle-11.preview.emergentagent.com/api/admin/league/scheduler-status
 
 # Déclencher mise à jour manuelle
-curl -X POST https://aiscore-oracle.preview.emergentagent.com/api/admin/league/trigger-update
+curl -X POST https://score-oracle-11.preview.emergentagent.com/api/admin/league/trigger-update
 ```
 
 ---
@@ -212,13 +212,13 @@ cat /app/data/system_audit_report.json
 python /app/backend/system_audit.py
 
 # Status du scheduler
-curl https://aiscore-oracle.preview.emergentagent.com/api/admin/league/scheduler-status | python3 -m json.tool
+curl https://score-oracle-11.preview.emergentagent.com/api/admin/league/scheduler-status | python3 -m json.tool
 
 # Vérifier l'apprentissage
-curl https://aiscore-oracle.preview.emergentagent.com/api/diff
+curl https://score-oracle-11.preview.emergentagent.com/api/diff
 
 # Vérifier le cache
-curl https://aiscore-oracle.preview.emergentagent.com/api/matches/memory
+curl https://score-oracle-11.preview.emergentagent.com/api/matches/memory
 ```
 
 ### Redémarrage des Services
@@ -285,7 +285,7 @@ python /app/backend/system_audit.py
 **Diagnostic:**
 ```bash
 # Vérifier le status via API
-curl https://aiscore-oracle.preview.emergentagent.com/api/admin/league/scheduler-status
+curl https://score-oracle-11.preview.emergentagent.com/api/admin/league/scheduler-status
 
 # Vérifier les logs
 tail -n 50 /var/log/supervisor/backend.*.log | grep -i scheduler
@@ -312,10 +312,10 @@ cat /app/data/leagues/coeff_cache.json
 **Solution:**
 ```bash
 # Vider et régénérer le cache
-curl -X POST https://aiscore-oracle.preview.emergentagent.com/api/admin/league/clear-cache
+curl -X POST https://score-oracle-11.preview.emergentagent.com/api/admin/league/clear-cache
 
 # Déclencher mise à jour
-curl -X POST https://aiscore-oracle.preview.emergentagent.com/api/admin/league/trigger-update
+curl -X POST https://score-oracle-11.preview.emergentagent.com/api/admin/league/trigger-update
 ```
 
 ---
