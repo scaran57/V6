@@ -1,7 +1,7 @@
 {
   "last_updated": "2025-11-12",
   "source": "FIFA Official Ranking",
-  "total_teams": 65,
+  "total_teams": 68,
   "rankings": {
     "ESP": {"rank": 1, "points": 1880.76, "name": "Spain", "name_fr": "Espagne"},
     "ARG": {"rank": 2, "points": 1872.43, "name": "Argentina", "name_fr": "Argentine"},
