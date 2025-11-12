@@ -1347,6 +1347,105 @@ async def api_get_recent_corrections(limit: int = Query(default=50, le=200)):
 
 
 # ============================================================================
+# === ENDPOINTS FIFA RANKING ===
+# ============================================================================
+
+@api_router.get("/fifa/ranking/stats")
+async def get_fifa_ranking_stats():
+    """
+    📊 Récupère les statistiques du classement FIFA.
+    
+    Returns:
+        JSON avec total équipes, dernière MAJ, etc.
+    """
+    try:
+        from tools.fifa_ranking_manager import get_ranking_stats
+        
+        stats = get_ranking_stats()
+        
+        return JSONResponse({
+            "success": True,
+            "stats": stats
+        })
+    except Exception as e:
+        logger.error(f"Erreur récupération stats FIFA: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+
+@api_router.get("/fifa/ranking/team/{team_name}")
+async def get_team_fifa_info(team_name: str):
+    """
+    🔍 Récupère les informations FIFA d'une équipe.
+    
+    Args:
+        team_name: Nom de l'équipe (français ou anglais)
+    
+    Returns:
+        JSON avec rang, points, coefficient
+    """
+    try:
+        from tools.fifa_ranking_manager import get_team_rank, get_team_points, get_team_coefficient
+        
+        rank = get_team_rank(team_name)
+        points = get_team_points(team_name)
+        coeff = get_team_coefficient(team_name)
+        
+        return JSONResponse({
+            "success": True,
+            "team": team_name,
+            "rank": rank,
+            "points": points,
+            "coefficient": coeff
+        })
+    except Exception as e:
+        logger.error(f"Erreur récupération info FIFA {team_name}: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+
+@api_router.get("/fifa/ranking/match")
+async def get_match_fifa_coefficients(
+    home_team: str = Query(..., description="Équipe à domicile"),
+    away_team: str = Query(..., description="Équipe à l'extérieur")
+):
+    """
+    ⚽ Calcule les coefficients FIFA pour un match.
+    
+    Args:
+        home_team: Équipe à domicile
+        away_team: Équipe à l'extérieur
+    
+    Returns:
+        JSON avec coefficients et ratio
+    """
+    try:
+        from tools.fifa_ranking_manager import get_match_coefficients
+        
+        coeff_home, coeff_away, ratio = get_match_coefficients(home_team, away_team)
+        
+        return JSONResponse({
+            "success": True,
+            "home_team": home_team,
+            "away_team": away_team,
+            "coeff_home": coeff_home,
+            "coeff_away": coeff_away,
+            "ratio": ratio,
+            "interpretation": "Ratio > 1: domicile favorisé | Ratio < 1: extérieur favorisé"
+        })
+    except Exception as e:
+        logger.error(f"Erreur calcul coefficients match: {e}")
+        return JSONResponse(
+            {"success": False, "error": str(e)},
+            status_code=500
+        )
+
+
+# ============================================================================
 # === ROUTES LEAGUE COEFFICIENT SYSTEM ===
 # ============================================================================
 
