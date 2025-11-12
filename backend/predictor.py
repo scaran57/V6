@@ -50,6 +50,52 @@ def predict_score(scores, home_team=None, away_team=None, enable_fifa_coeffs=Tru
     # DEBUG: Log probabilités initiales
     log_prediction_step("Probabilités brutes (1/cotes)", norm_probs)
 
+    # === NOUVEAU: Application des coefficients FIFA ===
+    fifa_ratio = 1.0
+    if FIFA_COEFFICIENTS_ENABLED and enable_fifa_coeffs and home_team and away_team:
+        try:
+            coeff_home, coeff_away, ratio = get_match_coefficients(home_team, away_team)
+            fifa_ratio = ratio
+            logger.info(f"🏆 Coefficients FIFA: {home_team} ({coeff_home:.2f}) vs {away_team} ({coeff_away:.2f}) → Ratio: {ratio:.2f}")
+            
+            # Ajuster les probabilités selon le ratio FIFA
+            # ratio > 1 = domicile favorisé (augmenter prob victoires domicile)
+            # ratio < 1 = extérieur favorisé (augmenter prob victoires extérieur)
+            fifa_adjusted = {}
+            for score, prob in norm_probs.items():
+                if "-" not in score or score == "Autre":
+                    fifa_adjusted[score] = prob
+                    continue
+                
+                try:
+                    parts = score.split("-")
+                    h = int(parts[0])
+                    a = int(parts[1])
+                    
+                    if h > a:
+                        # Victoire domicile : multiplier par ratio
+                        fifa_adjusted[score] = prob * ratio
+                    elif h < a:
+                        # Victoire extérieur : diviser par ratio
+                        fifa_adjusted[score] = prob / ratio
+                    else:
+                        # Match nul : légère réduction si déséquilibre important
+                        draw_reduction = 1.0 - (0.15 * abs(ratio - 1.0))
+                        fifa_adjusted[score] = prob * draw_reduction
+                except:
+                    fifa_adjusted[score] = prob
+            
+            # Renormaliser après ajustement FIFA
+            total_fifa = sum(fifa_adjusted.values()) or 1e-9
+            norm_probs = {k: v / total_fifa for k, v in fifa_adjusted.items()}
+            
+            logger.info(f"✅ Probabilités ajustées avec coefficients FIFA (ratio: {ratio:.2f})")
+            log_prediction_step("Probabilités après ajustement FIFA", norm_probs)
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Erreur application coefficients FIFA: {e}")
+            fifa_ratio = 1.0
+
     # --- NOUVEAU: Analyse de l'équilibre global entre victoires et défaites ---
     win_sum = 0
     lose_sum = 0
