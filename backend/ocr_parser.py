@@ -64,6 +64,14 @@ LEAGUE_DETECTION_PATTERNS = {
     ],
     "EuropaLeague": [
         r"europa\s*league", r"uel", r"c3", r"uefa\s*europa"
+    ],
+    # === PATCH: Ajout du support "World Cup Qualification" ===
+    "WorldCupQualification": [
+        r"world\s*cup\s*qualification", r"world\s*cup\s*qualifiers", 
+        r"fifa\s*world\s*cup\s*qualifiers", r"wc\s*qualification",
+        r"qualif\s*coupe\s*du\s*monde", r"coupe\s*du\s*monde\s*qualification",
+        r"world\s*cup\s*qualifying", r"world\s*cup", r"fifa\s*world\s*cup",
+        r"eliminatoires\s*coupe\s*du\s*monde", r"eliminatoires\s*cdm"
     ]
 }
 
