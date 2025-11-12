@@ -1,0 +1,82 @@
+{
+  "timestamp": "2025-11-12T00:02:07.861810",
+  "processes": [
+    {
+      "cmdline": [
+        "/opt/plugins-venv/bin/python",
+        "/opt/plugins-venv/bin/uvicorn",
+        "plugins.tools.agent.server:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8010",
+        "--workers",
+        "1",
+        "--no-access-log"
+      ],
+      "cpu_percent": 0.0,
+      "pid": 19,
+      "name": "uvicorn",
+      "memory_percent": 0.3056648371713405
+    }
+  ],
+  "files": {
+    "Modèle UFAv3": {
+      "exists": true,
+      "size_kb": 89.64
+    },
+    "Métadonnées UFAv3": {
+      "exists": true,
+      "size_kb": 5.63
+    },
+    "Cotes marché": {
+      "exists": true,
+      "size_kb": 1012.61
+    },
+    "Scores réels": {
+      "exists": true,
+      "size_kb": 70.91
+    },
+    "Training set": {
+      "exists": true,
+      "size_kb": 9.62
+    },
+    "Coefficients FIFA": {
+      "exists": true,
+      "size_kb": 1.59
+    },
+    "Coefficients UEFA": {
+      "exists": true,
+      "size_kb": 0.31
+    }
+  },
+  "endpoints": {
+    "Health": {
+      "status": "error",
+      "ok": false,
+      "error": "HTTPConnectionPool(host='localhost', port=8001): Max retries exceeded with url: /api/health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0xf84d93c86810>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    "UFAv3 Status": {
+      "status": "error",
+      "ok": false,
+      "error": "HTTPConnectionPool(host='localhost', port=8001): Max retries exceeded with url: /api/ufa/v3/status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0xf84d939c7890>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    "Odds Stats": {
+      "status": "error",
+      "ok": false,
+      "error": "HTTPConnectionPool(host='localhost', port=8001): Max retries exceeded with url: /api/ufa/v3/odds-stats (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0xf84d939c9a50>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    },
+    "Dashboard": {
+      "status": "error",
+      "ok": false,
+      "error": "HTTPConnectionPool(host='localhost', port=8001): Max retries exceeded with url: /api/ufa/v3/dashboard-status (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0xf84d939c5a90>: Failed to establish a new connection: [Errno 111] Connection refused'))"
+    }
+  },
+  "logs": {
+    "/var/log/supervisor/backend.out.log": "⏭️  uefa_analysis_cache.jsonl n'existe pas, ignoré\n📖 Lecture de matches_memory.json...\n   ✅ 0 entrées trouvées\n📖 Lecture du cache actuel analysis_cache.jsonl...\n   ✅ 39 entrées existantes\n================================================================================\n📊 RAPPORT DE MIGRATION - UNIFIED ANALYZER\n================================================================================\n\n📅 Date : 2025-11-11 23:49:31 UTC\n\n📈 RÉSULTATS GLOBAUX:\n   • Total analyses : 39\n   • Entrées lues : 39\n   • Doublons évités : 0\n   • Nouvelles entrées : 39\n\n🏆 RÉPARTITION PAR LIGUE:\n   • Ligue1: 13 analyses\n   • LaLiga: 9 analyses\n   • PrimeiraLiga: 6 analyses\n   • Unknown: 6 analyses\n   • Bundesliga: 4 analyses\n   • Eredivisie: 1 analyses\n\n📁 RÉPARTITION PAR SOURCE:\n   • ocr_unified: 39 analyses\n\n💾 Fichier final : /app/data/analysis_cache.jsonl\n================================================================================\n",
+    "/var/log/supervisor/backend.err.log": "2025-11-11 23:49:31,223 - league_scheduler - INFO - 📁 Fichier final : /app/data/analysis_cache.jsonl\n2025-11-11 23:49:31,223 - league_scheduler - INFO - 🚀 Vérification des données de ligues au démarrage (système unifié)...\n2025-11-11 23:49:31,223 - league_scheduler - INFO - ✅ Données de ligues déjà à jour\nINFO:     Shutting down\nINFO:     Waiting for application shutdown.\nINFO:     Application shutdown complete.\nINFO:     Finished server process [1497]\nINFO:     Stopping reloader process [1011]\nINFO:     Will watch for changes in these directories: ['/app/backend']\nINFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)\nINFO:     Started reloader process [1512] using WatchFiles\nINFO:     Started server process [1514]\nINFO:     Waiting for application startup.\n2025-11-11 23:49:38,467 - server - INFO - ✅ Tesseract déjà installé\n2025-11-11 23:49:38,467 - server - INFO - 🔄 Démarrage du planificateur de mises à jour des ligues...\n2025-11-11 23:49:38,467 - league_scheduler - INFO - 🕐 Planificateur initialisé: mise à jour quotidienne à 03:00\n2025-11-11 23:49:38,467 - league_scheduler - INFO - 🌍 Mise à jour FIFA: chaque lundi à 03:05\n2025-11-11 23:49:38,467 - league_scheduler - INFO - 🤖 Réentraînement UFA v3: quotidien à 03:05\n2025-11-11 23:49:38,467 - league_scheduler - INFO - 🔄 Boucle de planification démarrée\n2025-11-11 23:49:38,467 - league_scheduler - INFO - ✅ Planificateur démarré en arrière-plan\n2025-11-11 23:49:38,467 - league_scheduler - INFO - 🌍 Mise à jour des coefficients FIFA...\n2025-11-11 23:49:38,468 - root - INFO - Fetching world rankings from API: https://api.football-data.org/v4/competitions/FIFA/rankings\n2025-11-11 23:49:38,475 - league_scheduler - INFO - [UFA Scheduler] Keep-Alive lancé automatiquement ✅\n2025-11-11 23:49:38,475 - server - INFO - ✅ Planificateur démarré: mise à jour quotidienne à 03:00\nINFO:     Application startup complete.\nINFO:     Shutting down\nINFO:     Waiting for application shutdown.\nINFO:     Application shutdown complete.\nINFO:     Finished server process [1514]\nINFO:     Stopping reloader process [1512]\n",
+    "/app/logs/keep_alive.log": "[2025-11-11 19:42:10] Backend: Backend supervisord RUNNING\n[2025-11-11 19:42:10] Scheduler: Inactif (mais intégré au backend)\n[2025-11-11 19:42:10] ✅ Système opérationnel\n[2025-11-11 19:42:10] Cycle terminé, veille 3.0h...\n[2025-11-11 21:41:30] === UFA Keep-Alive démarré ===\n[2025-11-11 21:41:30] Intervalle de vérification: 10800s (3.0h)\n[2025-11-11 21:41:30] --- Début cycle de vérification ---\n[2025-11-11 21:41:30] Backend: Backend supervisord RUNNING\n[2025-11-11 21:41:30] Scheduler: Inactif (mais intégré au backend)\n[2025-11-11 21:41:30] ✅ Système opérationnel\n[2025-11-11 21:41:30] Cycle terminé, veille 3.0h...\n[2025-11-11 22:55:35] === UFA Keep-Alive démarré ===\n[2025-11-11 22:55:35] Intervalle de vérification: 10800s (3.0h)\n[2025-11-11 22:55:35] --- Début cycle de vérification ---\n[2025-11-11 22:55:35] Backend: Backend supervisord RUNNING\n[2025-11-11 22:55:35] Scheduler: Inactif (mais intégré au backend)\n[2025-11-11 22:55:35] ✅ Système opérationnel\n[2025-11-11 22:55:35] Cycle terminé, veille 3.0h...\n[2025-11-11 23:36:47] === UFA Keep-Alive démarré ===\n[2025-11-11 23:36:47] Intervalle de vérification: 10800s (3.0h)\n[2025-11-11 23:36:47] --- Début cycle de vérification ---\n[2025-11-11 23:36:47] Backend: Backend supervisord RUNNING\n[2025-11-11 23:36:47] Scheduler: Inactif (mais intégré au backend)\n[2025-11-11 23:36:47] ✅ Système opérationnel\n[2025-11-11 23:36:47] Cycle terminé, veille 3.0h...\n[2025-11-11 23:49:38] === UFA Keep-Alive démarré ===\n[2025-11-11 23:49:38] Intervalle de vérification: 10800s (3.0h)\n[2025-11-11 23:49:38] --- Début cycle de vérification ---\n[2025-11-11 23:49:38] Backend: Backend status: backend                          STARTING\n[2025-11-11 23:49:38] ⚠️  Backend inactif → tentative de redémarrage...\n",
+    "/app/logs/odds_integration.log": "2025-11-11 23:35:14,410 INFO === Starting odds ingestion ===\n2025-11-11 23:35:14,410 INFO Fetching odds for Premier League (soccer_epl)\n2025-11-11 23:35:14,590 INFO Fetched odds for soccer_epl: 20 matches\n2025-11-11 23:35:14,595 INFO Fetching odds for La Liga (soccer_spain_la_liga)\n2025-11-11 23:35:14,750 INFO Fetched odds for soccer_spain_la_liga: 22 matches\n2025-11-11 23:35:14,755 INFO Fetching odds for Ligue 1 (soccer_france_ligue_one)\n2025-11-11 23:35:14,947 INFO Fetched odds for soccer_france_ligue_one: 18 matches\n2025-11-11 23:35:14,952 INFO Fetching odds for Serie A (soccer_italy_serie_a)\n2025-11-11 23:35:15,115 INFO Fetched odds for soccer_italy_serie_a: 20 matches\n2025-11-11 23:35:15,119 INFO Fetching odds for Bundesliga (soccer_germany_bundesliga)\n2025-11-11 23:35:15,279 INFO Fetched odds for soccer_germany_bundesliga: 18 matches\n2025-11-11 23:35:15,283 INFO === Ingested 98 odds records at 2025-11-11T23:35:14.410753 ===\n",
+    "/app/logs/ufa_v3_training.log": "[2025-11-11 12:46:25] [INFO] Epoch 17/30: train_loss=1.9035, val_loss=2.5931, train_acc=85.00%, val_acc=100.00%, elapsed=0.04min\n[2025-11-11 12:46:25] [INFO] ✅ Nouveau meilleur modèle (val_loss=2.5931)\n[2025-11-11 12:46:26] [INFO] Epoch 18/30: train_loss=1.7204, val_loss=2.4567, train_acc=90.00%, val_acc=100.00%, elapsed=0.04min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=2.4567)\n[2025-11-11 12:46:26] [INFO] Epoch 19/30: train_loss=1.6099, val_loss=2.3265, train_acc=100.00%, val_acc=100.00%, elapsed=0.04min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=2.3265)\n[2025-11-11 12:46:26] [INFO] Epoch 20/30: train_loss=1.3998, val_loss=2.2007, train_acc=100.00%, val_acc=100.00%, elapsed=0.04min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=2.2007)\n[2025-11-11 12:46:26] [INFO] Epoch 21/30: train_loss=1.3436, val_loss=2.0758, train_acc=100.00%, val_acc=100.00%, elapsed=0.04min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=2.0758)\n[2025-11-11 12:46:26] [INFO] Epoch 22/30: train_loss=1.3487, val_loss=1.9538, train_acc=100.00%, val_acc=100.00%, elapsed=0.04min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=1.9538)\n[2025-11-11 12:46:26] [INFO] Epoch 23/30: train_loss=1.1493, val_loss=1.8256, train_acc=100.00%, val_acc=100.00%, elapsed=0.04min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=1.8256)\n[2025-11-11 12:46:26] [INFO] Epoch 24/30: train_loss=1.0712, val_loss=1.7068, train_acc=100.00%, val_acc=100.00%, elapsed=0.05min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=1.7068)\n[2025-11-11 12:46:26] [INFO] Epoch 25/30: train_loss=1.1494, val_loss=1.5985, train_acc=100.00%, val_acc=100.00%, elapsed=0.05min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=1.5985)\n[2025-11-11 12:46:26] [INFO] Epoch 26/30: train_loss=0.8943, val_loss=1.5090, train_acc=100.00%, val_acc=100.00%, elapsed=0.05min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=1.5090)\n[2025-11-11 12:46:26] [INFO] Epoch 27/30: train_loss=0.9442, val_loss=1.4132, train_acc=100.00%, val_acc=100.00%, elapsed=0.05min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=1.4132)\n[2025-11-11 12:46:26] [INFO] Epoch 28/30: train_loss=0.7621, val_loss=1.3241, train_acc=100.00%, val_acc=100.00%, elapsed=0.05min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=1.3241)\n[2025-11-11 12:46:26] [INFO] Epoch 29/30: train_loss=0.8794, val_loss=1.2463, train_acc=100.00%, val_acc=100.00%, elapsed=0.05min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=1.2463)\n[2025-11-11 12:46:26] [INFO] Epoch 30/30: train_loss=0.7750, val_loss=1.1671, train_acc=100.00%, val_acc=100.00%, elapsed=0.05min\n[2025-11-11 12:46:26] [INFO] ✅ Nouveau meilleur modèle (val_loss=1.1671)\n[2025-11-11 12:46:26] [INFO] ✅ Modèle sauvegardé: /app/models/ufa_model_v3.pt\n[2025-11-11 12:46:26] [ERROR] ❌ Erreur sauvegarde modèle: 'training_history'\n"
+  }
+}
