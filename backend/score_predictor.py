@@ -257,6 +257,27 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False,
             logger.info(f"   🟨 {away_team}: {away_coeff:.3f} (source: {away_source})")
         except Exception as e:
             logger.warning(f"⚠️ Erreur calcul coefficients ligue: {e}")
+    
+    # 🌍 Étape 0b : Ajout des coefficients FIFA (World Cup, équipes nationales)
+    fifa_ratio = 1.0
+    fifa_coeffs_applied = False
+    
+    if FIFA_RANKING_AVAILABLE and league and "World" in league and home_team and away_team:
+        try:
+            coeff_home_fifa, coeff_away_fifa, ratio = get_match_coefficients(home_team, away_team)
+            fifa_ratio = ratio
+            fifa_coeffs_applied = True
+            
+            # Combiner avec coefficients de ligue si présents
+            home_coeff *= coeff_home_fifa
+            away_coeff *= coeff_away_fifa
+            
+            logger.info(f"🌍 Coefficients FIFA appliqués (ratio: {ratio:.2f}):")
+            logger.info(f"   ⚽ {home_team}: {coeff_home_fifa:.2f} (FIFA)")
+            logger.info(f"   🟨 {away_team}: {coeff_away_fifa:.2f} (FIFA)")
+            logger.info(f"   📊 Coefficients finaux: {home_team} {home_coeff:.2f} vs {away_team} {away_coeff:.2f}")
+        except Exception as e:
+            logger.warning(f"⚠️ Erreur calcul coefficients FIFA: {e}")
             home_coeff = 1.0
             away_coeff = 1.0
     elif use_league_coeff and not league:
