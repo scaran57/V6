@@ -6,7 +6,16 @@ from debug_logger import log_debug, log_prediction_step, log_balance_analysis, l
 
 logger = logging.getLogger(__name__)
 
-def predict_score(scores):
+# === NOUVEAU: Import gestionnaire coefficients FIFA ===
+try:
+    from tools.fifa_ranking_manager import get_match_coefficients
+    FIFA_COEFFICIENTS_ENABLED = True
+    logger.info("✅ Coefficients FIFA activés")
+except ImportError:
+    FIFA_COEFFICIENTS_ENABLED = False
+    logger.warning("⚠️ Coefficients FIFA désactivés (module non trouvé)")
+
+def predict_score(scores, home_team=None, away_team=None, enable_fifa_coeffs=True):
     """
     Prédit le score le plus probable basé sur les cotes extraites.
     Algorithme amélioré avec ajustement dynamique du poids des scores nuls.
