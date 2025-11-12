@@ -10,3 +10,6 @@
 {"timestamp": "2025-11-12T16:46:57.950456", "entity_type": "team", "raw_text": "Équipe XYZ", "corrected_text": "Équipe XYZ", "confidence_score": 38, "correction_type": "ignored", "match_hash": null}
 {"timestamp": "2025-11-12T16:46:58.010940", "entity_type": "team", "raw_text": "Team ABC", "corrected_text": "Team ABC", "confidence_score": 50, "correction_type": "ignored", "match_hash": null}
 {"timestamp": "2025-11-12T16:46:58.070079", "entity_type": "league", "raw_text": "Unknown League", "corrected_text": "Unknown League", "confidence_score": 50, "correction_type": "ignored", "match_hash": null}
+{"timestamp": "2025-11-12T16:47:21.431225", "entity_type": "team", "raw_text": "Real Madrid", "corrected_text": "Real Madrid", "confidence_score": 100, "correction_type": "auto", "match_hash": null}
+{"timestamp": "2025-11-12T16:47:21.486417", "entity_type": "team", "raw_text": "Barcelona", "corrected_text": "Barcelona", "confidence_score": 100, "correction_type": "auto", "match_hash": null}
+{"timestamp": "2025-11-12T16:47:21.540931", "entity_type": "league", "raw_text": "La Liga", "corrected_text": "La Liga", "confidence_score": 100, "correction_type": "auto", "match_hash": null}
