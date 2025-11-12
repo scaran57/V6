@@ -21,6 +21,15 @@ except ImportError:
     LEAGUE_COEFF_AVAILABLE = False
     logger.warning("⚠️ Module league_coeff non disponible")
 
+# Import du gestionnaire de classement FIFA
+try:
+    from tools.fifa_ranking_manager import get_match_coefficients
+    FIFA_RANKING_AVAILABLE = True
+    logger.info("✅ Système de classement FIFA disponible")
+except ImportError:
+    FIFA_RANKING_AVAILABLE = False
+    logger.warning("⚠️ Module FIFA ranking non disponible")
+
 # ====== Paramètres calibrables pour l'algorithme combiné ======
 MAX_GOALS = 5            # clamp goals per side (0..5)
 ALPHA = 1.0              # force de la gaussienne sur diff (avant: 0.4) -> augmenter pour +discrimination
