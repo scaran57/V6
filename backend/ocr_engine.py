@@ -25,12 +25,42 @@ except ImportError:
     logger.warning("⚠️ Préprocesseur OCR avancé non disponible")
     USE_ADVANCED_PREPROCESSOR = False
 
-def preprocess_image(image_path: str) -> list:
+def preprocess_image(image_path: str, use_advanced: bool = None) -> list:
     """
     Transforme une image en plusieurs variantes prétraitées pour maximiser la lecture OCR.
     Amélioration spéciale: détection texte BLANC sur VERT (boutons Unibet/Winamax)
     + CROP automatique du haut (interface/heure) pour éviter faux positifs
+    
+    Args:
+        image_path: Chemin de l'image
+        use_advanced: Force l'utilisation du préprocesseur avancé (None = auto)
+    
+    Returns:
+        Liste de tuples (nom_variante, image_prétraitée)
     """
+    # Décider si on utilise le préprocesseur avancé
+    use_adv = use_advanced if use_advanced is not None else USE_ADVANCED_PREPROCESSOR
+    
+    # Si préprocesseur avancé activé, l'utiliser EN PLUS des variantes classiques
+    if use_adv:
+        try:
+            logger.info("🔧 Utilisation du préprocesseur OCR avancé")
+            advanced_img = advanced_preprocess(
+                image_path,
+                remove_overlay=True,
+                auto_crop=True,
+                enhance=True,
+                denoise=False
+            )
+            # Ajouter cette version en première position
+            advanced_versions = [("advanced_full", advanced_img)]
+            logger.info("✅ Prétraitement avancé réussi")
+        except Exception as e:
+            logger.error(f"⚠️ Erreur préprocesseur avancé: {e}")
+            advanced_versions = []
+    else:
+        advanced_versions = []
+    
     # Charger l'image
     image = Image.open(image_path).convert("RGB")
     img = np.array(image)
