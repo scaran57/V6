@@ -1,8 +1,8 @@
 {
-  "total_corrections": 27,
-  "auto_corrections": 20,
-  "suggested_corrections": 1,
+  "total_corrections": 30,
+  "auto_corrections": 22,
+  "suggested_corrections": 2,
   "ignored_corrections": 6,
-  "avg_confidence": 83.62,
-  "last_update": "2025-11-12T18:07:08.756351"
+  "avg_confidence": 84.59,
+  "last_update": "2025-11-12T18:07:18.051300"
 }
