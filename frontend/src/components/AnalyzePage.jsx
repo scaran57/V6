@@ -6,6 +6,7 @@ export default function AnalyzePage() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [disableCache, setDisableCache] = useState(false);
+  const [useVisionOcr, setUseVisionOcr] = useState(true); // ✅ Activé par défaut !
   const [manualMatchName, setManualMatchName] = useState("");
 
   const handleFileChange = (e) => {
