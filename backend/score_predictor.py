@@ -272,6 +272,9 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False,
             home_coeff *= coeff_home_fifa
             away_coeff *= coeff_away_fifa
             
+            # IMPORTANT: Activer league_coeffs_applied pour que les coefficients soient utilisés !
+            league_coeffs_applied = True
+            
             logger.info(f"🌍 Coefficients FIFA appliqués (ratio: {ratio:.2f}):")
             logger.info(f"   ⚽ {home_team}: {coeff_home_fifa:.2f} (FIFA)")
             logger.info(f"   🟨 {away_team}: {coeff_away_fifa:.2f} (FIFA)")
