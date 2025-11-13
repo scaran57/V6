@@ -1,54 +1,81 @@
 <analysis>
-The previous AI engineer meticulously built a football score prediction application from scratch, leveraging OCR, adaptive learning, and a dynamic coefficient system. Initially, the focus was on robust OCR integration and a unified analysis endpoint. A significant step was the introduction of an auto-validation system and a unified analysis UI. The core problem faced was the inaccurate OCR extraction of team names and leagues, specifically from noisy screenshots. The engineer implemented an intelligent filtering mechanism, which was later reverted due to over-aggressiveness. This led to a detailed diagnostic revealing the root cause: disparate image formats (small cropped PNGs vs. large mobile JPG screenshots). Subsequent work involved implementing an OCR optimization patch, a FIFA world ranking coefficient system for international matches, a comprehensive UFA model retraining script, and an automated daily retraining and adaptive coefficient adjustment scheduler. The latest work transitioned to a PyTorch-based UFAv3 model with incremental training and robust performance features.
+The trajectory documents the complex process of enhancing a football score prediction application, primarily focusing on improving its accuracy for international matches. The initial task was to implement a fuzzy-matching OCR corrector based on user specifications, including multi-source architecture and enriched logging. However, user feedback quickly pivoted the work towards supporting World Cup Qualification matches, which were being misidentified.
+
+This led to a multi-stage implementation and debugging effort. First, league and team recognition logic was updated. When predictions remained poor, the user provided FIFA ranking data, prompting the creation of a new system to apply FIFA-based strength coefficients to predictions. The core of the work was a deep and challenging debugging cycle where the AI engineer uncovered and fixed a cascade of interacting bugs:
+1.  A false positive in league detection logic (az in Azerbaijan matching AZ Alkmaar).
+2.  A critical logic error where the newly implemented FIFA coefficients were calculated but never actually applied to the score probabilities.
+3.  A catastrophic OCR error where a new, advanced image preprocessor caused the OCR to misread a bookmaker's odd of 100 as 2.0, completely skewing the results.
+
+After fixing these issues, the conversation shifted to addressing the root problem of unreliable OCR, with the AI proposing modern alternatives like Vision AI. The final actions involved demonstrating the corrected prediction model's soundness by running calculations for club matches without using the faulty OCR pipeline.
 </analysis>
 
 <product_requirements>
-The application's primary goal is to predict football scores from bookmaker images using OCR, adaptive algorithms, and dynamic learning. It requires a user-friendly UI with manual input fallback, a secure append-only learning log, cache controls, and a comprehensive league coefficient system. This system must include daily updates and support European and international leagues. A prediction validation system and full system audit were also critical. More recently, the focus shifted to unifying league systems (Phase 1 and Phase 2), migrating real scores to a new UFA learning architecture, and implementing an OCR-based auto-importer with fuzzy team/league detection and immediate auto-training. The ongoing challenge centers on inaccurate league detection and extraneous text in team names from OCR, particularly with varied image inputs, and the need for a robust, continuously learning prediction model. The user explicitly requested filtering unwanted OCR text like timestamps and UI elements, then later a complete diagnostic for OCR degradation. Finally, a robust, incremental, PyTorch-based prediction model with dynamic coefficient adjustment was requested.
+The application's primary function is to predict football match scores by performing OCR on images of bookmaker odds. The user's goal is to improve the accuracy and robustness of these predictions.
+
+The development work covered in this trajectory focused on three main requirements:
+1.  **Fuzzy-Matching OCR Correction:** Implement a system to automatically correct garbled team and league names extracted by OCR. This system was designed to be extensible, use intelligent caching, and provide detailed logging and dashboard statistics.
+2.  **Support for International Matches:** The system needed to correctly identify and process international matches, specifically World Cup Qualification games, which were initially being misclassified as club league games (e.g., Eredivisie).
+3.  **FIFA Coefficient Integration:** To improve prediction accuracy for often lopsided international games, a system was required to adjust score probabilities based on the relative strength of the national teams. This was implemented using coefficients derived from FIFA rankings, which were manually extracted from images provided by the user.
+
+The overarching goal was to make the predictions for international matches more realistic, which involved extensive debugging to ensure the league detection and new coefficient logic functioned correctly.
 </product_requirements>
 
 <key_technical_concepts>
--   **FastAPI & React**: Backend and frontend frameworks.
--   **PyTesseract & OpenCV**: OCR and image preprocessing.
--   **PyTorch**: Deep learning framework for UFAv3 model.
--   **FuzzyWuzzy**: Fuzzy string matching for team/league detection.
--   **MongoDB**: Database for persistent data.
--   **FIFA & Football-Data.org APIs**: External data sources for real scores and rankings.
--   **APScheduler/Cron-like tasks**: Background task management for daily updates/training.
--   **Adaptive Learning (UFA)**: League-specific and global model refinement.
+- **Backend:** FastAPI, Python.
+- **Prediction Model:** A custom model using Poisson distribution, with probabilities adjusted by team/league strength coefficients.
+- **OCR:** A combination of PyTesseract and custom OpenCV preprocessing. The trajectory shows a failed attempt at advanced preprocessing and a reversion to a simpler method.
+- **Data & APIs:**  for market odds (for clubs), manually-sourced  for international team strength.
+- **Debugging:** Extensive use of backend logs (),  for API testing, and iterative Python test scripts.
 </key_technical_concepts>
 
 <code_architecture>
-The application utilizes a FastAPI backend and a React frontend, orchestrated within a Dockerized environment and managed by Supervisor.
+The application is a full-stack system with a Python/FastAPI backend and a React frontend. The backend handles OCR, prediction logic, and data management.
 
 
 
-**Key Files and Changes:**
-*   : Central FastAPI app. Integrated  endpoint. Recently integrated  and .
-*   : Handles OCR processing. Initially enhanced with  and league detection. Later received an optimized patch () with image preprocessing variants, dynamic cropping, and best match line logic.  .env variable introduced.
-*   : Manages background tasks. Integrated  (v1 and v2), , and recently  for FIFA rankings. Also manages .
-*   : Calculates coefficients. Modified to include  to differentiate between club and international matches using FIFA rankings. The  function was made more robust with thread-safety and atomic writes.
-*   : **(NEW)** Fetches FIFA rankings from an external API (or uses fallback), parses them, and computes coefficients.
-*   : **(NEW)** Utility functions to load and retrieve FIFA world coefficients.
-*   : **(NEW)** FastAPI router for exposing FIFA world coefficients via .
-*   : **(NEW)** Script to combine predicted and real scores, correct inconsistencies, and retrain the UFA model.
-*   : **(NEW)** Tracks model performance metrics for different leagues.
-*   : **(NEW)** Automates daily retraining, performance evaluation, and adaptive coefficient adjustment.
-*   : Modified to include a  wrapper function for the UFA model.
-*   : **(NEW)** A comprehensive diagnostic tool for OCR preprocessing variants and analysis.
-*   : **(NEW)** PyTorch-based UFAv3 model implementation, including dataset loader, model definition, train/eval/predict CLI, and save/load functions. Designed for incremental training with wall-clock caps and atomic model saving.
-*   : **(NEW)** FastAPI router for the UFAv3 model's prediction endpoint () and status endpoint.
-*   : Updated with  and FIFA API related variables (e.g., , , ).
-*   : , , , ,  were added or are managed here.
+-   ****
+    -   **Importance:** This file is crucial for identifying the league and team names from the raw OCR text.
+    -   **Changes:** It was heavily modified to support World Cup Qualification by adding new keywords and national team mappings. A critical bug was fixed by changing the logic to prioritize league detection based on national team names over ambiguous text found by OCR. The problematic  mapping was removed to prevent false positives.
+
+-   ****
+    -   **Importance:** This is the core module that calculates the final score probabilities, applying various weights and coefficients.
+    -   **Changes:** A major bug was fixed here. The code was modified to import  and calculate FIFA coefficients, but the final application of these coefficients was gated by a flag () that was never set for international matches. The fix involved ensuring this flag was correctly set when FIFA coefficients were used, finally enabling the feature.
+
+-   ****
+    -   **Importance:** A new module created to handle the FIFA ranking data.
+    -   **Changes:** This new file reads , provides functions to get a team's rank, and calculates a strength coefficient based on that rank. This encapsulates the logic for the new international match feature.
+
+-   ****
+    -   **Importance:** A new data file that acts as the source of truth for national team strength.
+    -   **Changes:** Created and populated by manually transcribing data from images of the FIFA rankings provided by the user. It contains a list of teams with their rank and points.
+
+-   ****
+    -   **Importance:** This file handles the image-to-text conversion using Tesseract and OpenCV.
+    -   **Changes:** An advanced preprocessing function () was added to improve OCR on screenshots but was later found to be the cause of a critical OCR error (reading 100 as 2.0). The call to this function was commented out to disable it and resolve the issue.
+
+-   ****
+    -   **Importance:** The main FastAPI file that defines all API endpoints.
+    -   **Changes:** Was modified to add several test endpoints (, ) to aid in the complex debugging process.
 </code_architecture>
 
 <pending_tasks>
-- The immediate next task is to replace the existing  with the updated, more robust version provided by the user.
+- The primary pending task is to **replace the unreliable OCR system**. The current Tesseract-based implementation was identified as the root cause of incorrect predictions (e.g., reading a 100 odd as 2.0). The user and AI discussed several alternatives, with the strongest recommendation being the integration of a **Vision AI model (like GPT-4 Vision)** to provide much more accurate and context-aware text extraction from the bookmaker images.
 </pending_tasks>
 
 <current_work>
-Immediately prior to this summary, the AI engineer had successfully implemented and integrated the UFAv3 prediction model based on PyTorch. This involved creating the  file containing the dataset loader, model architecture (embeddings + MLP), and train/eval/predict functionalities. A corresponding FastAPI endpoint ( and ) was created in  and integrated into . The required PyTorch dependency was confirmed to be installed. Initial training of the UFAv3 model was performed, and its status endpoint confirmed availability, model version, and dataset statistics. A prediction was successfully made through the API, demonstrating the end-to-end functionality of the new PyTorch-based model. The last message from the user provided an updated and more robust version of  which includes incremental training, wall-clock caps, early stopping, and atomic saving. The AI engineer agreed to replace the currently implemented version with this improved one.
+The work immediately preceding this summary was a diagnostic exercise to prove the soundness of the core prediction model, independent of the faulty OCR system. The user was frustrated that predictions for international matches were still incorrect, even after multiple bug fixes.
+
+The AI engineer determined that the final remaining issue was the quality of the data being fed into the model by the OCR. To demonstrate this, the AI bypassed the OCR entirely and performed calculations for a list of 5 international matches and 7 club matches provided by the user.
+
+For these calculations, the AI used:
+1.  **A pure Poisson distribution model.**
+2.  The appropriate strength coefficients:
+    -   **FIFA Coefficients** for the international matches (from ).
+    -   **League Coefficients** for the club matches (from ).
+
+The results showed realistic and expected outcomes (e.g., strong teams favored over weak ones), confirming that the underlying mathematical model and both coefficient systems were working correctly. This successfully isolated the problem to the OCR data-input stage, setting the stage for replacing the OCR as the next logical step. The last action was presenting the results of these calculations for the club matches.
 </current_work>
 
 <optional_next_step>
-Replace the current  with the more robust version provided in Chat Message 423.
+Begin implementing a **Vision AI-based OCR system** (e.g., using GPT-4 Vision) to replace the current, unreliable Tesseract implementation. This directly addresses the root cause of the incorrect predictions identified in the most recent debugging session.
 </optional_next_step>
