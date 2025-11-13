@@ -136,7 +136,7 @@ TEAM_LEAGUE_MAP = {
     # 🇳🇱 Eredivisie
     "ajax": "Eredivisie", "ajax amsterdam": "Eredivisie",
     "psv": "Eredivisie", "psv eindhoven": "Eredivisie",
-    "feyenoord": "Eredivisie", "az": "Eredivisie", "az alkmaar": "Eredivisie",
+    "feyenoord": "Eredivisie", "az alkmaar": "Eredivisie",
     "twente": "Eredivisie", "utrecht": "Eredivisie",
     
     # 🇵🇹 Primeira Liga
