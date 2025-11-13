@@ -1157,6 +1157,32 @@ async def diagnostic_last_analysis():
             status_code=500
         )
 
+@api_router.post("/admin/debug-ocr")
+async def admin_debug_ocr(file: UploadFile = File(...)):
+    """
+    🔍 [DEBUG] Affiche toutes les cotes extraites de l'image
+    """
+    try:
+        # Sauvegarder temporairement
+        file_path = os.path.join(UPLOAD_DIR, f"debug_{file.filename}")
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        # Extraire les cotes
+        from ocr_engine import extract_odds
+        odds_data = extract_odds(file_path)
+        
+        # Nettoyer
+        os.remove(file_path)
+        
+        return {
+            "success": True,
+            "total_scores": len(odds_data),
+            "odds_data": odds_data
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
 @api_router.get("/admin/cache-status")
 async def admin_cache_status():
     """
