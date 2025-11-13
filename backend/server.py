@@ -150,7 +150,8 @@ async def analyze(
     use_combined_algo: bool = Query(default=False, description="Utiliser l'algorithme combiné (Poisson + ImpliedOdds)"),
     disable_league_coeff: bool = Query(default=False, description="Désactiver les coefficients de ligue"),
     league: str = Query(default=None, description="Ligue (LaLiga, PremierLeague, etc.) - auto-détecté si non spécifié"),
-    enable_ocr_correction: bool = Query(default=False, description="Activer la correction OCR automatique via fuzzy-matching")
+    enable_ocr_correction: bool = Query(default=False, description="Activer la correction OCR automatique via fuzzy-matching"),
+    use_vision_ocr: bool = Query(default=False, description="Utiliser Vision GPT-4 OCR au lieu de Tesseract (plus précis, nécessite Emergent LLM Key)")
 ):
     """
     Analyse une image de bookmaker et prédit le score le plus probable.
