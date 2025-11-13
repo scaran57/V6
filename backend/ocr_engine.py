@@ -542,9 +542,46 @@ def extract_match_info(image_path: str):
         }
 
 
-def extract_odds(image_path: str):
+def extract_odds_with_vision(image_path: str):
+    """
+    Extrait les cotes via Vision GPT-4 OCR (plus précis que Tesseract)
+    """
+    try:
+        from tools.vision_ocr import extract_odds_from_image
+        logger.info("🔮 Utilisation de Vision GPT-4 OCR pour extraction des cotes...")
+        result = extract_odds_from_image(image_path)
+        
+        # Si Vision OCR retourne un dict structuré, le convertir au format attendu
+        if isinstance(result, dict) and 'raw_text' in result:
+            # Vision OCR a échoué, fallback Tesseract
+            logger.warning("⚠️ Vision OCR a échoué, fallback vers Tesseract")
+            return extract_odds_tesseract(image_path)
+        
+        return result
+    except Exception as e:
+        logger.error(f"❌ Erreur Vision OCR: {e}")
+        logger.info("↩️ Fallback vers Tesseract")
+        return extract_odds_tesseract(image_path)
+
+def extract_odds(image_path: str, use_vision: bool = False):
     """
     Extrait les cotes et scores depuis une image de bookmaker.
+    
+    Args:
+        image_path: Chemin de l'image
+        use_vision: Si True, utilise Vision GPT-4 (plus précis, mais coûte des tokens)
+    
+    Returns:
+        Liste de dicts {"score": "X-Y", "odds": float}
+    """
+    if use_vision:
+        return extract_odds_with_vision(image_path)
+    else:
+        return extract_odds_tesseract(image_path)
+
+def extract_odds_tesseract(image_path: str):
+    """
+    Extrait les cotes et scores depuis une image de bookmaker via Tesseract.
     Version améliorée avec meilleure stabilité OCR et distinction 0/O, 1/I.
     Compatible avec l'API existante.
     """
