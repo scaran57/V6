@@ -1747,7 +1747,50 @@ async def api_add_result(
             {"success": False, "error": str(e)},
             status_code=500
         )
-
+# ====================================================================
+# 🔧 VISION OCR ENDPOINT - Test GPT-4 Vision Integration
+# ====================================================================
+@api_router.post("/vision/test-ocr")
+async def test_vision_ocr(file: UploadFile = File(...)):
+    """
+    Endpoint de test pour Vision OCR avec GPT-4 Vision
+    Utilise la Clé Emergent LLM pour extraire les données de l'image de bookmaker
+    """
+    try:
+        from tools.vision_ocr import extract_odds_from_image
+        
+        # Save uploaded file
+        file_path = os.path.join(UPLOAD_DIR, f"vision_test_{file.filename}")
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        logger.info(f"📸 Vision OCR Test - Image reçue: {file.filename}")
+        
+        # Extract odds using Vision OCR
+        result = extract_odds_from_image(file_path)
+        
+        # Clean up
+        os.remove(file_path)
+        
+        logger.info(f"✅ Vision OCR - Extraction terminée")
+        logger.info(f"   Provider: {result.get('provider', 'unknown')}")
+        logger.info(f"   Confidence: {result.get('confidence', 0.0)}")
+        
+        return JSONResponse({
+            "success": True,
+            "provider": result.get("provider", "unknown"),
+            "confidence": result.get("confidence", 0.0),
+            "data": result
+        })
+        
+    except Exception as e:
+        logger.error(f"❌ Vision OCR Test - Erreur: {str(e)}")
+        import traceback
+        return JSONResponse({
+            "success": False,
+            "error": str(e),
+            "trace": traceback.format_exc()
+        }, status_code=500)
 
 # Include the router in the main app
 app.include_router(api_router)
