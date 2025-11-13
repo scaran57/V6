@@ -27,9 +27,13 @@ export default function AnalyzePage() {
       formData.append("file", file);
 
       const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:8001";
-      const url = `${backendUrl}/api/analyze${
-        disableCache ? "?disable_cache=true" : ""
-      }`;
+      
+      // Construire les paramètres d'URL
+      const params = new URLSearchParams();
+      if (disableCache) params.append("disable_cache", "true");
+      if (useVisionOcr) params.append("use_vision_ocr", "true");
+      
+      const url = `${backendUrl}/api/analyze${params.toString() ? '?' + params.toString() : ''}`;
 
       const res = await axios.post(url, formData);
       setResult(res.data);
