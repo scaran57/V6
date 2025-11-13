@@ -52,9 +52,10 @@ result = calculate_probabilities(
     scores=SCORES_WITH_ODDS,
     diff_expected=diff_expected,
     use_odds_weighting=False,
-    league_coeff=True,
-    home_coeff=moldavie_coeff,
-    away_coeff=italie_coeff
+    home_team="Moldavie",
+    away_team="Italie",
+    league="WorldCupQualification",
+    use_league_coeff=True
 )
 
 print("=" * 80)
