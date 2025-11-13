@@ -110,6 +110,37 @@ export default function AnalyzePage() {
               </p>
             </div>
 
+            {/* Switch pour Vision OCR */}
+            <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg border border-green-200">
+              <input
+                type="checkbox"
+                id="useVisionOcr"
+                checked={useVisionOcr}
+                onChange={(e) => setUseVisionOcr(e.target.checked)}
+                className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+              />
+              <label htmlFor="useVisionOcr" className="text-sm text-gray-700 flex items-center">
+                <span className="mr-2">🔮</span>
+                <span>
+                  <strong>Vision OCR (Recommandé) :</strong> Utiliser GPT-4 Vision pour lire les cotes avec précision
+                </span>
+              </label>
+            </div>
+            
+            {useVisionOcr && (
+              <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 text-xs text-blue-800">
+                <p>✅ <strong>Vision OCR activé</strong> - Les cotes seront lues avec GPT-4 Vision (précision maximale, lit "100" correctement)</p>
+                <p className="mt-1">💰 Coût : ~0.01-0.02€ par analyse (via Clé Emergent LLM)</p>
+              </div>
+            )}
+            
+            {!useVisionOcr && (
+              <div className="p-3 bg-orange-50 rounded-lg border border-orange-200 text-xs text-orange-800">
+                <p>⚠️ <strong>Tesseract OCR</strong> - Moins précis, peut confondre "100" avec "7" ou "10"</p>
+                <p className="mt-1">Recommandé d'activer Vision OCR pour les analyses importantes</p>
+              </div>
+            )}
+
             {/* Switch pour désactiver le cache */}
             <div className="flex items-center space-x-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
               <input
