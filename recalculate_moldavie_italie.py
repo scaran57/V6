@@ -49,12 +49,12 @@ def main():
     
     try:
         # Moldavie
+        moldavie_coeff = get_team_coefficient("Moldavie")
         moldavie_rank = get_team_rank("Moldavie")
-        moldavie_coeff = calculate_strength_coefficient(moldavie_rank) if moldavie_rank else 1.0
         
         # Italie
+        italie_coeff = get_team_coefficient("Italie")
         italie_rank = get_team_rank("Italie")
-        italie_coeff = calculate_strength_coefficient(italie_rank) if italie_rank else 1.0
         
         print(f"   🟦 Moldavie: Rank {moldavie_rank} → Coefficient {moldavie_coeff:.2f}")
         print(f"   🟩 Italie: Rank {italie_rank} → Coefficient {italie_coeff:.2f}")
