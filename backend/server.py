@@ -1160,16 +1160,37 @@ async def diagnostic_last_analysis():
 @api_router.delete("/admin/clear-analysis-cache")
 async def admin_clear_analysis_cache():
     """
-    🗑️ [ADMIN] Vide complètement le cache des analyses (matches_memory).
+    🗑️ [ADMIN] Vide complètement le cache des analyses (matches_memory + analysis_cache.jsonl).
     Utile pour forcer de nouveaux calculs sur tous les matchs.
     """
     try:
+        # Vider matches_memory
         clear_all_matches()
-        return {
-            "success": True,
-            "message": "Cache d'analyse vidé avec succès",
-            "timestamp": datetime.now().isoformat()
-        }
+        
+        # Vider analysis_cache.jsonl (le vrai cache utilisé par unified analyzer)
+        cache_file = Path("/app/data/analysis_cache.jsonl")
+        if cache_file.exists():
+            # Backup avant suppression
+            backup_file = Path(f"/app/data/analysis_cache_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jsonl")
+            shutil.copy(cache_file, backup_file)
+            
+            # Vider le fichier
+            cache_file.write_text("")
+            logger.info(f"✅ Cache vidé: {cache_file}, backup: {backup_file}")
+            
+            return {
+                "success": True,
+                "message": "Cache d'analyse vidé avec succès (matches_memory + analysis_cache.jsonl)",
+                "backup": str(backup_file),
+                "timestamp": datetime.now().isoformat()
+            }
+        else:
+            return {
+                "success": True,
+                "message": "Cache matches_memory vidé (analysis_cache.jsonl n'existait pas)",
+                "timestamp": datetime.now().isoformat()
+            }
+            
     except Exception as e:
         logger.error(f"Erreur lors du vidage du cache: {str(e)}")
         return JSONResponse(
