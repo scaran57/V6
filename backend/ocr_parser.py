@@ -434,8 +434,9 @@ def clean_team_name(name: str) -> str:
     if data_cutoff:
         cleaned = cleaned[:data_cutoff.start()]
     
-    # ÉTAPE 4: Supprimer les nombres isolés au début
-    cleaned = re.sub(r'^\s*\d+\s+', '', cleaned)
+    # ÉTAPE 4: Supprimer les nombres isolés au début ET à la fin
+    cleaned = re.sub(r'^\s*\d+\s+', '', cleaned)  # Début
+    cleaned = re.sub(r'\s+\d+\s*$', '', cleaned)  # Fin (ex: "Moldavie 8" → "Moldavie")
     
     # ÉTAPE 5: Nettoyer les espaces multiples et trim
     cleaned = re.sub(r'\s+', ' ', cleaned).strip()
