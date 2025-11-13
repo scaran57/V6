@@ -16,11 +16,11 @@ pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 LANGS = "eng+fra+spa"
 
 # === NOUVEAU: Préprocesseur OCR avancé ===
-USE_ADVANCED_PREPROCESSOR = True  # Activer/désactiver le préprocesseur avancé
+USE_ADVANCED_PREPROCESSOR = False  # DÉSACTIVÉ : Crée des artefacts qui trompent l'OCR (lit 100 comme 2.0)
 
 try:
     from tools.ocr_preprocessor import preprocess_for_ocr as advanced_preprocess
-    logger.info("✅ Préprocesseur OCR avancé chargé")
+    logger.info("⚠️ Préprocesseur OCR avancé DÉSACTIVÉ (cause erreurs de lecture)")
 except ImportError:
     logger.warning("⚠️ Préprocesseur OCR avancé non disponible")
     USE_ADVANCED_PREPROCESSOR = False
