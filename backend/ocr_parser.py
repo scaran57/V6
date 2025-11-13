@@ -197,6 +197,8 @@ TEAM_LEAGUE_MAP = {
     "cyprus": "WorldCupQualification", "chypre": "WorldCupQualification",
     "malta": "WorldCupQualification", "malte": "WorldCupQualification",
     "israel": "WorldCupQualification", "israël": "WorldCupQualification",
+    "armenia": "WorldCupQualification", "armenie": "WorldCupQualification", "arménie": "WorldCupQualification",
+    "andorra": "WorldCupQualification", "andorre": "WorldCupQualification",
 }
 
 TEAM_KEYS = list(TEAM_LEAGUE_MAP.keys())
