@@ -1157,6 +1157,35 @@ async def diagnostic_last_analysis():
             status_code=500
         )
 
+@api_router.get("/admin/cache-status")
+async def admin_cache_status():
+    """
+    🔍 [ADMIN] Affiche l'état du cache en mémoire
+    """
+    try:
+        from matches_memory import analyzed_matches
+        
+        # Compter les entrées
+        cache_count = len(analyzed_matches)
+        
+        # Lister les dernières entrées
+        recent_matches = []
+        for match_id, data in list(analyzed_matches.items())[-5:]:
+            recent_matches.append({
+                "match_id": match_id,
+                "match_name": data.get("match_name"),
+                "score": data.get("most_probable_score")
+            })
+        
+        return {
+            "success": True,
+            "cache_count": cache_count,
+            "recent_matches": recent_matches,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
 @api_router.delete("/admin/clear-analysis-cache")
 async def admin_clear_analysis_cache():
     """
