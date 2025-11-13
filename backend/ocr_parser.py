@@ -164,6 +164,7 @@ TEAM_LEAGUE_MAP = {
     "portugal": "WorldCupQualification",
     "italy": "WorldCupQualification", "italie": "WorldCupQualification",
     "england": "WorldCupQualification", "angleterre": "WorldCupQualification",
+    "moldova": "WorldCupQualification", "moldavie": "WorldCupQualification",
     "belgium": "WorldCupQualification", "belgique": "WorldCupQualification",
     "sweden": "WorldCupQualification", "suede": "WorldCupQualification", "suède": "WorldCupQualification",
     "denmark": "WorldCupQualification", "danemark": "WorldCupQualification",
