@@ -353,18 +353,19 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False,
                 # Plus l'équipe extérieur est forte, plus les scores avec beaucoup de buts extérieur sont favorisés
                 league_weight = 1.0
                 if league_coeffs_applied:
-                    # Formule : favoriser les scores selon la force relative
-                    # home_coeff > away_coeff → favoriser victoire domicile
-                    # away_coeff > home_coeff → favoriser victoire extérieur
+                    # Formule améliorée : amplifier l'effet des coefficients
+                    # Utiliser le carré du ratio pour plus d'impact
+                    ratio = away_coeff / home_coeff if home_coeff > 0 else 1.0
+                    
                     if home > away:
-                        # Victoire domicile : appliquer home_coeff
-                        league_weight = home_coeff / ((home_coeff + away_coeff) / 2)
+                        # Victoire domicile : pénaliser si away_coeff > home_coeff
+                        league_weight = 1.0 / (ratio ** 1.5)
                     elif away > home:
-                        # Victoire extérieur : appliquer away_coeff
-                        league_weight = away_coeff / ((home_coeff + away_coeff) / 2)
+                        # Victoire extérieur : favoriser si away_coeff > home_coeff
+                        league_weight = ratio ** 1.5
                     else:
-                        # Nul : moyenne des deux
-                        league_weight = (home_coeff + away_coeff) / 2
+                        # Nul : effet neutre légèrement réduit
+                        league_weight = 1.0
                 
                 weighted[score] = p * weight * league_weight
                 
