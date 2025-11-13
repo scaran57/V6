@@ -7,7 +7,7 @@ avec les coefficients FIFA appropriés
 import sys
 sys.path.insert(0, '/app/backend')
 
-from tools.fifa_ranking_manager import get_team_rank, calculate_strength_coefficient
+from tools.fifa_ranking_manager import get_team_rank, get_team_coefficient
 from score_predictor import calculate_probabilities_v2
 import json
 
