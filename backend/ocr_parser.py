@@ -71,7 +71,8 @@ LEAGUE_DETECTION_PATTERNS = {
         r"fifa\s*world\s*cup\s*qualifiers", r"wc\s*qualification",
         r"qualif\s*coupe\s*du\s*monde", r"coupe\s*du\s*monde\s*qualification",
         r"world\s*cup\s*qualifying", r"world\s*cup", r"fifa\s*world\s*cup",
-        r"eliminatoires\s*coupe\s*du\s*monde", r"eliminatoires\s*cdm"
+        r"eliminatoires\s*coupe\s*du\s*monde", r"eliminatoires\s*cdm",
+        r"cdm\s*\(q\)", r"cdm\s*qualif", r"cdm\s*europe", r"wc\s*\(q\)"
     ]
 }
 
