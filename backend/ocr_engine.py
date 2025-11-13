@@ -545,19 +545,21 @@ def extract_match_info(image_path: str):
 def extract_odds_with_vision(image_path: str):
     """
     Extrait les cotes via Vision GPT-4 OCR (plus précis que Tesseract)
+    Utilise le nouveau module vision_ocr_scores qui extrait TOUS les scores/cotes
     """
     try:
-        from tools.vision_ocr import extract_odds_from_image
+        from tools.vision_ocr_scores import extract_odds_from_image
         logger.info("🔮 Utilisation de Vision GPT-4 OCR pour extraction des cotes...")
         result = extract_odds_from_image(image_path)
         
-        # Si Vision OCR retourne un dict structuré, le convertir au format attendu
-        if isinstance(result, dict) and 'raw_text' in result:
-            # Vision OCR a échoué, fallback Tesseract
-            logger.warning("⚠️ Vision OCR a échoué, fallback vers Tesseract")
+        # Vérifier que le résultat est une liste
+        if not result or not isinstance(result, list):
+            logger.warning("⚠️ Vision OCR a retourné un résultat invalide, fallback vers Tesseract")
             return extract_odds_tesseract(image_path)
         
+        logger.info(f"✅ Vision OCR a extrait {len(result)} scores")
         return result
+        
     except Exception as e:
         logger.error(f"❌ Erreur Vision OCR: {e}")
         logger.info("↩️ Fallback vers Tesseract")
