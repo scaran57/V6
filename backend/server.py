@@ -262,8 +262,11 @@ async def analyze(
             logger.info(f"🔄 CACHE DÉSACTIVÉ - Nouveau calcul forcé pour {match_id} (OCR + prédiction)")
         
         # Extraire les cotes via OCR
-        logger.info(f"🔍 OCR en cours pour {match_id}...")
-        scores = extract_odds(file_path)
+        if use_vision_ocr:
+            logger.info(f"🔮 Vision GPT-4 OCR en cours pour {match_id}...")
+        else:
+            logger.info(f"🔍 Tesseract OCR en cours pour {match_id}...")
+        scores = extract_odds(file_path, use_vision=use_vision_ocr)
         
         if not scores:
             os.remove(file_path)
