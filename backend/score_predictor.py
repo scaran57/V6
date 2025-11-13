@@ -353,19 +353,19 @@ def calculate_probabilities(scores, diff_expected=2, use_odds_weighting=False,
                 # Plus l'équipe extérieur est forte, plus les scores avec beaucoup de buts extérieur sont favorisés
                 league_weight = 1.0
                 if league_coeffs_applied:
-                    # Formule améliorée : amplifier l'effet des coefficients
-                    # Utiliser le carré du ratio pour plus d'impact
+                    # Formule ultra-amplifiée : DOMINER les cotes du bookmaker
+                    # Utiliser puissance 2.5 pour un effet très fort
                     ratio = away_coeff / home_coeff if home_coeff > 0 else 1.0
                     
                     if home > away:
-                        # Victoire domicile : pénaliser si away_coeff > home_coeff
-                        league_weight = 1.0 / (ratio ** 1.5)
+                        # Victoire domicile : forte pénalisation si away_coeff > home_coeff
+                        league_weight = 1.0 / (ratio ** 2.5)
                     elif away > home:
-                        # Victoire extérieur : favoriser si away_coeff > home_coeff
-                        league_weight = ratio ** 1.5
+                        # Victoire extérieur : forte amplification si away_coeff > home_coeff  
+                        league_weight = ratio ** 2.5
                     else:
-                        # Nul : effet neutre légèrement réduit
-                        league_weight = 1.0
+                        # Nul : légèrement réduit quand écart de force
+                        league_weight = 1.0 / (ratio ** 0.5)
                 
                 weighted[score] = p * weight * league_weight
                 
