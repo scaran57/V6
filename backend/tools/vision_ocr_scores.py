@@ -106,6 +106,15 @@ ATTENTION:
         
         data = json.loads(raw)
         
+        # Extraire les noms d'équipes et la ligue
+        home_team = data.get("home_team", "").strip()
+        away_team = data.get("away_team", "").strip()
+        league = data.get("league", "").strip()
+        
+        logger.info(f"[VISION_SCORES] Équipes: {home_team} vs {away_team}")
+        if league:
+            logger.info(f"[VISION_SCORES] Ligue: {league}")
+        
         # Extraire la liste des scores
         if "scores" in data and isinstance(data["scores"], list):
             scores = data["scores"]
@@ -126,10 +135,17 @@ ATTENTION:
                         logger.warning(f"Score invalide ignoré: {item} - {e}")
             
             logger.info(f"[VISION_SCORES] {len(cleaned_scores)} scores valides")
-            return cleaned_scores
+            
+            # Retourner un dict avec les noms ET les scores
+            return {
+                "home_team": home_team,
+                "away_team": away_team,
+                "league": league,
+                "scores": cleaned_scores
+            }
         else:
             logger.error("[VISION_SCORES] Format de réponse invalide")
-            return []
+            return {"scores": []}
             
     except json.JSONDecodeError as e:
         logger.error(f"[VISION_SCORES] Erreur JSON: {e}")
