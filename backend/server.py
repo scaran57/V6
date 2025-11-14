@@ -312,14 +312,59 @@ async def analyze(
             if vision_teams.get("league") and not league:
                 vision_league = vision_teams["league"]
                 
-                # Normaliser les variantes de "CDM (Q)" vers "WorldCupQualification"
-                vision_league_lower = vision_league.lower()
-                if "cdm" in vision_league_lower or "world cup" in vision_league_lower or "coupe du monde" in vision_league_lower:
-                    detected_league = "WorldCupQualification"
-                    logger.info(f"✅ Ligue détectée par Vision OCR: '{vision_league}' → normalisée en 'WorldCupQualification'")
+                # Normaliser les variantes vers les noms reconnus par le système
+                vision_league_lower = vision_league.lower().replace(" ", "").replace("-", "")
+                
+                # Mapping des variantes vers noms standards
+                league_mapping = {
+                    # World Cup
+                    "cdm": "WorldCupQualification",
+                    "worldcup": "WorldCupQualification",
+                    "coupedumonde": "WorldCupQualification",
+                    "wcq": "WorldCupQualification",
+                    # Premier League
+                    "premierleague": "PremierLeague",
+                    "epl": "PremierLeague",
+                    "premier": "PremierLeague",
+                    # La Liga
+                    "laliga": "LaLiga",
+                    "liga": "LaLiga",
+                    "ligaespañola": "LaLiga",
+                    # Serie A
+                    "seriea": "SerieA",
+                    "seria": "SerieA",
+                    # Ligue 1
+                    "ligue1": "Ligue1",
+                    "ligueun": "Ligue1",
+                    "liguefrance": "Ligue1",
+                    # Bundesliga
+                    "bundesliga": "Bundesliga",
+                    # Primeira Liga
+                    "primeiraliga": "PrimeiraLiga",
+                    "ligaportugal": "PrimeiraLiga",
+                    # Champions League
+                    "championsleague": "ChampionsLeague",
+                    "ucl": "ChampionsLeague",
+                    "ldc": "ChampionsLeague",
+                    # Europa League
+                    "europaleague": "EuropaLeague",
+                    "uel": "EuropaLeague",
+                }
+                
+                # Chercher une correspondance
+                normalized_league = None
+                for key, value in league_mapping.items():
+                    if key in vision_league_lower:
+                        normalized_league = value
+                        break
+                
+                if normalized_league:
+                    detected_league = normalized_league
+                    logger.info(f"✅ Ligue détectée par Vision OCR: '{vision_league}' → normalisée en '{detected_league}'")
                 else:
+                    # Pas de correspondance, utiliser tel quel
                     detected_league = vision_league
-                    logger.info(f"✅ Ligue détectée par Vision OCR: {detected_league}")
+                    logger.info(f"✅ Ligue détectée par Vision OCR: {detected_league} (aucune normalisation)")
         
         # Utiliser la ligue détectée par le parser avancé
         # Priorité: paramètre manuel > Vision OCR > détection avancée > Unknown
