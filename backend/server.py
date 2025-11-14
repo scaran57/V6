@@ -299,13 +299,27 @@ async def analyze(
         # Obtenir la diffExpected pour le calcul
         diff_expected = get_diff_expected()
         
+        # PRIORITÉ AUX NOMS VISION OCR si disponibles (plus précis que Tesseract)
+        if vision_teams and vision_teams.get("home_team") and vision_teams.get("away_team"):
+            home_team = vision_teams["home_team"]
+            away_team = vision_teams["away_team"]
+            logger.info(f"✅ Utilisation des noms Vision OCR: {home_team} vs {away_team}")
+            
+            # Mettre à jour le match_name aussi
+            match_name = f"{home_team} - {away_team}"
+            
+            # Si Vision OCR a détecté la ligue, l'utiliser aussi
+            if vision_teams.get("league") and not league:
+                detected_league = vision_teams["league"]
+                logger.info(f"✅ Ligue détectée par Vision OCR: {detected_league}")
+        
         # Utiliser la ligue détectée par le parser avancé
-        # Priorité: paramètre manuel > détection avancée > Unknown
+        # Priorité: paramètre manuel > Vision OCR > détection avancée > Unknown
         if league:
             detected_league = league
             logger.info(f"🎯 Ligue spécifiée manuellement: {detected_league}")
         elif detected_league and detected_league != "Unknown":
-            logger.info(f"✅ Ligue détectée automatiquement par parser avancé: {detected_league}")
+            logger.info(f"✅ Ligue détectée automatiquement: {detected_league}")
         else:
             # Fallback sur Unknown si aucune détection
             detected_league = "Unknown"
