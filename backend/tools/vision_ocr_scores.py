@@ -135,14 +135,17 @@ ATTENTION:
         return []
 
 def extract_odds_with_vision_sync(image_path: str) -> List[Dict]:
-    """Version synchrone pour compatibilité"""
+    """Version synchrone pour compatibilité - utilise asyncio.run() pour éviter les conflits"""
+    import nest_asyncio
     try:
+        # Permettre les boucles imbriquées
+        nest_asyncio.apply()
         loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-    
-    return loop.run_until_complete(extract_all_odds_with_vision(image_path))
+        return loop.run_until_complete(extract_all_odds_with_vision(image_path))
+    except RuntimeError as e:
+        # Si pas de boucle active, en créer une nouvelle
+        logger.warning(f"Pas de boucle event loop active, création d'une nouvelle: {e}")
+        return asyncio.run(extract_all_odds_with_vision(image_path))
 
 # Export pour compatibilité
 extract_odds_from_image = extract_odds_with_vision_sync
