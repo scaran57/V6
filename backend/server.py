@@ -308,10 +308,18 @@ async def analyze(
             # Mettre à jour le match_name aussi
             match_name = f"{home_team} - {away_team}"
             
-            # Si Vision OCR a détecté la ligue, l'utiliser aussi
+            # Si Vision OCR a détecté la ligue, l'utiliser aussi et la normaliser
             if vision_teams.get("league") and not league:
-                detected_league = vision_teams["league"]
-                logger.info(f"✅ Ligue détectée par Vision OCR: {detected_league}")
+                vision_league = vision_teams["league"]
+                
+                # Normaliser les variantes de "CDM (Q)" vers "WorldCupQualification"
+                vision_league_lower = vision_league.lower()
+                if "cdm" in vision_league_lower or "world cup" in vision_league_lower or "coupe du monde" in vision_league_lower:
+                    detected_league = "WorldCupQualification"
+                    logger.info(f"✅ Ligue détectée par Vision OCR: '{vision_league}' → normalisée en 'WorldCupQualification'")
+                else:
+                    detected_league = vision_league
+                    logger.info(f"✅ Ligue détectée par Vision OCR: {detected_league}")
         
         # Utiliser la ligue détectée par le parser avancé
         # Priorité: paramètre manuel > Vision OCR > détection avancée > Unknown
