@@ -44,15 +44,22 @@ async def extract_all_odds_with_vision(image_path: str) -> List[Dict]:
         
         # Prompt pour extraction complète
         prompt = """
-Analyse cette image de bookmaker et extrais TOUS les scores de football avec leurs cotes.
+Analyse cette image de bookmaker et extrais TOUTES les informations du match de football.
 
 IMPORTANT:
-- Lis attentivement les nombres à 3 chiffres (ex: 100, pas 10.0 ou 7.0)
-- Liste TOUS les scores visibles (1-0, 0-0, 2-1, 3-2, etc.)
-- Pour chaque score, donne la cote exacte
+1. Identifie les NOMS DES ÉQUIPES (équipe domicile et équipe extérieure)
+2. Identifie la LIGUE/COMPÉTITION si visible
+3. Extrais TOUS les scores avec leurs cotes
+
+Lis attentivement:
+- Nombres à 3 chiffres : "100" = 100 (PAS "10.0" ou "7.0")
+- Noms d'équipes : lis avec précision (pas de charabia)
 
 Retourne un JSON valide avec cette structure:
 {
+  "home_team": "Nom équipe domicile",
+  "away_team": "Nom équipe extérieure",
+  "league": "Nom de la ligue/compétition",
   "scores": [
     {"score": "1-0", "odds": 84.0},
     {"score": "0-0", "odds": 25.0},
@@ -65,7 +72,7 @@ Retourne un JSON valide avec cette structure:
 
 ATTENTION: 
 - "100" est un nombre à 3 chiffres, PAS "10.0" ou "7.0" !
-- Si la cote affiche "100", mets 100 (pas 10, pas 7)
+- Noms d'équipes : lis correctement (ex: "Luxembourg", "Bulgarie", pas "Luxembour" ou "rd =")
 """
         
         # Initialiser le chat GPT-4 Vision
