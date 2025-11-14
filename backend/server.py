@@ -266,7 +266,25 @@ async def analyze(
             logger.info(f"🔮 Vision GPT-4 OCR en cours pour {match_id}...")
         else:
             logger.info(f"🔍 Tesseract OCR en cours pour {match_id}...")
-        scores = extract_odds(file_path, use_vision=use_vision_ocr)
+        
+        ocr_result = extract_odds(file_path, use_vision=use_vision_ocr)
+        
+        # Gérer le nouveau format Vision OCR (dict avec noms) ou ancien format (liste)
+        vision_teams = {}
+        if isinstance(ocr_result, dict) and "scores" in ocr_result:
+            # Nouveau format Vision OCR avec noms d'équipes
+            scores = ocr_result.get("scores", [])
+            vision_teams = {
+                "home_team": ocr_result.get("home_team", ""),
+                "away_team": ocr_result.get("away_team", ""),
+                "league": ocr_result.get("league", "")
+            }
+            logger.info(f"✅ Vision OCR - Équipes: {vision_teams['home_team']} vs {vision_teams['away_team']}")
+            if vision_teams['league']:
+                logger.info(f"✅ Vision OCR - Ligue: {vision_teams['league']}")
+        else:
+            # Ancien format (liste directe)
+            scores = ocr_result
         
         if not scores:
             os.remove(file_path)
