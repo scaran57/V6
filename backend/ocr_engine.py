@@ -545,23 +545,43 @@ def extract_match_info(image_path: str):
 def extract_odds_with_vision(image_path: str):
     """
     Extrait les cotes via Vision GPT-4 OCR (plus précis que Tesseract)
-    Utilise le nouveau module vision_ocr_scores qui extrait TOUS les scores/cotes
+    Utilise le nouveau module vision_ocr_scores qui extrait TOUS les scores/cotes + NOMS
+    
+    Returns:
+        Liste de dicts {"score": "X-Y", "odds": float} OU
+        Dict {"home_team": str, "away_team": str, "league": str, "scores": [...]}
     """
     try:
         from tools.vision_ocr_scores import extract_odds_from_image
-        logger.info("🔮 Utilisation de Vision GPT-4 OCR pour extraction des cotes...")
+        logger.info("🔮 Utilisation de Vision GPT-4 OCR pour extraction complète (noms + cotes)...")
         result = extract_odds_from_image(image_path)
         
-        # Vérifier que le résultat est une liste
-        if not result or not isinstance(result, list):
+        # Nouveau format : dict avec home_team, away_team, scores
+        if isinstance(result, dict) and "scores" in result:
+            scores = result.get("scores", [])
+            home_team = result.get("home_team", "")
+            away_team = result.get("away_team", "")
+            
+            logger.info(f"✅ Vision OCR a extrait: {home_team} vs {away_team}")
+            logger.info(f"✅ Vision OCR a extrait {len(scores)} scores")
+            
+            # Stocker les noms pour les utiliser plus tard
+            # On retourne le dict complet maintenant
+            return result
+        
+        # Ancien format : liste directe (fallback)
+        elif isinstance(result, list):
+            logger.info(f"✅ Vision OCR a extrait {len(result)} scores (format ancien)")
+            return result
+        
+        else:
             logger.warning("⚠️ Vision OCR a retourné un résultat invalide, fallback vers Tesseract")
             return extract_odds_tesseract(image_path)
         
-        logger.info(f"✅ Vision OCR a extrait {len(result)} scores")
-        return result
-        
     except Exception as e:
         logger.error(f"❌ Erreur Vision OCR: {e}")
+        import traceback
+        traceback.print_exc()
         logger.info("↩️ Fallback vers Tesseract")
         return extract_odds_tesseract(image_path)
 
