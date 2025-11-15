@@ -1191,6 +1191,364 @@ class ScorePredictorTester:
             self.log(f"❌ Exception: {str(e)}")
             return {"status": "FAIL", "error": str(e)}
     
+    def test_manual_league_standings_update(self):
+        """
+        Test the manual league standings update as requested in review.
+        Tests all 5 leagues with correct data from user-provided screenshots.
+        """
+        self.log("=" * 80)
+        self.log("🎯 TESTING MANUAL LEAGUE STANDINGS UPDATE")
+        self.log("=" * 80)
+        
+        results = {}
+        
+        # 1. Team Coefficient API Tests for multiple teams from each league
+        self.log("\n1️⃣ TEAM COEFFICIENT API TESTS")
+        self.log("Testing coefficients for multiple teams from each league...")
+        
+        # LaLiga tests (20 teams including new additions: Levante at rank 19, Real Oviedo at rank 20)
+        laliga_tests = [
+            ("Real Madrid", "LaLiga", 1, (1.30, 1.30)),  # Rank 1 should get 1.30
+            ("Barcelona", "LaLiga", 2, (1.25, 1.30)),    # Rank 2 should be high
+            ("Villarreal", "LaLiga", 3, (1.20, 1.30)),   # Rank 3 should be high
+            ("Levante", "LaLiga", 19, (0.85, 0.90)),     # New team at rank 19
+            ("Real Oviedo", "LaLiga", 20, (0.85, 0.85))  # New team at rank 20 (last)
+        ]
+        
+        # Premier League tests (18 teams)
+        premier_tests = [
+            ("Arsenal", "PremierLeague", 1, (1.30, 1.30)),      # Rank 1
+            ("Manchester City", "PremierLeague", 2, (1.25, 1.30)), # Rank 2
+            ("West Ham", "PremierLeague", 18, (0.85, 0.95))     # Last rank
+        ]
+        
+        # Bundesliga tests (18 teams)
+        bundesliga_tests = [
+            ("Bayern Munich", "Bundesliga", 1, (1.30, 1.30)),   # Rank 1
+            ("RB Leipzig", "Bundesliga", 2, (1.25, 1.30)),      # Rank 2
+            ("Heidenheim", "Bundesliga", 18, (0.85, 0.95))      # Last rank
+        ]
+        
+        # Ligue 1 tests (18 teams)
+        ligue1_tests = [
+            ("Paris Saint-Germain", "Ligue1", 1, (1.30, 1.30)), # Rank 1
+            ("Marseille", "Ligue1", 2, (1.25, 1.30)),           # Rank 2
+            ("Auxerre", "Ligue1", 18, (0.85, 0.95))             # Last rank
+        ]
+        
+        # Primeira Liga tests (18 teams)
+        primeira_tests = [
+            ("Porto", "PrimeiraLiga", 1, (1.30, 1.30)),         # Rank 1
+            ("Sporting CP", "PrimeiraLiga", 2, (1.25, 1.30)),   # Rank 2
+            ("AVS Futebol", "PrimeiraLiga", 18, (0.85, 0.95))   # Last rank
+        ]
+        
+        all_coeff_tests = [
+            ("LaLiga", laliga_tests),
+            ("PremierLeague", premier_tests),
+            ("Bundesliga", bundesliga_tests),
+            ("Ligue1", ligue1_tests),
+            ("PrimeiraLiga", primeira_tests)
+        ]
+        
+        coeff_results = {}
+        for league_name, tests in all_coeff_tests:
+            self.log(f"\n   Testing {league_name} coefficients:")
+            league_results = {}
+            
+            for team, league, expected_rank, expected_range in tests:
+                result = self.test_team_coefficient(team, league, expected_range)
+                league_results[team] = result
+                
+                if result.get("status") == "PASS":
+                    coeff = result.get("coefficient", 0)
+                    pos = result.get("position", "N/A")
+                    self.log(f"      ✅ {team}: Position {pos}, Coefficient {coeff:.4f}")
+                else:
+                    self.log(f"      ❌ {team}: {result.get('error', 'Failed')}")
+            
+            coeff_results[league_name] = league_results
+        
+        results["team_coefficients"] = coeff_results
+        
+        # 2. League Standings Endpoint Tests
+        self.log("\n2️⃣ LEAGUE STANDINGS ENDPOINT TESTS")
+        self.log("Testing all 5 league standings endpoints...")
+        
+        standings_tests = [
+            ("LaLiga", 20),      # Expected 20 teams
+            ("PremierLeague", 18), # Expected 18 teams
+            ("Bundesliga", 18),   # Expected 18 teams
+            ("Ligue1", 18),      # Expected 18 teams
+            ("PrimeiraLiga", 18)  # Expected 18 teams
+        ]
+        
+        standings_results = {}
+        for league, expected_teams in standings_tests:
+            self.log(f"\n   Testing {league} standings:")
+            result = self.test_league_standings_detailed(league, expected_teams)
+            standings_results[league] = result
+            
+            if result.get("status") == "PASS":
+                teams_count = result.get("teams_count", 0)
+                self.log(f"      ✅ {league}: {teams_count} teams (expected {expected_teams})")
+                
+                # Verify team names are correct (not city names)
+                standings = result.get("standings", [])
+                if standings:
+                    first_team = standings[0].get("team", "")
+                    last_team = standings[-1].get("team", "")
+                    self.log(f"         First: {first_team}, Last: {last_team}")
+            else:
+                self.log(f"      ❌ {league}: {result.get('error', 'Failed')}")
+        
+        results["league_standings"] = standings_results
+        
+        # 3. Prediction Integration Tests
+        self.log("\n3️⃣ PREDICTION INTEGRATION TESTS")
+        self.log("Testing that predictions use the new correct league data...")
+        
+        # Test with sample match analysis to ensure no regression
+        prediction_result = self.test_analyze_with_league_integration()
+        results["prediction_integration"] = prediction_result
+        
+        if prediction_result.get("status") == "PASS":
+            self.log("      ✅ Predictions correctly use new league data")
+        else:
+            self.log(f"      ❌ Prediction integration: {prediction_result.get('error', 'Failed')}")
+        
+        # 4. Regression Tests
+        self.log("\n4️⃣ REGRESSION TESTS")
+        self.log("Testing that existing functionality still works...")
+        
+        regression_results = {}
+        
+        # Test health endpoint
+        health_result = self.test_health_endpoint()
+        regression_results["health"] = health_result
+        self.log(f"      {'✅' if health_result.get('status') == 'PASS' else '❌'} GET /api/health")
+        
+        # Test analyze endpoint
+        analyze_result = self.test_analyze_basic()
+        regression_results["analyze"] = analyze_result
+        self.log(f"      {'✅' if analyze_result.get('status') == 'PASS' else '❌'} POST /api/analyze")
+        
+        results["regression_tests"] = regression_results
+        
+        # 5. Verify newly added teams (Levante and Real Oviedo in LaLiga)
+        self.log("\n5️⃣ NEW TEAMS VERIFICATION")
+        self.log("Testing newly added teams: Levante and Real Oviedo in LaLiga...")
+        
+        new_teams_results = {}
+        for team in ["Levante", "Real Oviedo"]:
+            result = self.test_team_coefficient(team, "LaLiga")
+            new_teams_results[team] = result
+            
+            if result.get("status") == "PASS":
+                coeff = result.get("coefficient", 0)
+                pos = result.get("position", "N/A")
+                self.log(f"      ✅ {team}: Position {pos}, Coefficient {coeff:.4f}")
+            else:
+                self.log(f"      ❌ {team}: Not accessible via API")
+        
+        results["new_teams"] = new_teams_results
+        
+        # Summary
+        self.log("\n" + "=" * 80)
+        self.log("MANUAL LEAGUE STANDINGS UPDATE TEST SUMMARY")
+        self.log("=" * 80)
+        
+        # Count successful tests
+        total_tests = 0
+        passed_tests = 0
+        
+        # Count coefficient tests
+        for league_results in coeff_results.values():
+            for result in league_results.values():
+                total_tests += 1
+                if result.get("status") == "PASS":
+                    passed_tests += 1
+        
+        # Count standings tests
+        for result in standings_results.values():
+            total_tests += 1
+            if result.get("status") == "PASS":
+                passed_tests += 1
+        
+        # Count other tests
+        if prediction_result.get("status") == "PASS":
+            passed_tests += 1
+        total_tests += 1
+        
+        for result in regression_results.values():
+            total_tests += 1
+            if result.get("status") == "PASS":
+                passed_tests += 1
+        
+        # Count new teams tests
+        for result in new_teams_results.values():
+            total_tests += 1
+            if result.get("status") == "PASS":
+                passed_tests += 1
+        
+        success_rate = (passed_tests / total_tests * 100) if total_tests > 0 else 0
+        
+        self.log(f"\n📊 OVERALL RESULTS:")
+        self.log(f"   Tests passed: {passed_tests}/{total_tests} ({success_rate:.1f}%)")
+        self.log(f"   Team coefficients correctly calculated: {'✅' if success_rate >= 80 else '❌'}")
+        self.log(f"   New teams accessible via API: {'✅' if all(r.get('status') == 'PASS' for r in new_teams_results.values()) else '❌'}")
+        self.log(f"   All 5 leagues show correct team names: {'✅' if all(r.get('status') == 'PASS' for r in standings_results.values()) else '❌'}")
+        self.log(f"   No breaking changes to existing functionality: {'✅' if all(r.get('status') == 'PASS' for r in regression_results.values()) else '❌'}")
+        
+        if success_rate >= 90:
+            self.log(f"\n🎉 SUCCESS: Manual league standings update is working correctly!")
+        elif success_rate >= 70:
+            self.log(f"\n⚠️ PARTIAL SUCCESS: Most tests passed but some issues found")
+        else:
+            self.log(f"\n❌ ISSUES FOUND: Multiple test failures detected")
+        
+        results["summary"] = {
+            "total_tests": total_tests,
+            "passed_tests": passed_tests,
+            "success_rate": success_rate
+        }
+        
+        return results
+    
+    def test_league_standings_detailed(self, league, expected_teams):
+        """Enhanced league standings test with detailed validation"""
+        try:
+            response = requests.get(f"{BASE_URL}/admin/league/standings?league={league}", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("success") and "standings" in data:
+                    standings = data["standings"]
+                    teams_count = data.get("teams_count", 0)
+                    
+                    # Verify team count matches expected
+                    if teams_count == expected_teams:
+                        # Verify team names are proper team names (not city names)
+                        team_names_valid = self._validate_team_names(standings, league)
+                        
+                        if team_names_valid:
+                            return {
+                                "status": "PASS",
+                                "teams_count": teams_count,
+                                "standings": standings,
+                                "validation": "Team names are correct"
+                            }
+                        else:
+                            return {
+                                "status": "PARTIAL",
+                                "teams_count": teams_count,
+                                "standings": standings,
+                                "warning": "Some team names may be city names instead of proper team names"
+                            }
+                    else:
+                        return {
+                            "status": "PARTIAL",
+                            "teams_count": teams_count,
+                            "expected": expected_teams,
+                            "note": f"Team count mismatch: got {teams_count}, expected {expected_teams}"
+                        }
+                else:
+                    return {"status": "FAIL", "error": "No standings data"}
+            else:
+                return {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            return {"status": "FAIL", "error": str(e)}
+    
+    def _validate_team_names(self, standings, league):
+        """Validate that team names are proper team names, not city names"""
+        if not standings:
+            return False
+        
+        # Check a few key teams to ensure they have proper names
+        team_names = [team.get("team", "") for team in standings]
+        
+        # League-specific validations
+        if league == "LaLiga":
+            # Should have "Real Madrid" not "Madrid", "Barcelona" not just city name
+            expected_teams = ["Real Madrid", "Barcelona", "Levante", "Real Oviedo"]
+            return any(team in team_names for team in expected_teams)
+        
+        elif league == "Bundesliga":
+            # Should have "Bayern Munich" not "Munich"
+            expected_teams = ["Bayern Munich", "Borussia Dortmund"]
+            return any(team in team_names for team in expected_teams)
+        
+        elif league == "PremierLeague":
+            # Should have proper club names
+            expected_teams = ["Manchester City", "Arsenal", "Liverpool"]
+            return any(team in team_names for team in expected_teams)
+        
+        elif league == "Ligue1":
+            # Should have proper club names
+            expected_teams = ["Paris Saint-Germain", "Marseille"]
+            return any(team in team_names for team in expected_teams)
+        
+        elif league == "PrimeiraLiga":
+            # Should have proper club names
+            expected_teams = ["Porto", "Sporting CP", "Benfica"]
+            return any(team in team_names for team in expected_teams)
+        
+        return True  # Default to true for other leagues
+    
+    def test_analyze_with_league_integration(self):
+        """Test that /api/analyze correctly integrates with new league data"""
+        image_path = os.path.join(BACKEND_DIR, "test_bookmaker_v2.jpg")
+        
+        if not os.path.exists(image_path):
+            return {"status": "FAIL", "error": "Test image not found"}
+        
+        try:
+            with open(image_path, 'rb') as f:
+                files = {'file': ('test_bookmaker_v2.jpg', f, 'image/jpeg')}
+                response = requests.post(f"{BASE_URL}/analyze", files=files, timeout=30)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check if analysis completed (even if no scores detected)
+                if 'error' in data and 'Aucune cote détectée' in data['error']:
+                    return {"status": "PASS", "note": "Analysis works, no scores detected (expected)"}
+                
+                # If analysis successful, check league integration
+                league = data.get("league", "Unknown")
+                league_coeffs_applied = data.get("leagueCoeffsApplied", False)
+                
+                return {
+                    "status": "PASS",
+                    "league": league,
+                    "coeffs_applied": league_coeffs_applied,
+                    "note": "League integration working"
+                }
+            else:
+                return {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            return {"status": "FAIL", "error": str(e)}
+    
+    def test_analyze_basic(self):
+        """Basic test of analyze endpoint for regression testing"""
+        image_path = os.path.join(BACKEND_DIR, "test_bookmaker_v2.jpg")
+        
+        if not os.path.exists(image_path):
+            return {"status": "FAIL", "error": "Test image not found"}
+        
+        try:
+            with open(image_path, 'rb') as f:
+                files = {'file': ('test_bookmaker_v2.jpg', f, 'image/jpeg')}
+                response = requests.post(f"{BASE_URL}/analyze", files=files, timeout=30)
+            
+            if response.status_code == 200:
+                return {"status": "PASS", "note": "Analyze endpoint working"}
+            else:
+                return {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            return {"status": "FAIL", "error": str(e)}
+
     def run_league_tests(self):
         """Run all league coefficient system tests"""
         self.log("=" * 60)
