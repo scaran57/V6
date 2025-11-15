@@ -1541,6 +1541,64 @@ agent_communication:
       After fix, re-run league_phase2.py to regenerate JSON files with correct structure.
       
       TESTING COMPLETED: All other aspects of Phase 2 integration are working correctly.
+  - agent: "main"
+    message: |
+      ✅ MISE À JOUR MANUELLE DES CLASSEMENTS DE LIGUES COMPLÉTÉE
+      
+      Tâche: Mettre à jour les classements de ligues avec les données correctes fournies par l'utilisateur via screenshots
+      
+      Ce qui a été fait:
+      
+      1. Extraction des données depuis 5 screenshots fournis:
+         - Screenshot 1: Ligue 1 (18 équipes)
+         - Screenshot 2: Bundesliga (18 équipes)
+         - Screenshot 3: Premier League (18 équipes)
+         - Screenshot 4: LaLiga (18 équipes)
+         - Screenshot 5: Primeira Liga (18 équipes)
+      
+      2. Création de nouveaux fichiers JSON avec la structure correcte:
+         - LaLiga.json: 20 équipes (18 du screenshot + Levante + Real Oviedo ajoutés)
+         - PremierLeague.json: 18 équipes
+         - Bundesliga.json: 18 équipes
+         - Ligue1.json: 18 équipes
+         - PrimeiraLiga.json: 18 équipes
+      
+      3. Corrections des noms d'équipes pour correspondre aux noms officiels:
+         - LaLiga: Real Madrid, Barcelona, Villarreal, Atletico Madrid, etc.
+         - Premier League: Arsenal, Manchester City, Chelsea, Liverpool, etc.
+         - Bundesliga: Bayern Munich, RB Leipzig, Borussia Dortmund, etc.
+         - Ligue 1: Paris Saint-Germain, Marseille, Lens, etc.
+         - Primeira Liga: Porto, Sporting CP, Benfica, etc.
+      
+      4. Ajout de Levante (rang 19) et Real Oviedo (rang 20) à LaLiga comme demandé
+      
+      5. Recalcul automatique des coefficients selon la formule:
+         - coefficient = 0.85 + ((N - pos) / (N - 1)) * 0.45
+         - Plage: [0.85, 1.30]
+         - Position 1: 1.30 (coefficient maximum)
+         - Position dernière: 0.85 (coefficient minimum)
+      
+      6. Remplacement des anciens fichiers JSON (backups créés)
+      
+      7. Nettoyage du cache pour forcer le rechargement des nouvelles données
+      
+      Tests réalisés:
+      ✅ Real Madrid (LaLiga, rang 1): coefficient 1.30
+      ✅ Barcelona (LaLiga, rang 2): coefficient 1.276
+      ✅ Levante (LaLiga, rang 19): coefficient 0.874
+      ✅ Real Oviedo (LaLiga, rang 20): coefficient 0.85
+      ✅ Arsenal (Premier League, rang 1): coefficient 1.30
+      ✅ Manchester City (Premier League, rang 2): coefficient 1.273
+      ✅ Bayern Munich (Bundesliga, rang 1): coefficient 1.30
+      ✅ Paris Saint-Germain (Ligue 1, rang 1): coefficient 1.30
+      ✅ Porto (Primeira Liga, rang 1): coefficient 1.30
+      ✅ API endpoint /api/league/team-coeff fonctionne correctement
+      
+      Note: Serie A n'était pas dans les screenshots fournis. L'utilisateur a mentionné qu'il fournirait aussi les données pour Ligue 2, Champions League et Europa League plus tard.
+      
+      Status: PRÊT POUR UTILISATION ✅
+      
+      Les prédictions vont maintenant utiliser les classements corrects et les coefficients recalculés pour tous les matchs de ces 5 ligues.
   - agent: "testing"
     message: |
       🎉 INTELLIGENT OCR FILTERING SYSTEM TESTING COMPLETE - ALL CRITERIA MET
