@@ -1,0 +1,114 @@
+{
+  "league": "Ligue2",
+  "updated": "2025-11-15T00:14:38.216829Z",
+  "teams": [
+    {
+      "rank": 1,
+      "name": "Amiens",
+      "points": 0,
+      "coefficient": 1.3
+    },
+    {
+      "rank": 2,
+      "name": "Annecy",
+      "points": 0,
+      "coefficient": 1.274
+    },
+    {
+      "rank": 3,
+      "name": "Bastia",
+      "points": 0,
+      "coefficient": 1.247
+    },
+    {
+      "rank": 4,
+      "name": "Boulogne-sur-Mer",
+      "points": 0,
+      "coefficient": 1.221
+    },
+    {
+      "rank": 5,
+      "name": "Clermont-Ferrand",
+      "points": 0,
+      "coefficient": 1.194
+    },
+    {
+      "rank": 6,
+      "name": "Dunkirk",
+      "points": 0,
+      "coefficient": 1.168
+    },
+    {
+      "rank": 7,
+      "name": "Grenoble",
+      "points": 0,
+      "coefficient": 1.141
+    },
+    {
+      "rank": 8,
+      "name": "Guingamp",
+      "points": 0,
+      "coefficient": 1.115
+    },
+    {
+      "rank": 9,
+      "name": "Laval, Mayenne",
+      "points": 0,
+      "coefficient": 1.088
+    },
+    {
+      "rank": 10,
+      "name": "Le Mans",
+      "points": 0,
+      "coefficient": 1.062
+    },
+    {
+      "rank": 11,
+      "name": "Montpellier",
+      "points": 0,
+      "coefficient": 1.035
+    },
+    {
+      "rank": 12,
+      "name": "Nancy, France",
+      "points": 0,
+      "coefficient": 1.009
+    },
+    {
+      "rank": 13,
+      "name": "Pau, Pyrenees-Atlantiques",
+      "points": 0,
+      "coefficient": 0.982
+    },
+    {
+      "rank": 14,
+      "name": "Paris",
+      "points": 0,
+      "coefficient": 0.956
+    },
+    {
+      "rank": 15,
+      "name": "Reims",
+      "points": 0,
+      "coefficient": 0.929
+    },
+    {
+      "rank": 16,
+      "name": "Rodez",
+      "points": 0,
+      "coefficient": 0.903
+    },
+    {
+      "rank": 17,
+      "name": "Saint-Etienne",
+      "points": 0,
+      "coefficient": 0.876
+    },
+    {
+      "rank": 18,
+      "name": "Troyes",
+      "points": 0,
+      "coefficient": 0.85
+    }
+  ]
+}
