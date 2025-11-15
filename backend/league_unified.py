@@ -280,53 +280,61 @@ def fetch_standings(league_name, config):
 
 def update_all_leagues():
     """
-    Met à jour TOUTES les ligues (Phase 1 + Phase 2) de manière unifiée
+    Met à jour TOUTES les ligues via le système intelligent
+    
+    Stratégie:
+    - Utilise Football-Data.org API pour les ligues supportées
+    - Conserve les données manuelles si récentes (< 24h)
+    - Limite les appels API à 8 maximum par session
     
     Returns:
         dict: Rapport de mise à jour consolidé
     """
     logger.info("=" * 60)
-    logger.info("🔄 SYSTÈME UNIFIÉ - MISE À JOUR DE TOUTES LES LIGUES")
+    logger.info("🔄 SYSTÈME UNIFIÉ - MISE À JOUR INTELLIGENTE DE TOUTES LES LIGUES")
     logger.info("=" * 60)
     
-    report = {}
+    # Mettre à jour toutes les ligues avec le système intelligent
+    # Limite: 8 appels API max (on garde 2 pour les scores réels)
+    smart_report = update_all_leagues_smart(
+        leagues_list=ALL_LEAGUES,
+        force=False,  # Ne force pas si données récentes
+        max_api_calls=8
+    )
     
-    for league_name, config in LEAGUES.items():
-        try:
-            teams = fetch_standings(league_name, config)
-            
-            if not teams:
-                report[league_name] = {
-                    "status": "❌ Failed",
-                    "teams_count": 0,
-                    "message": "No teams retrieved"
-                }
-                continue
-            
-            # Calculer les coefficients
-            total_teams = len(teams)
-            for team in teams:
-                team["coefficient"] = calculate_coefficient(team["rank"], total_teams)
-            
-            # Sauvegarder
-            out_path = os.path.join(DATA_DIR, f"{league_name}.json")
-            data = {
-                "league": league_name,
-                "updated": datetime.utcnow().isoformat() + "Z",
-                "teams": teams
-            }
-            
-            with open(out_path, "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
-            
-            report[league_name] = {
-                "status": f"✅ Success",
-                "teams_count": len(teams),
-                "message": f"{len(teams)} équipes",
-                "file": out_path
-            }
-            
-            logger.info(f"💾 Saved {league_name} to {out_path}")
+    # Convertir le rapport au format attendu par le scheduler
+    report = {
+        "timestamp": smart_report["timestamp"],
+        "strategy": "smart_update",
+        "leagues_updated": smart_report["summary"]["updated_from_api"],
+        "leagues_skipped_fresh": smart_report["summary"]["skipped_fresh"],
+        "leagues_fallback": smart_report["summary"]["fallback_to_cache"],
+        "leagues_failed": smart_report["summary"]["failed"],
+        "total_leagues": len(smart_report["leagues_processed"]),
+        "api_calls_made": smart_report["api_calls_made"],
+        "api_calls_limit": smart_report["api_calls_limit"],
+        "details": {}
+    }
+    
+    # Détails par ligue
+    for league_result in smart_report["leagues_processed"]:
+        league_name = league_result["league"]
+        if league_result["success"]:
+            status_icon = "✅"
+            if league_result["action"] == "skipped_fresh_data":
+                status_icon = "ℹ️"
+            elif league_result["action"] == "fallback_to_cache":
+                status_icon = "⚠️"
+        else:
+            status_icon = "❌"
+        
+        report["details"][league_name] = {
+            "status": f"{status_icon} {league_result['action']}",
+            "teams_count": league_result["teams_count"],
+            "source": league_result.get("source", "unknown")
+        }
+        
+        logger.info(f"{status_icon} {league_name}: {league_result['action']} ({league_result['teams_count']} équipes)")
             
             # Pause entre requêtes
             time.sleep(2)
