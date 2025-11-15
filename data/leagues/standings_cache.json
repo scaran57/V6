@@ -1,0 +1,132 @@
+{
+  "LaLiga": {
+    "timestamp": 1763235561.456103,
+    "data": {
+      "league": "LaLiga",
+      "updated": "2025-11-15T19:39:21Z",
+      "source": "football-data.org",
+      "teams": [
+        {
+          "rank": 1,
+          "name": "Real Madrid CF",
+          "points": 31,
+          "coefficient": 1.3
+        },
+        {
+          "rank": 2,
+          "name": "FC Barcelona",
+          "points": 28,
+          "coefficient": 1.2763
+        },
+        {
+          "rank": 3,
+          "name": "Villarreal CF",
+          "points": 26,
+          "coefficient": 1.2526
+        },
+        {
+          "rank": 4,
+          "name": "Club Atlético de Madrid",
+          "points": 25,
+          "coefficient": 1.2289
+        },
+        {
+          "rank": 5,
+          "name": "Real Betis Balompié",
+          "points": 20,
+          "coefficient": 1.2053
+        },
+        {
+          "rank": 6,
+          "name": "RCD Espanyol de Barcelona",
+          "points": 18,
+          "coefficient": 1.1816
+        },
+        {
+          "rank": 7,
+          "name": "Athletic Club",
+          "points": 17,
+          "coefficient": 1.1579
+        },
+        {
+          "rank": 8,
+          "name": "Getafe CF",
+          "points": 17,
+          "coefficient": 1.1342
+        },
+        {
+          "rank": 9,
+          "name": "Sevilla FC",
+          "points": 16,
+          "coefficient": 1.1105
+        },
+        {
+          "rank": 10,
+          "name": "Deportivo Alavés",
+          "points": 15,
+          "coefficient": 1.0868
+        },
+        {
+          "rank": 11,
+          "name": "Elche CF",
+          "points": 15,
+          "coefficient": 1.0632
+        },
+        {
+          "rank": 12,
+          "name": "Rayo Vallecano de Madrid",
+          "points": 15,
+          "coefficient": 1.0395
+        },
+        {
+          "rank": 13,
+          "name": "RC Celta de Vigo",
+          "points": 13,
+          "coefficient": 1.0158
+        },
+        {
+          "rank": 14,
+          "name": "Real Sociedad de Fútbol",
+          "points": 13,
+          "coefficient": 0.9921
+        },
+        {
+          "rank": 15,
+          "name": "RCD Mallorca",
+          "points": 12,
+          "coefficient": 0.9684
+        },
+        {
+          "rank": 16,
+          "name": "CA Osasuna",
+          "points": 11,
+          "coefficient": 0.9447
+        },
+        {
+          "rank": 17,
+          "name": "Valencia CF",
+          "points": 10,
+          "coefficient": 0.9211
+        },
+        {
+          "rank": 18,
+          "name": "Girona FC",
+          "points": 10,
+          "coefficient": 0.8974
+        },
+        {
+          "rank": 19,
+          "name": "Levante UD",
+          "points": 9,
+          "coefficient": 0.8737
+        },
+        {
+          "rank": 20,
+          "name": "Real Oviedo",
+          "points": 8,
+          "coefficient": 0.85
+        }
+      ]
+    }
+  }
+}
