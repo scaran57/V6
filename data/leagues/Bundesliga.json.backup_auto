@@ -1,11 +1,10 @@
 {
   "league": "Bundesliga",
-  "updated": "2025-11-15T23:51:37.109282Z",
-  "source": "multi-source-updater",
+  "updated": "2025-11-15T01:28:00Z",
   "teams": [
     {
       "rank": 1,
-      "name": "FC Bayern München",
+      "name": "Bayern Munich",
       "points": 28,
       "coefficient": 1.3
     },
@@ -13,103 +12,103 @@
       "rank": 2,
       "name": "RB Leipzig",
       "points": 22,
-      "coefficient": 1.2735
+      "coefficient": 1.276
     },
     {
       "rank": 3,
       "name": "Borussia Dortmund",
       "points": 21,
-      "coefficient": 1.2471
+      "coefficient": 1.253
     },
     {
       "rank": 4,
       "name": "VfB Stuttgart",
       "points": 21,
-      "coefficient": 1.2206
+      "coefficient": 1.229
     },
     {
       "rank": 5,
-      "name": "Bayer 04 Leverkusen",
+      "name": "Bayer Leverkusen",
       "points": 20,
-      "coefficient": 1.1941
+      "coefficient": 1.206
     },
     {
       "rank": 6,
-      "name": "TSG 1899 Hoffenheim",
+      "name": "Hoffenheim",
       "points": 19,
-      "coefficient": 1.1676
+      "coefficient": 1.182
     },
     {
       "rank": 7,
       "name": "Eintracht Frankfurt",
       "points": 17,
-      "coefficient": 1.1412
+      "coefficient": 1.159
     },
     {
       "rank": 8,
-      "name": "SV Werder Bremen",
+      "name": "Werder Bremen",
       "points": 15,
-      "coefficient": 1.1147
+      "coefficient": 1.135
     },
     {
       "rank": 9,
-      "name": "1. FC Köln",
+      "name": "FC Koln",
       "points": 14,
-      "coefficient": 1.0882
+      "coefficient": 1.112
     },
     {
       "rank": 10,
       "name": "SC Freiburg",
       "points": 13,
-      "coefficient": 1.0618
+      "coefficient": 1.088
     },
     {
       "rank": 11,
-      "name": "1. FC Union Berlin",
+      "name": "Union Berlin",
       "points": 12,
-      "coefficient": 1.0353
+      "coefficient": 1.065
     },
     {
       "rank": 12,
-      "name": "Borussia Mönchengladbach",
+      "name": "Borussia Monchengladbach",
       "points": 9,
-      "coefficient": 1.0088
+      "coefficient": 1.041
     },
     {
       "rank": 13,
       "name": "Hamburger SV",
       "points": 9,
-      "coefficient": 0.9824
+      "coefficient": 1.018
     },
     {
       "rank": 14,
-      "name": "VfL Wolfsburg",
+      "name": "Wolfsburg",
       "points": 8,
-      "coefficient": 0.9559
+      "coefficient": 0.994
     },
     {
       "rank": 15,
       "name": "FC Augsburg",
       "points": 7,
-      "coefficient": 0.9294
+      "coefficient": 0.971
     },
     {
       "rank": 16,
-      "name": "FC St. Pauli 1910",
+      "name": "FC St Pauli",
       "points": 7,
-      "coefficient": 0.9029
+      "coefficient": 0.947
     },
     {
       "rank": 17,
-      "name": "1. FSV Mainz 05",
+      "name": "Mainz 05",
       "points": 5,
-      "coefficient": 0.8765
+      "coefficient": 0.924
     },
     {
       "rank": 18,
-      "name": "1. FC Heidenheim 1846",
+      "name": "Heidenheim",
       "points": 5,
-      "coefficient": 0.85
+      "coefficient": 0.9
     }
   ]
 }

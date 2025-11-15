@@ -1,220 +1,221 @@
 {
   "league": "ChampionsLeague",
-  "updated": "2025-11-15T02:09:00Z",
+  "updated": "2025-11-15T23:51:37.111547Z",
+  "source": "multi-source-updater",
   "teams": [
     {
       "rank": 1,
-      "name": "Bayern Munich",
+      "name": "FC Bayern München",
       "points": 12,
       "coefficient": 1.3
     },
     {
       "rank": 2,
-      "name": "Arsenal",
+      "name": "Arsenal FC",
       "points": 12,
-      "coefficient": 1.287
+      "coefficient": 1.2871
     },
     {
       "rank": 3,
-      "name": "Inter Milan",
+      "name": "FC Internazionale Milano",
       "points": 12,
-      "coefficient": 1.274
+      "coefficient": 1.2743
     },
     {
       "rank": 4,
-      "name": "Manchester City",
+      "name": "Manchester City FC",
       "points": 10,
-      "coefficient": 1.261
+      "coefficient": 1.2614
     },
     {
       "rank": 5,
-      "name": "Paris Saint-Germain",
+      "name": "Paris Saint-Germain FC",
       "points": 9,
-      "coefficient": 1.248
+      "coefficient": 1.2486
     },
     {
       "rank": 6,
-      "name": "Newcastle",
+      "name": "Newcastle United FC",
       "points": 9,
-      "coefficient": 1.235
+      "coefficient": 1.2357
     },
     {
       "rank": 7,
-      "name": "Real Madrid",
+      "name": "Real Madrid CF",
       "points": 9,
-      "coefficient": 1.222
+      "coefficient": 1.2229
     },
     {
       "rank": 8,
-      "name": "Liverpool",
+      "name": "Liverpool FC",
       "points": 9,
-      "coefficient": 1.209
+      "coefficient": 1.21
     },
     {
       "rank": 9,
-      "name": "Galatasaray",
+      "name": "Galatasaray SK",
       "points": 9,
-      "coefficient": 1.196
+      "coefficient": 1.1971
     },
     {
       "rank": 10,
-      "name": "Tottenham",
+      "name": "Tottenham Hotspur FC",
       "points": 8,
-      "coefficient": 1.183
+      "coefficient": 1.1843
     },
     {
       "rank": 11,
-      "name": "Barcelona",
+      "name": "FC Barcelona",
       "points": 7,
-      "coefficient": 1.170
+      "coefficient": 1.1714
     },
     {
       "rank": 12,
-      "name": "Chelsea",
+      "name": "Chelsea FC",
       "points": 7,
-      "coefficient": 1.157
+      "coefficient": 1.1586
     },
     {
       "rank": 13,
-      "name": "Sporting CP",
+      "name": "Sporting Clube de Portugal",
       "points": 7,
-      "coefficient": 1.144
+      "coefficient": 1.1457
     },
     {
       "rank": 14,
       "name": "Borussia Dortmund",
       "points": 7,
-      "coefficient": 1.131
+      "coefficient": 1.1329
     },
     {
       "rank": 15,
-      "name": "Qarabag FK",
+      "name": "Atalanta BC",
       "points": 7,
-      "coefficient": 1.118
+      "coefficient": 1.12
     },
     {
       "rank": 16,
-      "name": "Atalanta",
+      "name": "Qarabağ Ağdam FK",
       "points": 7,
-      "coefficient": 1.105
+      "coefficient": 1.1071
     },
     {
       "rank": 17,
-      "name": "Atletico Madrid",
+      "name": "Club Atlético de Madrid",
       "points": 6,
-      "coefficient": 1.092
+      "coefficient": 1.0943
     },
     {
       "rank": 18,
-      "name": "PSV Eindhoven",
+      "name": "PSV",
       "points": 5,
-      "coefficient": 1.079
+      "coefficient": 1.0814
     },
     {
       "rank": 19,
-      "name": "Monaco",
+      "name": "AS Monaco FC",
       "points": 5,
-      "coefficient": 1.066
+      "coefficient": 1.0686
     },
     {
       "rank": 20,
-      "name": "Pafos FC",
+      "name": "Paphos FC",
       "points": 5,
-      "coefficient": 1.053
+      "coefficient": 1.0557
     },
     {
       "rank": 21,
-      "name": "Bayer Leverkusen",
+      "name": "Bayer 04 Leverkusen",
       "points": 5,
-      "coefficient": 1.040
+      "coefficient": 1.0429
     },
     {
       "rank": 22,
-      "name": "Club Brugge",
+      "name": "Club Brugge KV",
       "points": 4,
-      "coefficient": 1.027
+      "coefficient": 1.03
     },
     {
       "rank": 23,
       "name": "Eintracht Frankfurt",
       "points": 4,
-      "coefficient": 1.014
+      "coefficient": 1.0171
     },
     {
       "rank": 24,
-      "name": "Napoli",
+      "name": "SSC Napoli",
       "points": 4,
-      "coefficient": 1.001
+      "coefficient": 1.0043
     },
     {
       "rank": 25,
-      "name": "Marseille",
+      "name": "Olympique de Marseille",
       "points": 3,
-      "coefficient": 0.988
+      "coefficient": 0.9914
     },
     {
       "rank": 26,
-      "name": "Juventus",
+      "name": "Juventus FC",
       "points": 3,
-      "coefficient": 0.975
+      "coefficient": 0.9786
     },
     {
       "rank": 27,
-      "name": "Athletic Bilbao",
+      "name": "Athletic Club",
       "points": 3,
-      "coefficient": 0.962
+      "coefficient": 0.9657
     },
     {
       "rank": 28,
-      "name": "Union Saint-Gilloise",
+      "name": "Royale Union Saint-Gilloise",
       "points": 3,
-      "coefficient": 0.949
+      "coefficient": 0.9529
     },
     {
       "rank": 29,
-      "name": "Bodo Glimt",
+      "name": "FK Bodø/Glimt",
       "points": 2,
-      "coefficient": 0.936
+      "coefficient": 0.94
     },
     {
       "rank": 30,
-      "name": "Slavia Prague",
+      "name": "SK Slavia Praha",
       "points": 2,
-      "coefficient": 0.923
+      "coefficient": 0.9271
     },
     {
       "rank": 31,
-      "name": "Olympiakos",
+      "name": "PAE Olympiakos SFP",
       "points": 2,
-      "coefficient": 0.910
+      "coefficient": 0.9143
     },
     {
       "rank": 32,
-      "name": "Villarreal",
+      "name": "Villarreal CF",
       "points": 1,
-      "coefficient": 0.897
+      "coefficient": 0.9014
     },
     {
       "rank": 33,
-      "name": "FC Copenhagen",
+      "name": "FC København",
       "points": 1,
-      "coefficient": 0.884
+      "coefficient": 0.8886
     },
     {
       "rank": 34,
-      "name": "Shakhtar Donetsk",
+      "name": "FK Kairat",
       "points": 1,
-      "coefficient": 0.871
+      "coefficient": 0.8757
     },
     {
       "rank": 35,
-      "name": "Benfica",
+      "name": "Sport Lisboa e Benfica",
       "points": 0,
-      "coefficient": 0.858
+      "coefficient": 0.8629
     },
     {
       "rank": 36,
-      "name": "Ajax",
+      "name": "AFC Ajax",
       "points": 0,
       "coefficient": 0.85
     }
