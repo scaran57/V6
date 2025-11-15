@@ -698,6 +698,14 @@ agent_communication:
     stuck_count: 0
     priority: "high"
     needs_retesting: false
+
+  - task: "Champions League Update avec Système de Fallback Intelligent"
+    implemented: true
+    working: true
+    file: "/app/data/leagues/ChampionsLeague.json, /app/backend/league_coeff.py, /app/backend/league_fetcher.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
