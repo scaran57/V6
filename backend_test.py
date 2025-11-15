@@ -3208,36 +3208,34 @@ class ScorePredictorTester:
 if __name__ == "__main__":
     tester = ScorePredictorTester()
     
-    # Run Phase 2 integration tests
-    print("\n🌍 TESTING PHASE 2 - 5 NEW EUROPEAN LEAGUES INTEGRATION")
-    print("=" * 60)
-    phase2_results = tester.test_phase2_integration()
-    
-    # Print final summary
-    print("\n" + "=" * 60)
-    print("🎯 PHASE 2 INTEGRATION TEST COMPLETE")
-    print("=" * 60)
-    
-    passed = sum(1 for r in phase2_results.values() if r.get("status") == "PASS")
-    partial = sum(1 for r in phase2_results.values() if r.get("status") == "PARTIAL")
-    failed = sum(1 for r in phase2_results.values() if r.get("status") == "FAIL")
-    total = len(phase2_results)
-    
-    print(f"\n✅ Passed: {passed}/{total}")
-    print(f"⚠️ Partial: {partial}/{total}")
-    print(f"❌ Failed: {failed}/{total}")
-    
-    success_rate = (passed / total * 100) if total > 0 else 0
-    print(f"\n📊 Success Rate: {success_rate:.1f}%")
-    
-    if passed == total:
-        print("\n🎉 ALL TESTS PASSED! Phase 2 integration is working perfectly.")
-        print("✅ 5 new leagues integrated (Serie A, Bundesliga, Ligue 1, Primeira Liga, Ligue 2)")
-        print("✅ All JSON files created successfully")
-        print("✅ Team coefficients calculated correctly (0.85-1.30 range)")
-        print("✅ Scheduler integration working")
-        print("✅ No regression in existing functionality")
-    elif success_rate >= 70:
-        print("\n⚠️ MOST TESTS PASSED WITH SOME WARNINGS. System is functional but check details above.")
+    # Run specific test based on command line argument
+    import sys
+    if len(sys.argv) > 1:
+        test_name = sys.argv[1]
+        
+        if test_name == "ocr_parser":
+            tester.test_advanced_ocr_parser_integration()
+        elif test_name == "ocr_filtering":
+            tester.test_intelligent_ocr_filtering()
+        elif test_name == "match_extraction":
+            tester.test_match_name_extraction_specific()
+        elif test_name == "league":
+            tester.run_league_tests()
+        elif test_name == "ocr_correction":
+            tester.test_ocr_correction_system()
+        elif test_name == "manual_league_update":
+            # NEW: Test the manual league standings update
+            tester.test_manual_league_standings_update()
+        elif test_name == "phase2":
+            tester.test_phase2_integration()
+        elif test_name == "european":
+            tester.test_european_competitions_integration()
+        elif test_name == "ufa_v3":
+            tester.test_ufa_v3_system()
+        else:
+            print(f"Unknown test: {test_name}")
+            print("Available tests: ocr_parser, ocr_filtering, match_extraction, league, ocr_correction, manual_league_update, phase2, european, ufa_v3")
     else:
-        print("\n❌ CRITICAL ISSUES FOUND. Backend needs attention.")
+        # Run the manual league standings update test as requested in review
+        print("🎯 Running Manual League Standings Update Tests...")
+        tester.test_manual_league_standings_update()
