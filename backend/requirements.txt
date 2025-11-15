@@ -150,3 +150,8 @@ beautifulsoup4==4.14.2
 lxml==6.0.2
 requests==2.32.5
 requests-oauthlib==2.0.0
+pandas==2.3.3
+requests==2.32.5
+requests-oauthlib==2.0.0
+requests-toolbelt==1.0.0
+soccerdata==1.8.7
