@@ -1,0 +1,222 @@
+{
+  "league": "ChampionsLeague",
+  "updated": "2025-11-15T00:14:24.654743Z",
+  "teams": [
+    {
+      "rank": 1,
+      "name": "The Football Association",
+      "points": 0,
+      "coefficient": 1.3
+    },
+    {
+      "rank": 2,
+      "name": "Royal Spanish Football Federation",
+      "points": 0,
+      "coefficient": 1.287
+    },
+    {
+      "rank": 3,
+      "name": "The Football Association",
+      "points": 0,
+      "coefficient": 1.274
+    },
+    {
+      "rank": 4,
+      "name": "Italian Football Federation",
+      "points": 0,
+      "coefficient": 1.261
+    },
+    {
+      "rank": 5,
+      "name": "Royal Spanish Football Federation",
+      "points": 0,
+      "coefficient": 1.249
+    },
+    {
+      "rank": 6,
+      "name": "German Football Association",
+      "points": 0,
+      "coefficient": 1.236
+    },
+    {
+      "rank": 7,
+      "name": "French Football Federation",
+      "points": 0,
+      "coefficient": 1.223
+    },
+    {
+      "rank": 8,
+      "name": "The Football Association",
+      "points": 0,
+      "coefficient": 1.21
+    },
+    {
+      "rank": 9,
+      "name": "Italian Football Federation",
+      "points": 0,
+      "coefficient": 1.197
+    },
+    {
+      "rank": 10,
+      "name": "German Football Association",
+      "points": 0,
+      "coefficient": 1.184
+    },
+    {
+      "rank": 11,
+      "name": "Royal Spanish Football Federation",
+      "points": 0,
+      "coefficient": 1.171
+    },
+    {
+      "rank": 12,
+      "name": "German Football Association",
+      "points": 0,
+      "coefficient": 1.159
+    },
+    {
+      "rank": 13,
+      "name": "Italian Football Federation",
+      "points": 0,
+      "coefficient": 1.146
+    },
+    {
+      "rank": 14,
+      "name": "Royal Dutch Football Association",
+      "points": 0,
+      "coefficient": 1.133
+    },
+    {
+      "rank": 15,
+      "name": "French Football Federation",
+      "points": 0,
+      "coefficient": 1.12
+    },
+    {
+      "rank": 16,
+      "name": "Portuguese Football Federation",
+      "points": 0,
+      "coefficient": 1.107
+    },
+    {
+      "rank": 17,
+      "name": "French Football Federation",
+      "points": 0,
+      "coefficient": 1.094
+    },
+    {
+      "rank": 18,
+      "name": "French Football Federation",
+      "points": 0,
+      "coefficient": 1.081
+    },
+    {
+      "rank": 19,
+      "name": "Royal Dutch Football Association",
+      "points": 0,
+      "coefficient": 1.069
+    },
+    {
+      "rank": 20,
+      "name": "Italian Football Federation",
+      "points": 0,
+      "coefficient": 1.056
+    },
+    {
+      "rank": 21,
+      "name": "Scottish Football Association",
+      "points": 0,
+      "coefficient": 1.043
+    },
+    {
+      "rank": 22,
+      "name": "The Football Association",
+      "points": 0,
+      "coefficient": 1.03
+    },
+    {
+      "rank": 23,
+      "name": "Portuguese Football Federation",
+      "points": 0,
+      "coefficient": 1.017
+    },
+    {
+      "rank": 24,
+      "name": "Royal Belgian Football Association",
+      "points": 0,
+      "coefficient": 1.004
+    },
+    {
+      "rank": 25,
+      "name": "Croatian Football Federation",
+      "points": 0,
+      "coefficient": 0.991
+    },
+    {
+      "rank": 26,
+      "name": "German Football Association",
+      "points": 0,
+      "coefficient": 0.979
+    },
+    {
+      "rank": 27,
+      "name": "Ukrainian Association of Football",
+      "points": 0,
+      "coefficient": 0.966
+    },
+    {
+      "rank": 28,
+      "name": "Italian Football Federation",
+      "points": 0,
+      "coefficient": 0.953
+    },
+    {
+      "rank": 29,
+      "name": "Football Association of Serbia",
+      "points": 0,
+      "coefficient": 0.94
+    },
+    {
+      "rank": 30,
+      "name": "Austrian Football Association",
+      "points": 0,
+      "coefficient": 0.927
+    },
+    {
+      "rank": 31,
+      "name": "Football Association of the Czech Republic",
+      "points": 0,
+      "coefficient": 0.914
+    },
+    {
+      "rank": 32,
+      "name": "German Football Association",
+      "points": 0,
+      "coefficient": 0.901
+    },
+    {
+      "rank": 33,
+      "name": "Royal Spanish Football Federation",
+      "points": 0,
+      "coefficient": 0.889
+    },
+    {
+      "rank": 34,
+      "name": "Austrian Football Association",
+      "points": 0,
+      "coefficient": 0.876
+    },
+    {
+      "rank": 35,
+      "name": "Slovak Football Association",
+      "points": 0,
+      "coefficient": 0.863
+    },
+    {
+      "rank": 36,
+      "name": "Swiss Football Association",
+      "points": 0,
+      "coefficient": 0.85
+    }
+  ]
+}
