@@ -1,0 +1,114 @@
+{
+  "league": "Bundesliga",
+  "updated": "2025-11-15T00:14:31.484461Z",
+  "teams": [
+    {
+      "rank": 1,
+      "name": "Augsburg",
+      "points": 0,
+      "coefficient": 1.3
+    },
+    {
+      "rank": 2,
+      "name": "Berlin",
+      "points": 0,
+      "coefficient": 1.274
+    },
+    {
+      "rank": 3,
+      "name": "Bremen",
+      "points": 0,
+      "coefficient": 1.247
+    },
+    {
+      "rank": 4,
+      "name": "Dortmund",
+      "points": 0,
+      "coefficient": 1.221
+    },
+    {
+      "rank": 5,
+      "name": "Frankfurt",
+      "points": 0,
+      "coefficient": 1.194
+    },
+    {
+      "rank": 6,
+      "name": "Freiburg im Breisgau",
+      "points": 0,
+      "coefficient": 1.168
+    },
+    {
+      "rank": 7,
+      "name": "Hamburg",
+      "points": 0,
+      "coefficient": 1.141
+    },
+    {
+      "rank": 8,
+      "name": "Heidenheim an der Brenz",
+      "points": 0,
+      "coefficient": 1.115
+    },
+    {
+      "rank": 9,
+      "name": "Sinsheim",
+      "points": 0,
+      "coefficient": 1.088
+    },
+    {
+      "rank": 10,
+      "name": "Cologne",
+      "points": 0,
+      "coefficient": 1.062
+    },
+    {
+      "rank": 11,
+      "name": "Leipzig",
+      "points": 0,
+      "coefficient": 1.035
+    },
+    {
+      "rank": 12,
+      "name": "Leverkusen",
+      "points": 0,
+      "coefficient": 1.009
+    },
+    {
+      "rank": 13,
+      "name": "Mainz",
+      "points": 0,
+      "coefficient": 0.982
+    },
+    {
+      "rank": 14,
+      "name": "Monchengladbach",
+      "points": 0,
+      "coefficient": 0.956
+    },
+    {
+      "rank": 15,
+      "name": "Munich",
+      "points": 0,
+      "coefficient": 0.929
+    },
+    {
+      "rank": 16,
+      "name": "Hamburg",
+      "points": 0,
+      "coefficient": 0.903
+    },
+    {
+      "rank": 17,
+      "name": "Stuttgart",
+      "points": 0,
+      "coefficient": 0.876
+    },
+    {
+      "rank": 18,
+      "name": "Wolfsburg",
+      "points": 0,
+      "coefficient": 0.85
+    }
+  ]
+}
