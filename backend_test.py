@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 
 # Configuration
-BASE_URL = "https://matchpredict-37.preview.emergentagent.com/api"
+BASE_URL = "https://match-forecast-77.preview.emergentagent.com/api"
 BACKEND_DIR = "/app/backend"
 
 # Test images available in backend directory
