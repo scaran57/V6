@@ -481,6 +481,32 @@ agent_communication:
       RECOMMANDATION: L'algorithme fonctionne mais nécessite des ajustements pour mieux extraire les noms de matchs des vraies images de bookmakers. Les éléments d'interface sont parfois inclus dans l'extraction.
   - agent: "testing"
     message: |
+      🏆 CHAMPIONS LEAGUE UPDATE TESTING COMPLETED - EXCELLENT RESULTS
+      
+      COMPREHENSIVE TESTING RESULTS:
+      ✅ Champions League Team Coefficient Tests: Intelligent fallback system working perfectly
+      ✅ Champions League Standings Endpoint: 36 teams with correct names (Bayern Munich, Real Madrid, etc.)
+      ✅ Intelligent Fallback System: Teams get coefficients from national leagues when available
+      ✅ European Fallback: Teams not in national leagues get 1.05 coefficient (Galatasaray tested)
+      ✅ Regression Tests: All 8 existing leagues still working correctly
+      ✅ Core API Tests: /api/health and /api/analyze working with no regression
+      
+      KEY VALIDATIONS FROM REVIEW REQUEST:
+      - Champions League accessible via API with 36 teams ✅
+      - Correct team names (Bayern Munich not "Bayern", Real Madrid not "Madrid") ✅
+      - Intelligent fallback: national league coefficients > european_fallback (1.05) ✅
+      - No regression in existing functionality ✅
+      - Total leagues: 9 (added ChampionsLeague to existing 8) ✅
+      
+      TECHNICAL DETAILS:
+      - Bayern Munich, Arsenal, Real Madrid, Barcelona: Get coefficients from national leagues
+      - Galatasaray, Ajax: Get european_fallback coefficient (1.05)
+      - All coefficients in valid ranges (0.85-1.30 or 1.05 for fallback)
+      - API endpoints responding correctly with proper data structure
+      
+      RECOMMENDATION: Champions League update is FULLY FUNCTIONAL and ready for production use. All requirements from the review request have been successfully met.
+  - agent: "testing"
+    message: |
       🎯 MANUAL LEAGUE STANDINGS UPDATE TESTING COMPLETED - EXCELLENT RESULTS
       
       COMPREHENSIVE TESTING RESULTS:
