@@ -1078,28 +1078,62 @@ class ScorePredictorTester:
                 if data.get("success") and "coefficient" in data:
                     coef = data["coefficient"]
                     position = data.get("position", "N/A")
+                    source = data.get("source", "unknown")
                     
                     # Check if coefficient is in valid range (0.85 - 1.30)
                     if 0.85 <= coef <= 1.30:
-                        self.log(f"✅ {team}: Position {position}, Coefficient {coef:.4f}")
+                        self.log(f"✅ {team}: Position {position}, Coefficient {coef:.4f}, Source: {source}")
                         
                         # Check expected range if provided
                         if expected_range:
                             min_exp, max_exp = expected_range
                             if min_exp <= coef <= max_exp:
                                 self.log(f"   ✓ Coefficient in expected range [{min_exp}, {max_exp}]")
-                                return {"status": "PASS", "coefficient": coef, "position": position}
+                                return {"status": "PASS", "coefficient": coef, "position": position, "source": source}
                             else:
                                 self.log(f"   ⚠️ Coefficient outside expected range [{min_exp}, {max_exp}]")
-                                return {"status": "PARTIAL", "coefficient": coef, "position": position, "note": "Outside expected range"}
+                                return {"status": "PARTIAL", "coefficient": coef, "position": position, "source": source, "note": "Outside expected range"}
                         
-                        return {"status": "PASS", "coefficient": coef, "position": position}
+                        return {"status": "PASS", "coefficient": coef, "position": position, "source": source}
                     else:
                         self.log(f"❌ Coefficient {coef} outside valid range [0.85, 1.30]")
                         return {"status": "FAIL", "error": f"Invalid coefficient: {coef}"}
                 else:
                     self.log("❌ Invalid response format")
                     return {"status": "FAIL", "error": "Invalid response format"}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                return {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            return {"status": "FAIL", "error": str(e)}
+
+    def test_league_standings_detailed(self, league, expected_teams):
+        """Test GET /api/admin/league/standings with detailed validation"""
+        self.log(f"Testing /api/admin/league/standings for {league} (expecting {expected_teams} teams)...")
+        
+        try:
+            response = requests.get(f"{BASE_URL}/admin/league/standings?league={league}", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("success") and "standings" in data:
+                    standings = data["standings"]
+                    teams_count = data.get("teams_count", 0)
+                    
+                    if teams_count == expected_teams:
+                        self.log(f"✅ {league} standings: {teams_count} teams (exact match)")
+                        return {"status": "PASS", "teams_count": teams_count, "standings": standings}
+                    elif teams_count >= expected_teams * 0.9:  # Allow 10% tolerance
+                        self.log(f"⚠️ {league} standings: {teams_count} teams (expected {expected_teams}, within tolerance)")
+                        return {"status": "PARTIAL", "teams_count": teams_count, "standings": standings}
+                    else:
+                        self.log(f"❌ {league} has only {teams_count} teams (expected {expected_teams})")
+                        return {"status": "FAIL", "error": f"Only {teams_count} teams, expected {expected_teams}"}
+                else:
+                    self.log(f"❌ No standings data for {league}")
+                    return {"status": "FAIL", "error": "No standings data"}
             else:
                 self.log(f"❌ HTTP {response.status_code}")
                 return {"status": "FAIL", "error": f"HTTP {response.status_code}"}
