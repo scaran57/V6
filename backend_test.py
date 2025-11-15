@@ -1422,6 +1422,143 @@ class ScorePredictorTester:
         
         return results
     
+    def test_europa_league_intelligent_fallback(self):
+        """Test Europa League intelligent fallback system as requested in review"""
+        self.log("=" * 80)
+        self.log("🔍 TESTING EUROPA LEAGUE INTELLIGENT FALLBACK SYSTEM")
+        self.log("=" * 80)
+        
+        results = {}
+        
+        # Test teams that should use fallback from national leagues
+        fallback_tests = [
+            {
+                "team": "SC Freiburg",
+                "league": "EuropaLeague", 
+                "expected_source": "Bundesliga",
+                "description": "Should get coefficient from Bundesliga"
+            },
+            {
+                "team": "Lille",
+                "league": "EuropaLeague",
+                "expected_source": "Ligue1", 
+                "description": "Should get coefficient from Ligue 1"
+            },
+            {
+                "team": "Real Madrid",  # Test a team that should be in Champions League but we test in Europa
+                "league": "EuropaLeague",
+                "expected_source": "LaLiga",
+                "description": "Should get coefficient from LaLiga"
+            },
+            {
+                "team": "Galatasaray",  # Team not in national leagues
+                "league": "EuropaLeague",
+                "expected_source": "european_fallback",
+                "description": "Should get european_fallback coefficient (1.05)"
+            }
+        ]
+        
+        self.log("\n🎯 Testing intelligent fallback for Europa League teams...")
+        
+        for test_case in fallback_tests:
+            team = test_case["team"]
+            league = test_case["league"]
+            expected_source = test_case["expected_source"]
+            description = test_case["description"]
+            
+            self.log(f"\n--- Testing {team} ---")
+            self.log(f"Description: {description}")
+            
+            try:
+                response = requests.get(
+                    f"{BASE_URL}/league/team-coeff?team={team}&league={league}",
+                    timeout=10
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    
+                    if data.get("success"):
+                        coefficient = data.get("coefficient", 0)
+                        source = data.get("source", "unknown")
+                        
+                        # Validate coefficient range
+                        if expected_source == "european_fallback":
+                            # Should be around 1.05 for european fallback
+                            expected_coeff = 1.05
+                            coeff_valid = abs(coefficient - expected_coeff) < 0.1
+                        else:
+                            # Should be in normal range 0.85-1.30 for national league coefficients
+                            coeff_valid = 0.85 <= coefficient <= 1.30
+                        
+                        # Check if source matches expected
+                        source_correct = (
+                            source == expected_source or 
+                            (expected_source != "european_fallback" and source in ["LaLiga", "Ligue1", "Bundesliga", "PremierLeague", "SerieA", "PrimeiraLiga"])
+                        )
+                        
+                        if coeff_valid and source_correct:
+                            results[team] = {
+                                "status": "PASS",
+                                "coefficient": coefficient,
+                                "source": source,
+                                "expected_source": expected_source
+                            }
+                            self.log(f"✅ {team}: Coefficient {coefficient:.4f} from {source}")
+                            if expected_source == "european_fallback" and abs(coefficient - 1.05) < 0.1:
+                                self.log(f"   🎯 European fallback working correctly (≈1.05)")
+                            elif expected_source != "european_fallback":
+                                self.log(f"   🎯 National league fallback working correctly")
+                        else:
+                            results[team] = {
+                                "status": "FAIL",
+                                "coefficient": coefficient,
+                                "source": source,
+                                "expected_source": expected_source,
+                                "error": f"Invalid coefficient ({coefficient}) or source ({source})"
+                            }
+                            self.log(f"❌ {team}: Invalid coefficient ({coefficient}) or source ({source})")
+                    else:
+                        results[team] = {
+                            "status": "FAIL",
+                            "error": "API returned success=false"
+                        }
+                        self.log(f"❌ {team}: API returned success=false")
+                else:
+                    results[team] = {
+                        "status": "FAIL",
+                        "error": f"HTTP {response.status_code}"
+                    }
+                    self.log(f"❌ {team}: HTTP {response.status_code}")
+                    
+            except Exception as e:
+                results[team] = {
+                    "status": "FAIL",
+                    "error": str(e)
+                }
+                self.log(f"❌ {team}: Exception - {str(e)}")
+        
+        # Summary
+        self.log("\n" + "=" * 80)
+        self.log("EUROPA LEAGUE INTELLIGENT FALLBACK TEST SUMMARY")
+        self.log("=" * 80)
+        
+        passed_tests = sum(1 for r in results.values() if r.get("status") == "PASS")
+        total_tests = len(results)
+        
+        self.log(f"\n📊 FALLBACK SYSTEM RESULTS:")
+        self.log(f"   Tests passed: {passed_tests}/{total_tests}")
+        
+        if passed_tests == total_tests:
+            self.log(f"\n🎉 SUCCESS: Europa League intelligent fallback system is working correctly!")
+            self.log(f"   ✅ Teams correctly use coefficients from their national leagues")
+            self.log(f"   ✅ Teams not in national leagues get european_fallback (1.05)")
+        elif passed_tests > 0:
+            self.log(f"\n⚠️ PARTIAL: Some fallback tests passed, but issues found")
+        else:
+            self.log(f"\n❌ FAILURE: Europa League intelligent fallback system not working")
+        
+        return results
     def test_league_standings_detailed(self, league, expected_teams):
         """Enhanced league standings test with detailed validation"""
         try:
