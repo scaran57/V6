@@ -1,30 +1,30 @@
 #!/usr/bin/env python3
 """
-Système unifié de gestion des ligues - Toutes les ligues (Phase 1 + Phase 2)
-Scraping et calcul des coefficients pour TOUTES les ligues:
+Système unifié de gestion des ligues - Toutes les ligues
+---------------------------------------------------------
+Utilise le système intelligent avec Football-Data.org API comme source principale.
 
-Phase 1 (Principales):
-- LaLiga (Espagne, 20 équipes)
-- PremierLeague (Angleterre, 20 équipes)
-- ChampionsLeague (Europe, 36 équipes)
-- EuropaLeague (Europe, 36 équipes)
+Stratégie:
+1. Football-Data.org API (priorité 1 - données officielles)
+2. Cache local (priorité 2 - données manuelles récentes)
+3. Fallback intelligent si échec
 
-Phase 2 (Européennes):
-- Serie A (Italie, 20 équipes)
-- Bundesliga (Allemagne, 18 équipes)
-- Ligue 1 (France, 18 équipes)
-- Primeira Liga (Portugal, 18 équipes)
-- Ligue 2 (France, 18 équipes)
+Ligues supportées:
+- LaLiga, PremierLeague, SerieA, Bundesliga, Ligue1
+- PrimeiraLiga, Ligue2
+- ChampionsLeague, EuropaLeague
 """
 import os
-import json
-import time
-import requests
-import re
-import unicodedata
-from bs4 import BeautifulSoup
-from datetime import datetime
+import sys
 import logging
+
+# Import du nouveau système intelligent
+sys.path.insert(0, '/app/backend')
+from tools.league_updater_unified import (
+    update_all_leagues_smart,
+    PRIORITY_LEAGUES,
+    ALL_LEAGUES
+)
 
 logger = logging.getLogger(__name__)
 
