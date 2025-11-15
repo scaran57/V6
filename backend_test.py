@@ -1191,13 +1191,13 @@ class ScorePredictorTester:
             self.log(f"❌ Exception: {str(e)}")
             return {"status": "FAIL", "error": str(e)}
     
-    def test_manual_league_standings_update(self):
+    def test_phase2_manual_league_standings_update(self):
         """
-        Test the manual league standings update as requested in review.
-        Tests all 5 leagues with correct data from user-provided screenshots.
+        Test Phase 2 manual league standings update as requested in review.
+        Tests 3 additional leagues: Ligue 2, Serie A, Europa League with intelligent fallback.
         """
         self.log("=" * 80)
-        self.log("🎯 TESTING MANUAL LEAGUE STANDINGS UPDATE")
+        self.log("🎯 TESTING PHASE 2 MANUAL LEAGUE STANDINGS UPDATE")
         self.log("=" * 80)
         
         results = {}
