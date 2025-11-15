@@ -1324,7 +1324,19 @@ class ScorePredictorTester:
         regression_results = {}
         
         # Test health endpoint
-        health_result = self.test_health_endpoint()
+        try:
+            response = requests.get(f"{BASE_URL}/health", timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("status") == "ok":
+                    health_result = {"status": "PASS"}
+                else:
+                    health_result = {"status": "FAIL", "error": "Unexpected response"}
+            else:
+                health_result = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            health_result = {"status": "FAIL", "error": str(e)}
+        
         regression_results["health"] = health_result
         self.log(f"      {'✅' if health_result.get('status') == 'PASS' else '❌'} GET /api/health")
         
