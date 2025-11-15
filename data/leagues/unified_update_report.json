@@ -1,0 +1,51 @@
+{
+  "timestamp": "2025-11-15T14:18:20.626185+00:00",
+  "strategy": "smart_update",
+  "leagues_processed": [
+    {
+      "league": "LaLiga",
+      "success": true,
+      "source": "unknown",
+      "action": "skipped_fresh_data",
+      "teams_count": 20
+    },
+    {
+      "league": "PremierLeague",
+      "success": true,
+      "source": "unknown",
+      "action": "skipped_fresh_data",
+      "teams_count": 18
+    },
+    {
+      "league": "SerieA",
+      "success": true,
+      "source": "unknown",
+      "action": "skipped_fresh_data",
+      "teams_count": 20
+    },
+    {
+      "league": "Bundesliga",
+      "success": true,
+      "source": "unknown",
+      "action": "skipped_fresh_data",
+      "teams_count": 18
+    },
+    {
+      "league": "Ligue1",
+      "success": true,
+      "source": "unknown",
+      "action": "skipped_fresh_data",
+      "teams_count": 18
+    }
+  ],
+  "api_calls_made": 0,
+  "api_calls_limit": 5,
+  "api_calls_today_before": 1,
+  "summary": {
+    "updated_from_api": 0,
+    "skipped_fresh": 5,
+    "fallback_to_cache": 0,
+    "failed": 0
+  },
+  "api_calls_today_after": 1
+}
