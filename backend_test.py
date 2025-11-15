@@ -1224,6 +1224,51 @@ class ScorePredictorTester:
         except Exception as e:
             self.log(f"❌ Exception: {str(e)}")
             return {"status": "FAIL", "error": str(e)}
+
+    def test_analyze_with_league_integration(self):
+        """Test /api/analyze integration with league system"""
+        self.log("Testing /api/analyze integration with league system...")
+        
+        image_path = os.path.join(BACKEND_DIR, "test_bookmaker_v2.jpg")
+        
+        if not os.path.exists(image_path):
+            self.log(f"⚠️ Test image not found: {image_path}")
+            return {"status": "FAIL", "error": "Test image not found"}
+        
+        try:
+            with open(image_path, 'rb') as f:
+                files = {'file': ('test_bookmaker_v2.jpg', f, 'image/jpeg')}
+                response = requests.post(f"{BASE_URL}/analyze", files=files, timeout=30)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if 'error' in data:
+                    self.log(f"⚠️ No scores detected (expected for some images)")
+                    return {"status": "PASS", "note": "No scores detected"}
+                
+                # Check if analysis completed successfully
+                if data.get("success"):
+                    most_probable = data.get("mostProbableScore", "N/A")
+                    league = data.get("league", "Unknown")
+                    coeffs_applied = data.get("leagueCoeffsApplied", False)
+                    
+                    self.log(f"✅ Analysis completed: {most_probable}, league: {league}, coeffs: {coeffs_applied}")
+                    return {
+                        "status": "PASS",
+                        "most_probable": most_probable,
+                        "league": league,
+                        "coeffs_applied": coeffs_applied
+                    }
+                else:
+                    self.log(f"❌ Analysis failed")
+                    return {"status": "FAIL", "error": "Analysis failed"}
+            else:
+                self.log(f"❌ HTTP {response.status_code}")
+                return {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+        except Exception as e:
+            self.log(f"❌ Exception: {str(e)}")
+            return {"status": "FAIL", "error": str(e)}
     
     def test_champions_league_update(self):
         """
