@@ -2,12 +2,13 @@
 """
 Système unifié de gestion des ligues - Toutes les ligues
 ---------------------------------------------------------
-Utilise le système intelligent avec Football-Data.org API comme source principale.
+Utilise le système multi-sources professionnel avec fallback intelligent.
 
 Stratégie:
-1. Football-Data.org API (priorité 1 - données officielles)
-2. Cache local (priorité 2 - données manuelles récentes)
-3. Fallback intelligent si échec
+1. Football-Data.org API (priorité 1 - données officielles actuelles)
+2. SoccerData/FBRef (priorité 2 - fallback enrichi)
+3. API-Sports (priorité 3 - données historiques 2021-2023)
+4. Cache local (priorité 4 - dernières données connues)
 
 Ligues supportées:
 - LaLiga, PremierLeague, SerieA, Bundesliga, Ligue1
@@ -17,16 +18,27 @@ Ligues supportées:
 import os
 import sys
 import logging
+import json
+from datetime import datetime
 
-# Import du nouveau système intelligent
+# Import du nouveau système multi-sources
 sys.path.insert(0, '/app/backend')
-from tools.league_updater_unified import (
-    update_all_leagues_smart,
-    PRIORITY_LEAGUES,
-    ALL_LEAGUES
-)
+from tools.multi_source_updater import UnifiedUpdater, run_daily_update
 
 logger = logging.getLogger(__name__)
+
+# Mapping des ligues pour le multi-source updater
+LEAGUES_MAP = {
+    "PL": "ENG-Premier League",     # Premier League
+    "PD": "ESP-La Liga",             # LaLiga
+    "SA": "ITA-Serie A",             # Serie A
+    "BL1": "GER-Bundesliga",         # Bundesliga
+    "FL1": "FRA-Ligue 1",            # Ligue 1
+    "PPL": "POR-Primeira Liga",      # Primeira Liga
+    "FL2": "FRA-Ligue 2",            # Ligue 2
+    "CL": "Champions League",        # Champions League
+    "EL": "Europa League"            # Europa League
+}
 
 DATA_DIR = "/app/data/leagues"
 os.makedirs(DATA_DIR, exist_ok=True)
