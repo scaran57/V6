@@ -7,6 +7,7 @@ import sys
 sys.path.insert(0, '/app/backend')
 
 from tools.football_data_api import get_standings_football_data
+from tools.api_sports_fetcher import get_standings_api_sports
 from tools.soccerdata_scraper import get_standings_soccerdata
 
 logger = logging.getLogger(__name__)
