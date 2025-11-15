@@ -335,38 +335,18 @@ def update_all_leagues():
         }
         
         logger.info(f"{status_icon} {league_name}: {league_result['action']} ({league_result['teams_count']} équipes)")
-            
-            # Pause entre requêtes
-            time.sleep(2)
-            
-        except Exception as e:
-            logger.error(f"❌ Error updating {league_name}: {e}")
-            report[league_name] = {
-                "status": "❌ Error",
-                "teams_count": 0,
-                "message": str(e)
-            }
-    
-    # Sauvegarder le rapport consolidé
-    timestamp = datetime.utcnow().isoformat()
-    summary = {
-        "timestamp": timestamp,
-        "phase": "Unified System - All Leagues (Phase 1 + Phase 2)",
-        "leagues_updated": len([r for r in report.values() if "✅" in r["status"]]),
-        "total_leagues": len(LEAGUES),
-        "report": report
-    }
-    
-    report_path = os.path.join(DATA_DIR, "global_update_report.json")
-    with open(report_path, "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2, ensure_ascii=False)
     
     logger.info("=" * 60)
-    logger.info(f"✅ Système unifié complet: {summary['leagues_updated']}/{summary['total_leagues']} ligues mises à jour")
-    logger.info(f"📊 Rapport consolidé: {report_path}")
+    logger.info(f"✅ Mise à jour terminée:")
+    logger.info(f"   - Mises à jour API: {report['leagues_updated']}")
+    logger.info(f"   - Données récentes (skip): {report['leagues_skipped_fresh']}")
+    logger.info(f"   - Fallback cache: {report['leagues_fallback']}")
+    logger.info(f"   - Échecs: {report['leagues_failed']}")
+    logger.info(f"   - Total: {report['total_leagues']} ligues")
+    logger.info(f"   - Appels API: {report['api_calls_made']}/{report['api_calls_limit']}")
     logger.info("=" * 60)
     
-    return summary
+    return report
 
 if __name__ == "__main__":
     # Configuration du logging
