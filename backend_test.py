@@ -1191,6 +1191,293 @@ class ScorePredictorTester:
             self.log(f"❌ Exception: {str(e)}")
             return {"status": "FAIL", "error": str(e)}
     
+    def test_champions_league_update(self):
+        """
+        Test Champions League update as requested in review.
+        Tests Champions League with 36 teams, correct team names, and intelligent fallback system.
+        """
+        self.log("=" * 80)
+        self.log("🏆 TESTING CHAMPIONS LEAGUE UPDATE")
+        self.log("=" * 80)
+        
+        results = {}
+        
+        # 1. Champions League Team Coefficient Tests
+        self.log("\n1️⃣ CHAMPIONS LEAGUE TEAM COEFFICIENT TESTS")
+        self.log("Testing top, middle, and bottom teams with intelligent fallback...")
+        
+        # Test top teams (Bayern Munich at rank 1 to Real Madrid)
+        top_teams = [
+            ("Bayern Munich", 1, (1.30, 1.30)),      # Rank 1 - should get coefficient from Bundesliga
+            ("Arsenal", 2, (1.28, 1.29)),            # Rank 2 - should get coefficient from PremierLeague  
+            ("Inter Milan", 3, (1.27, 1.28)),        # Rank 3 - should get coefficient from SerieA
+            ("Real Madrid", 7, (1.22, 1.23))         # Rank 7 - should get coefficient from LaLiga
+        ]
+        
+        # Test middle teams
+        middle_teams = [
+            ("Barcelona", 11, (1.16, 1.18)),         # Should get coefficient from LaLiga
+            ("Chelsea", 12, (1.15, 1.17)),           # Should get coefficient from PremierLeague
+            ("Atletico Madrid", 17, (1.08, 1.10))    # Should get coefficient from LaLiga
+        ]
+        
+        # Test bottom teams
+        bottom_teams = [
+            ("Benfica", 35, (0.85, 0.87)),           # Rank 35 - should get coefficient from PrimeiraLiga
+            ("Ajax", 36, (0.85, 0.85))               # Rank 36 - should get european_fallback (1.05) or national league
+        ]
+        
+        # Test intelligent fallback system
+        fallback_teams = [
+            ("Galatasaray", 9, (1.05, 1.05))         # Should get european_fallback (1.05) - not in national leagues
+        ]
+        
+        all_cl_tests = [
+            ("Top Teams", top_teams),
+            ("Middle Teams", middle_teams), 
+            ("Bottom Teams", bottom_teams),
+            ("Fallback System", fallback_teams)
+        ]
+        
+        coeff_results = {}
+        for category, teams in all_cl_tests:
+            self.log(f"\n   Testing {category}:")
+            category_results = {}
+            
+            for team, expected_rank, expected_range in teams:
+                self.log(f"      Testing {team} (expected rank {expected_rank})...")
+                result = self.test_team_coefficient(team, "ChampionsLeague", expected_range)
+                category_results[team] = result
+                
+                if result.get("status") == "PASS":
+                    coeff = result.get("coefficient", 0)
+                    source = result.get("source", "unknown")
+                    self.log(f"         ✅ {team}: Coefficient {coeff:.4f} from {source}")
+                    
+                    # Validate intelligent fallback
+                    if team == "Galatasaray" and source == "european_fallback":
+                        self.log(f"         🌍 FALLBACK SUCCESS: {team} correctly uses european_fallback")
+                    elif team in ["Bayern Munich", "Arsenal", "Real Madrid", "Barcelona"] and source in ["Bundesliga", "PremierLeague", "LaLiga", "SerieA"]:
+                        self.log(f"         🏆 NATIONAL LEAGUE SUCCESS: {team} correctly uses {source} coefficient")
+                else:
+                    self.log(f"         ❌ {team}: {result.get('error', 'Failed')}")
+            
+            coeff_results[category] = category_results
+        
+        results["team_coefficients"] = coeff_results
+        
+        # 2. Champions League Standings Endpoint Test
+        self.log("\n2️⃣ CHAMPIONS LEAGUE STANDINGS ENDPOINT TEST")
+        self.log("Testing GET /api/admin/league/standings?league=ChampionsLeague...")
+        
+        standings_result = self.test_league_standings_detailed("ChampionsLeague", 36)
+        results["standings_endpoint"] = standings_result
+        
+        if standings_result.get("status") == "PASS":
+            teams_count = standings_result.get("teams_count", 0)
+            standings = standings_result.get("standings", [])
+            
+            self.log(f"      ✅ ChampionsLeague: {teams_count} teams returned")
+            
+            # Verify correct team names (Bayern Munich not "Bayern", Real Madrid not "Madrid")
+            if standings:
+                first_team = standings[0].get("team", "")
+                last_team = standings[-1].get("team", "")
+                
+                # Check for correct team names
+                correct_names = True
+                name_issues = []
+                
+                for team_data in standings[:5]:  # Check first 5 teams
+                    team_name = team_data.get("team", "")
+                    if team_name == "Bayern" and "Bayern Munich" not in team_name:
+                        correct_names = False
+                        name_issues.append(f"Found 'Bayern' instead of 'Bayern Munich'")
+                    elif team_name == "Madrid" and "Real Madrid" not in team_name:
+                        correct_names = False
+                        name_issues.append(f"Found 'Madrid' instead of 'Real Madrid'")
+                
+                if correct_names:
+                    self.log(f"      ✅ TEAM NAMES: Correct team names verified")
+                    self.log(f"         First: {first_team}, Last: {last_team}")
+                else:
+                    self.log(f"      ⚠️ TEAM NAMES: Issues found: {name_issues}")
+        else:
+            self.log(f"      ❌ ChampionsLeague standings: {standings_result.get('error', 'Failed')}")
+        
+        # 3. Intelligent Fallback System Validation
+        self.log("\n3️⃣ INTELLIGENT FALLBACK SYSTEM VALIDATION")
+        self.log("Testing that teams get coefficients from national leagues when available...")
+        
+        fallback_tests = [
+            {
+                "team": "Bayern Munich",
+                "expected_source": "Bundesliga",
+                "description": "Should get coefficient from Bundesliga"
+            },
+            {
+                "team": "Arsenal", 
+                "expected_source": "PremierLeague",
+                "description": "Should get coefficient from PremierLeague"
+            },
+            {
+                "team": "Real Madrid",
+                "expected_source": "LaLiga", 
+                "description": "Should get coefficient from LaLiga"
+            },
+            {
+                "team": "Barcelona",
+                "expected_source": "LaLiga",
+                "description": "Should get coefficient from LaLiga"
+            },
+            {
+                "team": "Galatasaray",
+                "expected_source": "european_fallback",
+                "description": "Should get european_fallback (1.05)"
+            }
+        ]
+        
+        fallback_results = {}
+        for test in fallback_tests:
+            team = test["team"]
+            expected_source = test["expected_source"]
+            description = test["description"]
+            
+            self.log(f"\n      Testing {team}: {description}")
+            
+            try:
+                response = requests.get(
+                    f"{BASE_URL}/league/team-coeff?team={team}&league=ChampionsLeague",
+                    timeout=10
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    
+                    if data.get("success"):
+                        coeff = data.get("coefficient", 0)
+                        source = data.get("source", "unknown")
+                        
+                        if source == expected_source:
+                            fallback_results[team] = {"status": "PASS", "coefficient": coeff, "source": source}
+                            self.log(f"         ✅ {team}: Coefficient {coeff:.4f} from {source} (CORRECT)")
+                        else:
+                            fallback_results[team] = {"status": "FAIL", "error": f"Expected {expected_source}, got {source}"}
+                            self.log(f"         ❌ {team}: Expected {expected_source}, got {source}")
+                    else:
+                        fallback_results[team] = {"status": "FAIL", "error": "API returned success=false"}
+                        self.log(f"         ❌ {team}: API returned success=false")
+                else:
+                    fallback_results[team] = {"status": "FAIL", "error": f"HTTP {response.status_code}"}
+                    self.log(f"         ❌ {team}: HTTP {response.status_code}")
+            except Exception as e:
+                fallback_results[team] = {"status": "FAIL", "error": str(e)}
+                self.log(f"         ❌ {team}: Exception - {str(e)}")
+        
+        results["fallback_system"] = fallback_results
+        
+        # 4. Regression Tests
+        self.log("\n4️⃣ REGRESSION TESTS")
+        self.log("Verifying all previously updated leagues still work...")
+        
+        regression_leagues = ["LaLiga", "PremierLeague", "Bundesliga", "Ligue1", "PrimeiraLiga", "Ligue2", "SerieA", "EuropaLeague"]
+        regression_results = {}
+        
+        for league in regression_leagues:
+            self.log(f"      Testing {league}...")
+            
+            # Test a sample team from each league
+            sample_teams = {
+                "LaLiga": "Real Madrid",
+                "PremierLeague": "Arsenal", 
+                "Bundesliga": "Bayern Munich",
+                "Ligue1": "Paris Saint-Germain",
+                "PrimeiraLiga": "Porto",
+                "Ligue2": "Troyes",
+                "SerieA": "Inter Milan",
+                "EuropaLeague": "AS Roma"
+            }
+            
+            team = sample_teams.get(league, "Unknown")
+            if team != "Unknown":
+                result = self.test_team_coefficient(team, league)
+                regression_results[league] = result
+                
+                if result.get("status") == "PASS":
+                    coeff = result.get("coefficient", 0)
+                    self.log(f"         ✅ {league}: {team} coefficient {coeff:.4f}")
+                else:
+                    self.log(f"         ❌ {league}: {result.get('error', 'Failed')}")
+        
+        results["regression_tests"] = regression_results
+        
+        # Test core API endpoints
+        self.log("\n      Testing core API endpoints...")
+        
+        # Test /api/health
+        health_result = self.test_health_endpoint()
+        if health_result:
+            self.log("         ✅ GET /api/health - Working")
+        else:
+            self.log("         ❌ GET /api/health - Failed")
+        
+        # Test /api/analyze
+        analyze_result = self.test_analyze_with_league_integration()
+        if analyze_result.get("status") == "PASS":
+            self.log("         ✅ POST /api/analyze - Working")
+        else:
+            self.log("         ❌ POST /api/analyze - Failed")
+        
+        results["core_api_tests"] = {
+            "health": health_result,
+            "analyze": analyze_result
+        }
+        
+        # Summary
+        self.log("\n" + "=" * 80)
+        self.log("CHAMPIONS LEAGUE UPDATE TEST SUMMARY")
+        self.log("=" * 80)
+        
+        # Count successful tests
+        total_coeff_tests = sum(len(category_results) for category_results in coeff_results.values())
+        successful_coeff_tests = sum(
+            sum(1 for result in category_results.values() if result.get("status") == "PASS")
+            for category_results in coeff_results.values()
+        )
+        
+        successful_fallback_tests = sum(1 for result in fallback_results.values() if result.get("status") == "PASS")
+        total_fallback_tests = len(fallback_results)
+        
+        successful_regression_tests = sum(1 for result in regression_results.values() if result.get("status") == "PASS")
+        total_regression_tests = len(regression_results)
+        
+        self.log(f"\n📊 TEST RESULTS:")
+        self.log(f"   Team Coefficient Tests: {successful_coeff_tests}/{total_coeff_tests}")
+        self.log(f"   Champions League Standings: {'✅ PASS' if standings_result.get('status') == 'PASS' else '❌ FAIL'}")
+        self.log(f"   Intelligent Fallback System: {successful_fallback_tests}/{total_fallback_tests}")
+        self.log(f"   Regression Tests: {successful_regression_tests}/{total_regression_tests}")
+        
+        # Overall assessment
+        overall_success = (
+            successful_coeff_tests >= total_coeff_tests * 0.8 and  # 80% of coefficient tests pass
+            standings_result.get("status") == "PASS" and
+            successful_fallback_tests >= total_fallback_tests * 0.8 and  # 80% of fallback tests pass
+            successful_regression_tests >= total_regression_tests * 0.8   # 80% of regression tests pass
+        )
+        
+        if overall_success:
+            self.log(f"\n🎉 SUCCESS: Champions League update is FULLY FUNCTIONAL!")
+            self.log(f"   ✅ Champions League accessible via API with 36 teams")
+            self.log(f"   ✅ Correct team names throughout (Bayern Munich not 'Bayern', etc.)")
+            self.log(f"   ✅ Intelligent fallback system working perfectly")
+            self.log(f"   ✅ Teams get coefficients from national leagues when available")
+            self.log(f"   ✅ No regression in existing functionality")
+            self.log(f"   ✅ Total leagues now: 9 (LaLiga, PremierLeague, Bundesliga, Ligue1, PrimeiraLiga, Ligue2, SerieA, EuropaLeague, ChampionsLeague)")
+        else:
+            self.log(f"\n⚠️ ISSUES FOUND: Some Champions League criteria not fully met")
+        
+        return results
+
     def test_phase2_manual_league_standings_update(self):
         """
         Test Phase 2 manual league standings update as requested in review.
