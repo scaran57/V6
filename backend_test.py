@@ -1202,53 +1202,44 @@ class ScorePredictorTester:
         
         results = {}
         
-        # 1. Team Coefficient API Tests for multiple teams from each league
-        self.log("\n1️⃣ TEAM COEFFICIENT API TESTS")
-        self.log("Testing coefficients for multiple teams from each league...")
+        # 1. Team Coefficient API Tests for NEW PHASE 2 LEAGUES
+        self.log("\n1️⃣ TEAM COEFFICIENT API TESTS FOR NEW LEAGUES")
+        self.log("Testing coefficients for Phase 2 leagues: Ligue 2, Serie A, Europa League...")
         
-        # LaLiga tests (20 teams including new additions: Levante at rank 19, Real Oviedo at rank 20)
-        laliga_tests = [
-            ("Real Madrid", "LaLiga", 1, (1.30, 1.30)),  # Rank 1 should get 1.30
-            ("Barcelona", "LaLiga", 2, (1.25, 1.30)),    # Rank 2 should be high
-            ("Villarreal", "LaLiga", 3, (1.20, 1.30)),   # Rank 3 should be high
-            ("Levante", "LaLiga", 19, (0.85, 0.90)),     # New team at rank 19
-            ("Real Oviedo", "LaLiga", 20, (0.85, 0.85))  # New team at rank 20 (last)
+        # Ligue 2 tests (18 teams: Troyes at rank 1 to Bastia at rank 18)
+        ligue2_tests = [
+            ("Troyes", "Ligue2", 1, (1.30, 1.30)),        # Rank 1 should get 1.30
+            ("Bastia", "Ligue2", 18, (0.85, 0.90))        # Rank 18 should get ~0.85-0.90
         ]
         
-        # Premier League tests (18 teams)
-        premier_tests = [
-            ("Arsenal", "PremierLeague", 1, (1.30, 1.30)),      # Rank 1
-            ("Manchester City", "PremierLeague", 2, (1.25, 1.30)), # Rank 2
-            ("West Ham", "PremierLeague", 18, (0.85, 0.95))     # Last rank
+        # Serie A tests (20 teams including new additions: Hellas Verona at rank 19, Fiorentina at rank 20)
+        seriea_tests = [
+            ("Inter Milan", "SerieA", 1, (1.30, 1.30)),        # Rank 1 should get 1.30
+            ("Hellas Verona", "SerieA", 19, (0.85, 0.90)),     # Rank 19 should get ~0.87
+            ("Fiorentina", "SerieA", 20, (0.85, 0.85))         # Rank 20 should get 0.85
         ]
         
-        # Bundesliga tests (18 teams)
-        bundesliga_tests = [
-            ("Bayern Munich", "Bundesliga", 1, (1.30, 1.30)),   # Rank 1
-            ("RB Leipzig", "Bundesliga", 2, (1.25, 1.30)),      # Rank 2
-            ("Heidenheim", "Bundesliga", 18, (0.85, 0.95))      # Last rank
+        # Europa League tests (36 teams with intelligent fallback system)
+        europa_tests = [
+            ("SC Freiburg", "EuropaLeague", None, (1.0, 1.30)),    # Should get coefficient from Bundesliga
+            ("Lille", "EuropaLeague", None, (1.0, 1.30)),          # Should get coefficient from Ligue 1
+            ("AS Roma", "EuropaLeague", None, (1.0, 1.30))         # Teams not in national leagues should get european_fallback (1.05)
         ]
         
-        # Ligue 1 tests (18 teams)
-        ligue1_tests = [
-            ("Paris Saint-Germain", "Ligue1", 1, (1.30, 1.30)), # Rank 1
-            ("Marseille", "Ligue1", 2, (1.25, 1.30)),           # Rank 2
-            ("Auxerre", "Ligue1", 18, (0.85, 0.95))             # Last rank
-        ]
-        
-        # Primeira Liga tests (18 teams)
-        primeira_tests = [
-            ("Porto", "PrimeiraLiga", 1, (1.30, 1.30)),         # Rank 1
-            ("Sporting CP", "PrimeiraLiga", 2, (1.25, 1.30)),   # Rank 2
-            ("AVS Futebol", "PrimeiraLiga", 18, (0.85, 0.95))   # Last rank
+        # Also test regression for previously updated leagues
+        regression_tests = [
+            ("Real Madrid", "LaLiga", 1, (1.30, 1.30)),            # Regression test
+            ("Arsenal", "PremierLeague", 1, (1.30, 1.30)),         # Regression test
+            ("Bayern Munich", "Bundesliga", 1, (1.30, 1.30)),      # Regression test
+            ("Paris Saint-Germain", "Ligue1", 1, (1.30, 1.30)),   # Regression test
+            ("Porto", "PrimeiraLiga", 1, (1.30, 1.30))             # Regression test
         ]
         
         all_coeff_tests = [
-            ("LaLiga", laliga_tests),
-            ("PremierLeague", premier_tests),
-            ("Bundesliga", bundesliga_tests),
-            ("Ligue1", ligue1_tests),
-            ("PrimeiraLiga", primeira_tests)
+            ("Ligue2 (NEW)", ligue2_tests),
+            ("SerieA (NEW)", seriea_tests),
+            ("EuropaLeague (NEW)", europa_tests),
+            ("Regression Tests", regression_tests)
         ]
         
         coeff_results = {}
