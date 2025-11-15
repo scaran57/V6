@@ -42,18 +42,20 @@ def calculate_coefficient(position, total_teams):
     return round(coeff, 4)
 
 
-def standings_unified(league_name, league_code_api, league_code_soccerdata, season="2425"):
+def standings_unified(league_name, league_code_api, league_code_soccerdata, season="2425", api_sports_season=2023):
     """
     Stratégie de fallback intelligent :
-    1) Essaye Football-Data (API officielle)
-    2) Si échec → SoccerData (scraping FBRef)
-    3) Si échec → Retourne cache local
+    1) Essaye Football-Data (API officielle - données actuelles)
+    2) Si échec → API-Sports (données historiques 2021-2023)
+    3) Si échec → SoccerData (scraping FBRef)
+    4) Si échec → Retourne cache local
     
     Args:
         league_name: Nom interne (ex: "LaLiga")
         league_code_api: Code Football-Data (ex: "PD")
         league_code_soccerdata: Code SoccerData (ex: "ESP-La Liga")
-        season: Saison (format "2425" pour 2024-2025)
+        season: Saison SoccerData (format "2425" pour 2024-2025)
+        api_sports_season: Saison API-Sports (2021, 2022 ou 2023 - plan gratuit)
     
     Returns:
         dict: Données formatées ou None
@@ -62,7 +64,7 @@ def standings_unified(league_name, league_code_api, league_code_soccerdata, seas
 
     logger.info(f"\n[Mise à jour] {league_name} (API: {league_code_api})")
 
-    # --- 1. Football-Data PRIORITÉ 1 ---
+    # --- 1. Football-Data PRIORITÉ 1 (données actuelles) ---
     data = get_standings_football_data(league_code_api)
 
     if data:
@@ -96,7 +98,43 @@ def standings_unified(league_name, league_code_api, league_code_soccerdata, seas
         save_cache(cache)
         return formatted_data
 
-    logger.warning(f"⚠️ {league_name}: Football-Data KO — tentative SoccerData…")
+    logger.warning(f"⚠️ {league_name}: Football-Data KO — tentative API-Sports…")
+
+    # --- 2. API-Sports PRIORITÉ 2 (données historiques) ---
+    data = get_standings_api_sports(league_name, season=api_sports_season)
+
+    if data:
+        logger.info(f"✅ {league_name}: API-Sports OK ({len(data)} équipes - saison {api_sports_season})")
+        
+        # Calculer les coefficients
+        total_teams = len(data)
+        for team in data:
+            team["coefficient"] = calculate_coefficient(team["position"], total_teams)
+        
+        # Formater pour notre système
+        formatted_data = {
+            "league": league_name,
+            "updated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "source": f"api-sports (season {api_sports_season})",
+            "teams": [
+                {
+                    "rank": t["position"],
+                    "name": t["team"],
+                    "points": t["points"],
+                    "coefficient": t["coefficient"]
+                }
+                for t in data
+            ]
+        }
+        
+        cache[league_name] = {
+            "timestamp": time.time(),
+            "data": formatted_data
+        }
+        save_cache(cache)
+        return formatted_data
+
+    logger.warning(f"⚠️ {league_name}: API-Sports KO — tentative SoccerData…")
 
     # --- 2. SoccerData FALLBACK ---
     data = get_standings_soccerdata(league_code_soccerdata, season)
