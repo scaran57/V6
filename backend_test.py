@@ -1262,16 +1262,20 @@ class ScorePredictorTester:
         
         results["team_coefficients"] = coeff_results
         
-        # 2. League Standings Endpoint Tests
-        self.log("\n2️⃣ LEAGUE STANDINGS ENDPOINT TESTS")
-        self.log("Testing all 5 league standings endpoints...")
+        # 2. League Standings Endpoint Tests for NEW LEAGUES
+        self.log("\n2️⃣ LEAGUE STANDINGS ENDPOINT TESTS FOR NEW LEAGUES")
+        self.log("Testing Phase 2 league standings endpoints...")
         
         standings_tests = [
-            ("LaLiga", 20),      # Expected 20 teams
-            ("PremierLeague", 18), # Expected 18 teams
-            ("Bundesliga", 18),   # Expected 18 teams
-            ("Ligue1", 18),      # Expected 18 teams
-            ("PrimeiraLiga", 18)  # Expected 18 teams
+            ("Ligue2", 18),      # Expected 18 teams (NEW)
+            ("SerieA", 20),      # Expected 20 teams (NEW)
+            ("EuropaLeague", 36), # Expected 36 teams (NEW)
+            # Regression tests for previously updated leagues
+            ("LaLiga", 20),      # Regression test
+            ("PremierLeague", 18), # Regression test
+            ("Bundesliga", 18),   # Regression test
+            ("Ligue1", 18),      # Regression test
+            ("PrimeiraLiga", 18)  # Regression test
         ]
         
         standings_results = {}
