@@ -395,11 +395,12 @@ metadata:
   last_feature: "Système de routage avec Mode Production et Mode Test + Contrôles avancés du cache"
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Mise à jour manuelle des classements de ligues"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
-  last_test_results: "Intelligent OCR filtering system testing completed successfully. Liga Portugal image processed correctly with clean team names 'AVS Futebol - Gil Vicente', league detected as 'PrimeiraLiga', and coefficients applied. All filtering criteria met - no schedules, no interface elements. Regression tests passed."
+  last_test_results: "Manual league standings update completed successfully. 5 leagues updated with correct data from user-provided screenshots: LaLiga (20 teams including Levante and Real Oviedo), Premier League (18 teams), Bundesliga (18 teams), Ligue 1 (18 teams), Primeira Liga (18 teams). All team coefficients correctly calculated and API tests passed."
 
 agent_communication:
   - agent: "main"
