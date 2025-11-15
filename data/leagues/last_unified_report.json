@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-11-15T23:36:53.972780",
+  "results": {
+    "PL": {
+      "status": "ok",
+      "source": "football-data"
+    },
+    "PD": {
+      "status": "ok",
+      "source": "football-data"
+    },
+    "SA": {
+      "status": "ok",
+      "source": "football-data"
+    },
+    "BL1": {
+      "status": "ok",
+      "source": "football-data"
+    },
+    "FL1": {
+      "status": "ok",
+      "source": "football-data"
+    }
+  }
+}
