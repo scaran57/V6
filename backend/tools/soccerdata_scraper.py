@@ -17,21 +17,41 @@ def get_standings_soccerdata(league_code: str, season: str = "2425"):
         # Créer l'instance FBref
         fbref = sd.FBref(leagues=[league_code], seasons=[season])
 
-        # Récupérer le classement
-        standings = fbref.read_league_table()
+        # Récupérer les statistiques d'équipes par saison (contient le classement)
+        stats = fbref.read_team_season_stats()
+        
+        if stats is None or stats.empty:
+            logger.warning(f"[SoccerData] Aucune donnée pour {league_code}")
+            return None
 
         # Convertir en format utilisable
-        table = standings.reset_index()
+        # FBref retourne un MultiIndex, on le reset
+        table = stats.reset_index()
         
-        # Les colonnes peuvent varier, essayons différentes possibilités
+        # Trier par points (colonne 'Pts')
+        if 'Pts' in table.columns:
+            table = table.sort_values('Pts', ascending=False).reset_index(drop=True)
+        
         results = []
         
         for idx, row in table.iterrows():
             try:
-                team_name = row.get("team", row.get("Squad", "Unknown"))
-                position = idx + 1  # Position basée sur l'index
-                points = int(row.get("points", row.get("Pts", 0)))
-                played = int(row.get("games", row.get("MP", 0)))
+                # Essayer différents noms de colonnes selon la version
+                team_name = None
+                if 'team' in row:
+                    team_name = row['team']
+                elif 'Squad' in row:
+                    team_name = row['Squad']
+                else:
+                    # Chercher dans l'index
+                    if hasattr(row, 'name') and isinstance(row.name, tuple):
+                        team_name = row.name[0] if row.name else "Unknown"
+                    else:
+                        team_name = "Unknown"
+                
+                position = idx + 1  # Position basée sur le tri
+                points = int(row.get('Pts', 0))
+                played = int(row.get('MP', row.get('Pld', 0)))
                 
                 results.append({
                     "team": str(team_name),
@@ -42,6 +62,10 @@ def get_standings_soccerdata(league_code: str, season: str = "2425"):
             except Exception as e:
                 logger.warning(f"[SoccerData] Erreur parsing ligne {idx}: {e}")
                 continue
+
+        if not results:
+            logger.warning(f"[SoccerData] Aucune équipe extraite pour {league_code}")
+            return None
 
         logger.info(f"[SoccerData] ✅ {len(results)} équipes récupérées")
         return results
