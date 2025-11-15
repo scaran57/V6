@@ -3380,6 +3380,10 @@ if __name__ == "__main__":
             print(f"Unknown test: {test_name}")
             print("Available tests: ocr_parser, ocr_filtering, match_extraction, league, ocr_correction, manual_league_update, phase2, european, ufa_v3")
     else:
-        # Run the manual league standings update test as requested in review
-        print("🎯 Running Manual League Standings Update Tests...")
-        tester.test_manual_league_standings_update()
+        # Run the Phase 2 manual league standings update test as requested in review
+        print("🎯 Running Phase 2 Manual League Standings Update Tests...")
+        tester.test_phase2_manual_league_standings_update()
+        
+        # Also test Europa League intelligent fallback system
+        print("\n🔍 Running Europa League Intelligent Fallback Tests...")
+        tester.test_europa_league_intelligent_fallback()
