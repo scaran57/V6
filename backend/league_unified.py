@@ -290,72 +290,160 @@ def fetch_standings(league_name, config):
             })
         return result[:config["expected_teams"]]
 
+def calculate_coefficient(position, total_teams):
+    """Calcule le coefficient selon la position (0.85 - 1.30)"""
+    if position == 1:
+        return 1.30
+    if position == total_teams:
+        return 0.85
+    
+    coeff = 0.85 + ((total_teams - position) / (total_teams - 1)) * 0.45
+    return round(coeff, 4)
+
+def save_league_to_file(league_api_code, data):
+    """Sauvegarde les données d'une ligue dans le format interne"""
+    # Mapping code API vers nom interne
+    CODE_TO_NAME = {
+        "PL": "PremierLeague",
+        "PD": "LaLiga",
+        "SA": "SerieA",
+        "BL1": "Bundesliga",
+        "FL1": "Ligue1",
+        "PPL": "PrimeiraLiga",
+        "FL2": "Ligue2",
+        "CL": "ChampionsLeague",
+        "EL": "EuropaLeague"
+    }
+    
+    league_name = CODE_TO_NAME.get(league_api_code, league_api_code)
+    file_path = f"/app/data/leagues/{league_name}.json"
+    
+    # Calculer les coefficients
+    total_teams = len(data)
+    for team in data:
+        team["coefficient"] = calculate_coefficient(team["position"], total_teams)
+    
+    # Formater pour notre système
+    formatted_data = {
+        "league": league_name,
+        "updated": datetime.utcnow().isoformat() + "Z",
+        "source": "multi-source-updater",
+        "teams": [
+            {
+                "rank": t["position"],
+                "name": t["team"],
+                "points": t["points"],
+                "coefficient": t["coefficient"]
+            }
+            for t in data
+        ]
+    }
+    
+    # Backup ancien fichier
+    if os.path.exists(file_path):
+        backup_path = file_path + ".backup_auto"
+        try:
+            os.rename(file_path, backup_path)
+        except:
+            pass
+    
+    # Sauvegarde atomique
+    tmp_path = file_path + ".tmp"
+    with open(tmp_path, 'w', encoding='utf-8') as f:
+        json.dump(formatted_data, f, indent=2, ensure_ascii=False)
+    os.replace(tmp_path, file_path)
+    
+    logger.info(f"💾 Sauvegardé {league_name} ({len(data)} équipes)")
+    return True
+
 def update_all_leagues():
     """
-    Met à jour TOUTES les ligues via le système intelligent
+    Met à jour TOUTES les ligues via le système multi-sources
     
     Stratégie:
-    - Utilise Football-Data.org API pour les ligues supportées
-    - Conserve les données manuelles si récentes (< 24h)
-    - Limite les appels API à 8 maximum par session
+    1. Football-Data.org API (priorité 1)
+    2. SoccerData/FBRef (priorité 2)
+    3. API-Sports historique (priorité 3)
+    4. Cache local (priorité 4)
     
     Returns:
         dict: Rapport de mise à jour consolidé
     """
     logger.info("=" * 60)
-    logger.info("🔄 SYSTÈME UNIFIÉ - MISE À JOUR INTELLIGENTE DE TOUTES LES LIGUES")
+    logger.info("🔄 SYSTÈME MULTI-SOURCES - MISE À JOUR DE TOUTES LES LIGUES")
     logger.info("=" * 60)
     
-    # Mettre à jour toutes les ligues avec le système intelligent
-    # Limite: 8 appels API max (on garde 2 pour les scores réels)
-    smart_report = update_all_leagues_smart(
-        leagues_list=ALL_LEAGUES,
-        force=False,  # Ne force pas si données récentes
-        max_api_calls=8
-    )
+    # Créer l'updater
+    updater = UnifiedUpdater(use_mongo=False)
+    
+    # Lancer la mise à jour
+    multi_report = run_daily_update(updater, LEAGUES_MAP, season="2425")
+    
+    # Sauvegarder les données dans nos fichiers JSON
+    for api_code, result in multi_report["results"].items():
+        if result["status"] == "ok":
+            try:
+                # Récupérer les données du cache
+                cache_key = f"league:{api_code}"
+                cached_data = updater.cache.get(cache_key, {}).get("data")
+                if cached_data:
+                    save_league_to_file(api_code, cached_data)
+            except Exception as e:
+                logger.error(f"❌ Erreur sauvegarde {api_code}: {e}")
     
     # Convertir le rapport au format attendu par le scheduler
+    total_leagues = len(multi_report["results"])
+    leagues_updated = sum(1 for r in multi_report["results"].values() if r["status"] == "ok" and r["source"] == "football-data")
+    leagues_fallback = sum(1 for r in multi_report["results"].values() if r["status"] == "ok" and r["source"] != "football-data")
+    leagues_failed = sum(1 for r in multi_report["results"].values() if r["status"] != "ok")
+    
     report = {
-        "timestamp": smart_report["timestamp"],
-        "strategy": "smart_update",
-        "leagues_updated": smart_report["summary"]["updated_from_api"],
-        "leagues_skipped_fresh": smart_report["summary"]["skipped_fresh"],
-        "leagues_fallback": smart_report["summary"]["fallback_to_cache"],
-        "leagues_failed": smart_report["summary"]["failed"],
-        "total_leagues": len(smart_report["leagues_processed"]),
-        "api_calls_made": smart_report["api_calls_made"],
-        "api_calls_limit": smart_report["api_calls_limit"],
+        "timestamp": multi_report["timestamp"],
+        "strategy": "multi_source",
+        "leagues_updated": leagues_updated,
+        "leagues_skipped_fresh": 0,  # Le nouveau système gère ça via cache
+        "leagues_fallback": leagues_fallback,
+        "leagues_failed": leagues_failed,
+        "total_leagues": total_leagues,
+        "api_calls_made": updater.daily_requests,
+        "api_calls_limit": 200,
         "details": {}
     }
     
     # Détails par ligue
-    for league_result in smart_report["leagues_processed"]:
-        league_name = league_result["league"]
-        if league_result["success"]:
+    for api_code, result in multi_report["results"].items():
+        CODE_TO_NAME = {
+            "PL": "PremierLeague",
+            "PD": "LaLiga",
+            "SA": "SerieA",
+            "BL1": "Bundesliga",
+            "FL1": "Ligue1",
+            "PPL": "PrimeiraLiga",
+            "FL2": "Ligue2",
+            "CL": "ChampionsLeague",
+            "EL": "EuropaLeague"
+        }
+        league_name = CODE_TO_NAME.get(api_code, api_code)
+        
+        if result["status"] == "ok":
             status_icon = "✅"
-            if league_result["action"] == "skipped_fresh_data":
-                status_icon = "ℹ️"
-            elif league_result["action"] == "fallback_to_cache":
-                status_icon = "⚠️"
         else:
             status_icon = "❌"
         
         report["details"][league_name] = {
-            "status": f"{status_icon} {league_result['action']}",
-            "teams_count": league_result["teams_count"],
-            "source": league_result.get("source", "unknown")
+            "status": f"{status_icon} {result['status']}",
+            "source": result.get("source", "unknown")
         }
         
-        logger.info(f"{status_icon} {league_name}: {league_result['action']} ({league_result['teams_count']} équipes)")
+        logger.info(f"{status_icon} {league_name}: {result['source']}")
     
     logger.info("=" * 60)
     logger.info(f"✅ Mise à jour terminée:")
-    logger.info(f"   - Mises à jour API: {report['leagues_updated']}")
-    logger.info(f"   - Données récentes (skip): {report['leagues_skipped_fresh']}")
-    logger.info(f"   - Fallback cache: {report['leagues_fallback']}")
+    logger.info(f"   - Source principale (API): {report['leagues_updated']}")
+    logger.info(f"   - Sources fallback: {report['leagues_fallback']}")
     logger.info(f"   - Échecs: {report['leagues_failed']}")
     logger.info(f"   - Total: {report['total_leagues']} ligues")
-    logger.info(f"   - Appels API: {report['api_calls_made']}/{report['api_calls_limit']}")
+    logger.info(f"   - Requêtes utilisées: {report['api_calls_made']}/{report['api_calls_limit']}")
     logger.info("=" * 60)
     
     return report
