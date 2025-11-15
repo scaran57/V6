@@ -1,0 +1,114 @@
+{
+  "league": "Bundesliga",
+  "updated": "2025-11-15T01:28:00Z",
+  "teams": [
+    {
+      "rank": 1,
+      "name": "Bayern Munich",
+      "points": 28,
+      "coefficient": 1.3
+    },
+    {
+      "rank": 2,
+      "name": "RB Leipzig",
+      "points": 22,
+      "coefficient": 1.276
+    },
+    {
+      "rank": 3,
+      "name": "Borussia Dortmund",
+      "points": 21,
+      "coefficient": 1.253
+    },
+    {
+      "rank": 4,
+      "name": "VfB Stuttgart",
+      "points": 21,
+      "coefficient": 1.229
+    },
+    {
+      "rank": 5,
+      "name": "Bayer Leverkusen",
+      "points": 20,
+      "coefficient": 1.206
+    },
+    {
+      "rank": 6,
+      "name": "Hoffenheim",
+      "points": 19,
+      "coefficient": 1.182
+    },
+    {
+      "rank": 7,
+      "name": "Eintracht Frankfurt",
+      "points": 17,
+      "coefficient": 1.159
+    },
+    {
+      "rank": 8,
+      "name": "Werder Bremen",
+      "points": 15,
+      "coefficient": 1.135
+    },
+    {
+      "rank": 9,
+      "name": "FC Koln",
+      "points": 14,
+      "coefficient": 1.112
+    },
+    {
+      "rank": 10,
+      "name": "SC Freiburg",
+      "points": 13,
+      "coefficient": 1.088
+    },
+    {
+      "rank": 11,
+      "name": "Union Berlin",
+      "points": 12,
+      "coefficient": 1.065
+    },
+    {
+      "rank": 12,
+      "name": "Borussia Monchengladbach",
+      "points": 9,
+      "coefficient": 1.041
+    },
+    {
+      "rank": 13,
+      "name": "Hamburger SV",
+      "points": 9,
+      "coefficient": 1.018
+    },
+    {
+      "rank": 14,
+      "name": "Wolfsburg",
+      "points": 8,
+      "coefficient": 0.994
+    },
+    {
+      "rank": 15,
+      "name": "FC Augsburg",
+      "points": 7,
+      "coefficient": 0.971
+    },
+    {
+      "rank": 16,
+      "name": "FC St Pauli",
+      "points": 7,
+      "coefficient": 0.947
+    },
+    {
+      "rank": 17,
+      "name": "Mainz 05",
+      "points": 5,
+      "coefficient": 0.924
+    },
+    {
+      "rank": 18,
+      "name": "Heidenheim",
+      "points": 5,
+      "coefficient": 0.9
+    }
+  ]
+}
