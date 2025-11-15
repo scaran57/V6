@@ -355,8 +355,16 @@ if __name__ == "__main__":
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
     
-    print("🚀 Démarrage du Système Unifié - Mise à jour de TOUTES les ligues")
+    print("🚀 Test: Mise à jour intelligente de toutes les ligues")
     print()
+    
+    report = update_all_leagues()
+    
+    print("\n📊 Résumé final:")
+    print(f"  - Total ligues: {report['total_leagues']}")
+    print(f"  - Mises à jour API: {report['leagues_updated']}")
+    print(f"  - Données récentes: {report['leagues_skipped_fresh']}")
+    print(f"  - Appels API: {report['api_calls_made']}/{report['api_calls_limit']}")
     
     summary = update_all_leagues()
     
