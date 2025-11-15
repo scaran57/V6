@@ -1,0 +1,114 @@
+{
+  "league": "PrimeiraLiga",
+  "updated": "2025-11-15T01:32:00Z",
+  "teams": [
+    {
+      "rank": 1,
+      "name": "Porto",
+      "points": 31,
+      "coefficient": 1.3
+    },
+    {
+      "rank": 2,
+      "name": "Sporting CP",
+      "points": 28,
+      "coefficient": 1.276
+    },
+    {
+      "rank": 3,
+      "name": "Benfica",
+      "points": 25,
+      "coefficient": 1.253
+    },
+    {
+      "rank": 4,
+      "name": "Gil Vicente",
+      "points": 23,
+      "coefficient": 1.229
+    },
+    {
+      "rank": 5,
+      "name": "Famalicao",
+      "points": 19,
+      "coefficient": 1.206
+    },
+    {
+      "rank": 6,
+      "name": "Moreirense",
+      "points": 18,
+      "coefficient": 1.182
+    },
+    {
+      "rank": 7,
+      "name": "Braga",
+      "points": 16,
+      "coefficient": 1.159
+    },
+    {
+      "rank": 8,
+      "name": "Guimaraes",
+      "points": 14,
+      "coefficient": 1.135
+    },
+    {
+      "rank": 9,
+      "name": "Estoril",
+      "points": 13,
+      "coefficient": 1.112
+    },
+    {
+      "rank": 10,
+      "name": "CD Nacional",
+      "points": 12,
+      "coefficient": 1.088
+    },
+    {
+      "rank": 11,
+      "name": "Rio Ave",
+      "points": 12,
+      "coefficient": 1.065
+    },
+    {
+      "rank": 12,
+      "name": "Santa Clara",
+      "points": 11,
+      "coefficient": 1.041
+    },
+    {
+      "rank": 13,
+      "name": "Estrela Amadora",
+      "points": 11,
+      "coefficient": 1.018
+    },
+    {
+      "rank": 14,
+      "name": "Arouca",
+      "points": 11,
+      "coefficient": 0.994
+    },
+    {
+      "rank": 15,
+      "name": "Casa Pia",
+      "points": 9,
+      "coefficient": 0.971
+    },
+    {
+      "rank": 16,
+      "name": "Arouca",
+      "points": 9,
+      "coefficient": 0.947
+    },
+    {
+      "rank": 17,
+      "name": "Tondela",
+      "points": 6,
+      "coefficient": 0.924
+    },
+    {
+      "rank": 18,
+      "name": "AVS Futebol",
+      "points": 3,
+      "coefficient": 0.9
+    }
+  ]
+}
