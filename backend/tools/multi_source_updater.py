@@ -140,27 +140,27 @@ def get_standings_football_data(league_code: str) -> Optional[List[Dict[str, Any
             try:
                 resp = requests.get(url, headers=hdr, timeout=12)
                 if resp.status_code == 200:
-                data = resp.json()
-                # standardize
-                table = data.get("standings", [])
-                if not table:
-                    return None
-                # take first group (usually TOTAL)
-                rows = table[0].get("table", [])
-                result = []
-                for r in rows:
-                    team = r.get("team", {})
-                    result.append({
-                        "team": team.get("name"),
-                        "position": r.get("position"),
-                        "points": r.get("points"),
-                        "played": r.get("playedGames"),
-                        "won": r.get("won"),
-                        "draw": r.get("draw"),
-                        "lost": r.get("lost"),
-                        "for": r.get("goalsFor"),
-                        "against": r.get("goalsAgainst")
-                    })
+                    data = resp.json()
+                    # standardize
+                    table = data.get("standings", [])
+                    if not table:
+                        return None
+                    # take first group (usually TOTAL)
+                    rows = table[0].get("table", [])
+                    result = []
+                    for r in rows:
+                        team = r.get("team", {})
+                        result.append({
+                            "team": team.get("name"),
+                            "position": r.get("position"),
+                            "points": r.get("points"),
+                            "played": r.get("playedGames"),
+                            "won": r.get("won"),
+                            "draw": r.get("draw"),
+                            "lost": r.get("lost"),
+                            "for": r.get("goalsFor"),
+                            "against": r.get("goalsAgainst")
+                        })
                     return result
                 elif resp.status_code == 429:
                     # rate limit, try next key
