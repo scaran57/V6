@@ -388,11 +388,11 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "1.2"
-  test_sequence: 4
+  version: "1.3"
+  test_sequence: 5
   run_ui: false
-  last_update: "2025-11-06"
-  last_feature: "Système de routage avec Mode Production et Mode Test + Contrôles avancés du cache"
+  last_update: "2025-11-16"
+  last_feature: "Intégration des scrapers Ligue 2 et Europa League dans le système multi-sources"
 
 test_plan:
   current_focus:
