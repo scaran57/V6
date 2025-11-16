@@ -38,7 +38,8 @@ LEAGUES_MAP = {
     "FL2": "FRA-Ligue 2",            # Ligue 2
     "CL": "Champions League",        # Champions League
     "EL": "Europa League",           # Europa League
-    "WC": "FIFA World Cup"           # FIFA World Cup
+    "WC": "FIFA World Cup",          # FIFA World Cup
+    "CLI": "Copa Libertadores"       # Copa Libertadores
 }
 
 DATA_DIR = "/app/data/leagues"
