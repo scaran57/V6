@@ -120,18 +120,26 @@ if USE_MONGO and MongoClient:
 def get_standings_football_data(league_code: str) -> Optional[List[Dict[str, Any]]]:
     """
     league_code: ex. 'PL' (Premier League), 'FL1' (Ligue 1), 'BL1' (Bundesliga)...
+    Utilise 2 clés en rotation pour doubler la capacité
     """
     if not FOOTBALL_DATA_API_KEY:
         logging.warning("Football-Data API key not set")
         return None
 
     url = f"{FOOTBALL_DATA_BASE}/competitions/{league_code}/standings"
-    hdr = {"X-Auth-Token": FOOTBALL_DATA_API_KEY}
-    attempt = 0
-    while attempt < RETRY_ATTEMPTS:
-        try:
-            resp = requests.get(url, headers=hdr, timeout=12)
-            if resp.status_code == 200:
+    
+    # Essayer avec la clé principale d'abord, puis la backup
+    keys_to_try = [FOOTBALL_DATA_API_KEY]
+    if FOOTBALL_DATA_API_KEY_2:
+        keys_to_try.append(FOOTBALL_DATA_API_KEY_2)
+    
+    for key_idx, api_key in enumerate(keys_to_try):
+        hdr = {"X-Auth-Token": api_key}
+        attempt = 0
+        while attempt < RETRY_ATTEMPTS:
+            try:
+                resp = requests.get(url, headers=hdr, timeout=12)
+                if resp.status_code == 200:
                 data = resp.json()
                 # standardize
                 table = data.get("standings", [])
