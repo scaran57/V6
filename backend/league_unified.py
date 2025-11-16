@@ -423,7 +423,8 @@ def update_all_leagues():
             "PPL": "PrimeiraLiga",
             "FL2": "Ligue2",
             "CL": "ChampionsLeague",
-            "EL": "EuropaLeague"
+            "EL": "EuropaLeague",
+            "WC": "WorldCup"
         }
         league_name = CODE_TO_NAME.get(api_code, api_code)
         
