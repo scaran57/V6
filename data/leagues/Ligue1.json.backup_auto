@@ -1,114 +1,115 @@
 {
   "league": "Ligue1",
-  "updated": "2025-11-15T01:28:00Z",
+  "updated": "2025-11-15T23:51:37.110026Z",
+  "source": "multi-source-updater",
   "teams": [
     {
       "rank": 1,
-      "name": "Paris Saint-Germain",
+      "name": "Paris Saint-Germain FC",
       "points": 27,
       "coefficient": 1.3
     },
     {
       "rank": 2,
-      "name": "Marseille",
+      "name": "Olympique de Marseille",
       "points": 25,
-      "coefficient": 1.276
+      "coefficient": 1.2735
     },
     {
       "rank": 3,
-      "name": "Lens",
+      "name": "Racing Club de Lens",
       "points": 25,
-      "coefficient": 1.253
+      "coefficient": 1.2471
     },
     {
       "rank": 4,
-      "name": "Strasbourg",
+      "name": "RC Strasbourg Alsace",
       "points": 22,
-      "coefficient": 1.229
+      "coefficient": 1.2206
     },
     {
       "rank": 5,
-      "name": "Lille",
+      "name": "Lille OSC",
       "points": 20,
-      "coefficient": 1.206
+      "coefficient": 1.1941
     },
     {
       "rank": 6,
-      "name": "Monaco",
+      "name": "AS Monaco FC",
       "points": 20,
-      "coefficient": 1.182
+      "coefficient": 1.1676
     },
     {
       "rank": 7,
-      "name": "Lyon",
+      "name": "Olympique Lyonnais",
       "points": 20,
-      "coefficient": 1.159
+      "coefficient": 1.1412
     },
     {
       "rank": 8,
-      "name": "Rennes",
+      "name": "Stade Rennais FC 1901",
       "points": 18,
-      "coefficient": 1.135
+      "coefficient": 1.1147
     },
     {
       "rank": 9,
-      "name": "Nice",
+      "name": "OGC Nice",
       "points": 17,
-      "coefficient": 1.112
+      "coefficient": 1.0882
     },
     {
       "rank": 10,
-      "name": "Toulouse",
+      "name": "Toulouse FC",
       "points": 16,
-      "coefficient": 1.088
+      "coefficient": 1.0618
     },
     {
       "rank": 11,
       "name": "Paris FC",
       "points": 14,
-      "coefficient": 1.065
+      "coefficient": 1.0353
     },
     {
       "rank": 12,
-      "name": "Le Havre",
+      "name": "Le Havre AC",
       "points": 14,
-      "coefficient": 1.041
+      "coefficient": 1.0088
     },
     {
       "rank": 13,
-      "name": "Angers",
+      "name": "Angers SCO",
       "points": 13,
-      "coefficient": 1.018
+      "coefficient": 0.9824
     },
     {
       "rank": 14,
-      "name": "Metz",
+      "name": "FC Metz",
       "points": 11,
-      "coefficient": 0.994
+      "coefficient": 0.9559
     },
     {
       "rank": 15,
-      "name": "Brest",
+      "name": "Stade Brestois 29",
       "points": 10,
-      "coefficient": 0.971
+      "coefficient": 0.9294
     },
     {
       "rank": 16,
-      "name": "Nantes",
+      "name": "FC Nantes",
       "points": 10,
-      "coefficient": 0.947
+      "coefficient": 0.9029
     },
     {
       "rank": 17,
-      "name": "Lorient",
+      "name": "FC Lorient",
       "points": 10,
-      "coefficient": 0.924
+      "coefficient": 0.8765
     },
     {
       "rank": 18,
-      "name": "Auxerre",
+      "name": "AJ Auxerre",
       "points": 7,
-      "coefficient": 0.9
+      "coefficient": 0.85
     }
   ]
 }

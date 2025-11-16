@@ -1732,5 +1732,54 @@
         "against": 0
       }
     ]
+  },
+  "league:CLI": {
+    "timestamp": 1763285097.3755836,
+    "data": [
+      {
+        "team": "Estudiantes de La Plata",
+        "position": 1,
+        "points": 12,
+        "played": 6,
+        "won": 4,
+        "draw": 0,
+        "lost": 2,
+        "for": 11,
+        "against": 5
+      },
+      {
+        "team": "Botafogo FR",
+        "position": 2,
+        "points": 12,
+        "played": 6,
+        "won": 4,
+        "draw": 0,
+        "lost": 2,
+        "for": 8,
+        "against": 5
+      },
+      {
+        "team": "CF Universidad de Chile",
+        "position": 3,
+        "points": 10,
+        "played": 6,
+        "won": 3,
+        "draw": 1,
+        "lost": 2,
+        "for": 8,
+        "against": 6
+      },
+      {
+        "team": "Carabobo FC",
+        "position": 4,
+        "points": 1,
+        "played": 6,
+        "won": 0,
+        "draw": 1,
+        "lost": 5,
+        "for": 2,
+        "against": 13
+      }
+    ]
   }
 }

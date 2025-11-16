@@ -1,114 +1,115 @@
 {
   "league": "PrimeiraLiga",
-  "updated": "2025-11-15T01:32:00Z",
+  "updated": "2025-11-15T23:51:37.110743Z",
+  "source": "multi-source-updater",
   "teams": [
     {
       "rank": 1,
-      "name": "Porto",
+      "name": "FC Porto",
       "points": 31,
       "coefficient": 1.3
     },
     {
       "rank": 2,
-      "name": "Sporting CP",
+      "name": "Sporting Clube de Portugal",
       "points": 28,
-      "coefficient": 1.276
+      "coefficient": 1.2735
     },
     {
       "rank": 3,
-      "name": "Benfica",
+      "name": "Sport Lisboa e Benfica",
       "points": 25,
-      "coefficient": 1.253
+      "coefficient": 1.2471
     },
     {
       "rank": 4,
-      "name": "Gil Vicente",
+      "name": "Gil Vicente FC",
       "points": 23,
-      "coefficient": 1.229
+      "coefficient": 1.2206
     },
     {
       "rank": 5,
-      "name": "Famalicao",
+      "name": "FC Famalicão",
       "points": 19,
-      "coefficient": 1.206
+      "coefficient": 1.1941
     },
     {
       "rank": 6,
-      "name": "Moreirense",
+      "name": "Moreirense FC",
       "points": 18,
-      "coefficient": 1.182
+      "coefficient": 1.1676
     },
     {
       "rank": 7,
-      "name": "Braga",
+      "name": "Sporting Clube de Braga",
       "points": 16,
-      "coefficient": 1.159
+      "coefficient": 1.1412
     },
     {
       "rank": 8,
-      "name": "Guimaraes",
+      "name": "Vitória SC",
       "points": 14,
-      "coefficient": 1.135
+      "coefficient": 1.1147
     },
     {
       "rank": 9,
-      "name": "Estoril",
+      "name": "GD Estoril Praia",
       "points": 13,
-      "coefficient": 1.112
+      "coefficient": 1.0882
     },
     {
       "rank": 10,
       "name": "CD Nacional",
       "points": 12,
-      "coefficient": 1.088
+      "coefficient": 1.0618
     },
     {
       "rank": 11,
-      "name": "Rio Ave",
+      "name": "Rio Ave FC",
       "points": 12,
-      "coefficient": 1.065
+      "coefficient": 1.0353
     },
     {
       "rank": 12,
-      "name": "Santa Clara",
+      "name": "CF Estrela da Amadora",
       "points": 11,
-      "coefficient": 1.041
+      "coefficient": 1.0088
     },
     {
       "rank": 13,
-      "name": "Estrela Amadora",
+      "name": "CD Santa Clara",
       "points": 11,
-      "coefficient": 1.018
+      "coefficient": 0.9824
     },
     {
       "rank": 14,
-      "name": "Arouca",
+      "name": "FC Alverca",
       "points": 11,
-      "coefficient": 0.994
+      "coefficient": 0.9559
     },
     {
       "rank": 15,
-      "name": "Casa Pia",
+      "name": "Casa Pia AC",
       "points": 9,
-      "coefficient": 0.971
+      "coefficient": 0.9294
     },
     {
       "rank": 16,
-      "name": "Arouca",
+      "name": "FC Arouca",
       "points": 9,
-      "coefficient": 0.947
+      "coefficient": 0.9029
     },
     {
       "rank": 17,
-      "name": "Tondela",
+      "name": "CD Tondela",
       "points": 6,
-      "coefficient": 0.924
+      "coefficient": 0.8765
     },
     {
       "rank": 18,
-      "name": "AVS Futebol",
+      "name": "AVS",
       "points": 3,
-      "coefficient": 0.9
+      "coefficient": 0.85
     }
   ]
 }

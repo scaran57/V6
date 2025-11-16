@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-15T23:51:19.279012",
+  "timestamp": "2025-11-16T09:24:34.195832",
   "results": {
     "PL": {
       "status": "ok",
@@ -23,7 +23,7 @@
     },
     "PPL": {
       "status": "ok",
-      "source": "football-data"
+      "source": "cache"
     },
     "FL2": {
       "status": "none",
@@ -31,11 +31,19 @@
     },
     "CL": {
       "status": "ok",
-      "source": "football-data"
+      "source": "cache"
     },
     "EL": {
       "status": "none",
       "source": "none"
+    },
+    "WC": {
+      "status": "ok",
+      "source": "cache"
+    },
+    "CLI": {
+      "status": "ok",
+      "source": "football-data"
     }
   }
 }

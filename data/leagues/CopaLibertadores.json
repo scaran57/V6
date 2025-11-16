@@ -1,0 +1,31 @@
+{
+  "league": "CopaLibertadores",
+  "updated": "2025-11-16T09:24:57.390384Z",
+  "source": "multi-source-updater",
+  "teams": [
+    {
+      "rank": 1,
+      "name": "Estudiantes de La Plata",
+      "points": 12,
+      "coefficient": 1.3
+    },
+    {
+      "rank": 2,
+      "name": "Botafogo FR",
+      "points": 12,
+      "coefficient": 1.15
+    },
+    {
+      "rank": 3,
+      "name": "CF Universidad de Chile",
+      "points": 10,
+      "coefficient": 1.0
+    },
+    {
+      "rank": 4,
+      "name": "Carabobo FC",
+      "points": 1,
+      "coefficient": 0.85
+    }
+  ]
+}
