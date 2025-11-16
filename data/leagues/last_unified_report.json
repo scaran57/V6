@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-16T11:43:39.843300",
+  "timestamp": "2025-11-16T11:45:18.679004",
   "results": {
     "PL": {
       "status": "ok",
@@ -34,6 +34,14 @@
       "source": "cache"
     },
     "EL": {
+      "status": "ok",
+      "source": "cache"
+    },
+    "WC": {
+      "status": "ok",
+      "source": "cache"
+    },
+    "CLI": {
       "status": "ok",
       "source": "cache"
     }

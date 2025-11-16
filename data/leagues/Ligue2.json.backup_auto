@@ -1,7 +1,6 @@
 {
   "league": "Ligue2",
-  "updated": "2025-11-16T11:45:39.008523Z",
-  "source": "multi-source-updater",
+  "updated": "2025-11-15T01:33:00Z",
   "teams": [
     {
       "rank": 1,
@@ -13,103 +12,103 @@
       "rank": 2,
       "name": "Red Star",
       "points": 27,
-      "coefficient": 1.2735
+      "coefficient": 1.276
     },
     {
       "rank": 3,
       "name": "Saint-Etienne",
       "points": 26,
-      "coefficient": 1.2471
+      "coefficient": 1.253
     },
     {
       "rank": 4,
       "name": "Montpellier",
       "points": 24,
-      "coefficient": 1.2206
+      "coefficient": 1.229
     },
     {
       "rank": 5,
       "name": "Pau FC",
       "points": 23,
-      "coefficient": 1.1941
+      "coefficient": 1.206
     },
     {
       "rank": 6,
       "name": "Reims",
       "points": 22,
-      "coefficient": 1.1676
+      "coefficient": 1.182
     },
     {
       "rank": 7,
       "name": "Le Mans",
       "points": 21,
-      "coefficient": 1.1412
+      "coefficient": 1.159
     },
     {
       "rank": 8,
       "name": "USL Dunkerque",
       "points": 20,
-      "coefficient": 1.1147
+      "coefficient": 1.135
     },
     {
       "rank": 9,
       "name": "Guingamp",
       "points": 20,
-      "coefficient": 1.0882
+      "coefficient": 1.112
     },
     {
       "rank": 10,
       "name": "Grenoble",
       "points": 17,
-      "coefficient": 1.0618
+      "coefficient": 1.088
     },
     {
       "rank": 11,
       "name": "Clermont",
       "points": 17,
-      "coefficient": 1.0353
+      "coefficient": 1.065
     },
     {
       "rank": 12,
       "name": "FC Annecy",
       "points": 16,
-      "coefficient": 1.0088
+      "coefficient": 1.041
     },
     {
       "rank": 13,
       "name": "Rodez",
       "points": 16,
-      "coefficient": 0.9824
+      "coefficient": 1.018
     },
     {
       "rank": 14,
       "name": "Amiens",
       "points": 15,
-      "coefficient": 0.9559
+      "coefficient": 0.994
     },
     {
       "rank": 15,
       "name": "Nancy",
       "points": 15,
-      "coefficient": 0.9294
+      "coefficient": 0.971
     },
     {
       "rank": 16,
       "name": "Laval",
       "points": 12,
-      "coefficient": 0.9029
+      "coefficient": 0.947
     },
     {
       "rank": 17,
       "name": "Boulogne",
       "points": 12,
-      "coefficient": 0.8765
+      "coefficient": 0.924
     },
     {
       "rank": 18,
       "name": "Bastia",
       "points": 7,
-      "coefficient": 0.85
+      "coefficient": 0.9
     }
   ]
 }

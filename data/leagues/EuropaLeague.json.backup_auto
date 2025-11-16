@@ -1,7 +1,6 @@
 {
   "league": "EuropaLeague",
-  "updated": "2025-11-16T11:45:39.010200Z",
-  "source": "multi-source-updater",
+  "updated": "2025-11-15T01:34:00Z",
   "teams": [
     {
       "rank": 1,
@@ -13,205 +12,205 @@
       "rank": 2,
       "name": "SC Freiburg",
       "points": 10,
-      "coefficient": 1.2871
+      "coefficient": 1.287
     },
     {
       "rank": 3,
       "name": "Ferencvaros",
       "points": 10,
-      "coefficient": 1.2743
+      "coefficient": 1.274
     },
     {
       "rank": 4,
       "name": "Celta Vigo",
       "points": 9,
-      "coefficient": 1.2614
+      "coefficient": 1.261
     },
     {
       "rank": 5,
       "name": "Braga",
       "points": 9,
-      "coefficient": 1.2486
+      "coefficient": 1.248
     },
     {
       "rank": 6,
       "name": "Aston Villa",
       "points": 9,
-      "coefficient": 1.2357
+      "coefficient": 1.235
     },
     {
       "rank": 7,
       "name": "Lyon",
       "points": 9,
-      "coefficient": 1.2229
+      "coefficient": 1.222
     },
     {
       "rank": 8,
       "name": "Viktoria Plzen",
       "points": 8,
-      "coefficient": 1.21
+      "coefficient": 1.209
     },
     {
       "rank": 9,
       "name": "Real Betis",
       "points": 8,
-      "coefficient": 1.1971
+      "coefficient": 1.196
     },
     {
       "rank": 10,
       "name": "PAOK",
       "points": 7,
-      "coefficient": 1.1843
+      "coefficient": 1.183
     },
     {
       "rank": 11,
       "name": "Brann",
       "points": 7,
-      "coefficient": 1.1714
+      "coefficient": 1.170
     },
     {
       "rank": 12,
       "name": "Dinamo Zagreb",
       "points": 7,
-      "coefficient": 1.1586
+      "coefficient": 1.157
     },
     {
       "rank": 13,
       "name": "Genk",
       "points": 7,
-      "coefficient": 1.1457
+      "coefficient": 1.144
     },
     {
       "rank": 14,
       "name": "Porto",
       "points": 7,
-      "coefficient": 1.1329
+      "coefficient": 1.131
     },
     {
       "rank": 15,
       "name": "Fenerbahce",
       "points": 7,
-      "coefficient": 1.12
+      "coefficient": 1.118
     },
     {
       "rank": 16,
       "name": "Panathinaikos",
       "points": 6,
-      "coefficient": 1.1071
+      "coefficient": 1.105
     },
     {
       "rank": 17,
       "name": "FC Basel",
       "points": 6,
-      "coefficient": 1.0943
+      "coefficient": 1.092
     },
     {
       "rank": 18,
       "name": "AS Roma",
       "points": 6,
-      "coefficient": 1.0814
+      "coefficient": 1.079
     },
     {
       "rank": 19,
       "name": "Lille",
       "points": 6,
-      "coefficient": 1.0686
+      "coefficient": 1.066
     },
     {
       "rank": 20,
       "name": "VfB Stuttgart",
       "points": 6,
-      "coefficient": 1.0557
+      "coefficient": 1.053
     },
     {
       "rank": 21,
       "name": "Go Ahead Eagles",
       "points": 6,
-      "coefficient": 1.0429
+      "coefficient": 1.040
     },
     {
       "rank": 22,
       "name": "Young Boys",
       "points": 6,
-      "coefficient": 1.03
+      "coefficient": 1.027
     },
     {
       "rank": 23,
       "name": "Nottingham Forest",
       "points": 5,
-      "coefficient": 1.0171
+      "coefficient": 1.014
     },
     {
       "rank": 24,
       "name": "Bologna",
       "points": 5,
-      "coefficient": 1.0043
+      "coefficient": 1.001
     },
     {
       "rank": 25,
       "name": "Sturm Graz",
       "points": 4,
-      "coefficient": 0.9914
+      "coefficient": 0.988
     },
     {
       "rank": 26,
       "name": "Red Star Belgrade",
       "points": 4,
-      "coefficient": 0.9786
+      "coefficient": 0.975
     },
     {
       "rank": 27,
       "name": "Celtic Glasgow",
       "points": 4,
-      "coefficient": 0.9657
+      "coefficient": 0.962
     },
     {
       "rank": 28,
       "name": "RB Salzburg",
       "points": 3,
-      "coefficient": 0.9529
+      "coefficient": 0.949
     },
     {
       "rank": 29,
       "name": "Feyenoord",
       "points": 3,
-      "coefficient": 0.94
+      "coefficient": 0.936
     },
     {
       "rank": 30,
       "name": "Ludogorets",
       "points": 3,
-      "coefficient": 0.9271
+      "coefficient": 0.923
     },
     {
       "rank": 31,
       "name": "FCSB",
       "points": 3,
-      "coefficient": 0.9143
+      "coefficient": 0.910
     },
     {
       "rank": 32,
       "name": "FC Utrecht",
       "points": 1,
-      "coefficient": 0.9014
+      "coefficient": 0.897
     },
     {
       "rank": 33,
       "name": "Malmo FF",
       "points": 1,
-      "coefficient": 0.8886
+      "coefficient": 0.884
     },
     {
       "rank": 34,
       "name": "Maccabi Tel Aviv",
       "points": 1,
-      "coefficient": 0.8757
+      "coefficient": 0.871
     },
     {
       "rank": 35,
       "name": "Nice",
       "points": 0,
-      "coefficient": 0.8629
+      "coefficient": 0.858
     },
     {
       "rank": 36,
