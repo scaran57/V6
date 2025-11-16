@@ -1032,6 +1032,14 @@ agent_communication:
     stuck_count: 0
     priority: "high"
     needs_retesting: false
+
+  - task: "Intégration scrapers Ligue 2 et Europa League dans système multi-sources"
+    implemented: true
+    working: true
+    file: "/app/backend/tools/multi_source_updater.py, /app/backend/tools/ligue_europa_scraper.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
