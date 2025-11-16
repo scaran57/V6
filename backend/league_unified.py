@@ -426,7 +426,8 @@ def update_all_leagues():
             "FL2": "Ligue2",
             "CL": "ChampionsLeague",
             "EL": "EuropaLeague",
-            "WC": "WorldCup"
+            "WC": "WorldCup",
+            "CLI": "CopaLibertadores"
         }
         league_name = CODE_TO_NAME.get(api_code, api_code)
         
