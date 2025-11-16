@@ -226,6 +226,189 @@ def get_standings_soccerdata(league_slug: str, season: str = "2425") -> Optional
         return None
 
 # -----------------------
+# Ligue 2 scraper (ligue1.com)
+# -----------------------
+def get_standings_ligue2() -> Optional[List[Dict[str, Any]]]:
+    """
+    Scrape le classement de Ligue 2 depuis ligue1.com
+    
+    Returns:
+        list: Liste des équipes avec position, nom et points
+    """
+    url = "https://www.ligue1.com/classement/ligue2"
+    
+    try:
+        logging.info(f"🌐 Scraping Ligue 2 depuis {url}")
+        random_sleep()
+        
+        response = requests.get(url, headers=headers(), timeout=15)
+        
+        if response.status_code != 200:
+            logging.error(f"❌ Ligue 2 HTTP {response.status_code}")
+            return None
+        
+        soup = BeautifulSoup(response.text, "html.parser")
+        standings = []
+
+        # Méthode 1 : table.standings-table
+        rows = soup.select("table.standings-table tbody tr")
+        
+        if not rows:
+            # Méthode 2 : Essayer d'autres sélecteurs
+            rows = soup.select("table tbody tr")
+        
+        if not rows:
+            # Méthode 3 : Chercher toutes les tables
+            tables = soup.find_all("table")
+            for table in tables:
+                rows = table.select("tbody tr")
+                if rows and len(rows) > 10:  # Au moins 10 équipes
+                    break
+        
+        if not rows:
+            logging.warning(f"⚠️ Aucune ligne trouvée pour Ligue 2")
+            return None
+
+        for row in rows:
+            try:
+                # Essayer plusieurs sélecteurs
+                pos_elem = row.select_one(".position") or row.select_one("td:nth-child(1)")
+                team_elem = row.select_one(".club-name") or row.select_one(".team-name") or row.select_one("td:nth-child(2)")
+                pts_elem = row.select_one(".points") or row.select_one("td:nth-last-child(1)")
+                
+                if not (pos_elem and team_elem and pts_elem):
+                    continue
+                
+                pos = pos_elem.get_text(strip=True)
+                team = team_elem.get_text(strip=True)
+                pts = pts_elem.get_text(strip=True)
+                
+                # Nettoyer et convertir
+                try:
+                    position = int(pos.replace('.', '').replace('#', '').strip())
+                    points = int(pts.strip())
+                except:
+                    continue
+                
+                standings.append({
+                    "team": team,
+                    "position": position,
+                    "points": points,
+                    "played": None  # Pas toujours disponible
+                })
+            except Exception as e:
+                logging.debug(f"Erreur parsing ligne Ligue 2: {e}")
+                continue
+
+        if standings:
+            logging.info(f"✅ Ligue 2 : {len(standings)} équipes scrapées")
+            return standings
+        else:
+            logging.warning(f"⚠️ Aucune donnée extraite pour Ligue 2")
+            return None
+            
+    except Exception as e:
+        logging.error(f"❌ Erreur scraping Ligue 2: {e}")
+        return None
+
+# -----------------------
+# Europa League scraper (uefa.com)
+# -----------------------
+def get_standings_europa_league() -> Optional[List[Dict[str, Any]]]:
+    """
+    Scrape le classement de l'Europa League depuis uefa.com
+    
+    Returns:
+        list: Liste des équipes avec position, nom et points (tous groupes combinés)
+    """
+    url = "https://fr.uefa.com/uefaeuropaleague/standings/"
+    
+    try:
+        logging.info(f"🌐 Scraping Europa League depuis {url}")
+        random_sleep()
+        
+        response = requests.get(url, headers=headers(), timeout=15)
+        
+        if response.status_code != 200:
+            logging.error(f"❌ Europa League HTTP {response.status_code}")
+            return None
+        
+        soup = BeautifulSoup(response.text, "html.parser")
+        all_standings = []
+        position_counter = 1
+
+        # Chercher les groupes
+        groups = soup.select("section.standings-group") or soup.select("div.standings-group")
+        
+        if not groups:
+            # Fallback : chercher toutes les tables
+            groups = soup.find_all("table")
+        
+        if not groups:
+            logging.warning(f"⚠️ Aucun groupe trouvé pour Europa League")
+            return None
+
+        for group in groups:
+            try:
+                # Lignes du tableau
+                rows = group.select("table.standings-table tbody tr") or group.select("tbody tr")
+                
+                if not rows:
+                    continue
+
+                for row in rows:
+                    try:
+                        # Essayer plusieurs sélecteurs
+                        team_elem = (row.select_one(".team-name") or 
+                                   row.select_one(".club-name") or 
+                                   row.select_one("td:nth-child(2)") or
+                                   row.select_one("td.team"))
+                        
+                        pts_elem = (row.select_one(".points") or 
+                                  row.select_one("td:nth-last-child(1)") or
+                                  row.select_one("td.pts"))
+                        
+                        if not (team_elem and pts_elem):
+                            continue
+                        
+                        team = team_elem.get_text(strip=True)
+                        pts = pts_elem.get_text(strip=True)
+                        
+                        # Convertir
+                        try:
+                            points = int(pts.strip())
+                        except:
+                            continue
+                        
+                        all_standings.append({
+                            "team": team,
+                            "position": position_counter,
+                            "points": points,
+                            "played": None
+                        })
+                        
+                        position_counter += 1
+                        
+                    except Exception as e:
+                        logging.debug(f"Erreur parsing ligne Europa League: {e}")
+                        continue
+                        
+            except Exception as e:
+                logging.debug(f"Erreur parsing groupe Europa League: {e}")
+                continue
+
+        if all_standings:
+            logging.info(f"✅ Europa League : {len(all_standings)} équipes scrapées")
+            return all_standings
+        else:
+            logging.warning(f"⚠️ Aucune donnée extraite pour Europa League")
+            return None
+            
+    except Exception as e:
+        logging.error(f"❌ Erreur scraping Europa League: {e}")
+        return None
+
+# -----------------------
 # DBfoot scraper fallback (simple)
 # -----------------------
 def get_standings_dbfoot(league_url: str) -> Optional[List[Dict[str, Any]]]:
