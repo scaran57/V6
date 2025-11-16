@@ -51,6 +51,7 @@ CACHE_PATH = "/app/data/leagues/multi_source_cache.json"
 os.makedirs(os.path.dirname(CACHE_PATH), exist_ok=True)
 
 FOOTBALL_DATA_API_KEY = os.getenv("FOOTBALL_DATA_API_KEY", "ad9959577fd349ba99b299612668a5cb")
+FOOTBALL_DATA_API_KEY_2 = os.getenv("FOOTBALL_DATA_API_KEY_2", "cdd478991a6842cb904e0ed8fa3c8807")  # Backup key
 FOOTBALL_DATA_BASE = "https://api.football-data.org/v4"
 
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
