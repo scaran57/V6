@@ -315,7 +315,8 @@ def save_league_to_file(league_api_code, data):
         "FL2": "Ligue2",
         "CL": "ChampionsLeague",
         "EL": "EuropaLeague",
-        "WC": "WorldCup"
+        "WC": "WorldCup",
+        "CLI": "CopaLibertadores"
     }
     
     league_name = CODE_TO_NAME.get(league_api_code, league_api_code)
