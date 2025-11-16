@@ -1781,5 +1781,339 @@
         "against": 13
       }
     ]
+  },
+  "league:FL2": {
+    "timestamp": 1763293376.6826642,
+    "data": [
+      {
+        "team": "Troyes",
+        "position": 1,
+        "points": 28,
+        "played": null
+      },
+      {
+        "team": "Red Star",
+        "position": 2,
+        "points": 27,
+        "played": null
+      },
+      {
+        "team": "Saint-Etienne",
+        "position": 3,
+        "points": 26,
+        "played": null
+      },
+      {
+        "team": "Montpellier",
+        "position": 4,
+        "points": 24,
+        "played": null
+      },
+      {
+        "team": "Pau FC",
+        "position": 5,
+        "points": 23,
+        "played": null
+      },
+      {
+        "team": "Reims",
+        "position": 6,
+        "points": 22,
+        "played": null
+      },
+      {
+        "team": "Le Mans",
+        "position": 7,
+        "points": 21,
+        "played": null
+      },
+      {
+        "team": "USL Dunkerque",
+        "position": 8,
+        "points": 20,
+        "played": null
+      },
+      {
+        "team": "Guingamp",
+        "position": 9,
+        "points": 20,
+        "played": null
+      },
+      {
+        "team": "Grenoble",
+        "position": 10,
+        "points": 17,
+        "played": null
+      },
+      {
+        "team": "Clermont",
+        "position": 11,
+        "points": 17,
+        "played": null
+      },
+      {
+        "team": "FC Annecy",
+        "position": 12,
+        "points": 16,
+        "played": null
+      },
+      {
+        "team": "Rodez",
+        "position": 13,
+        "points": 16,
+        "played": null
+      },
+      {
+        "team": "Amiens",
+        "position": 14,
+        "points": 15,
+        "played": null
+      },
+      {
+        "team": "Nancy",
+        "position": 15,
+        "points": 15,
+        "played": null
+      },
+      {
+        "team": "Laval",
+        "position": 16,
+        "points": 12,
+        "played": null
+      },
+      {
+        "team": "Boulogne",
+        "position": 17,
+        "points": 12,
+        "played": null
+      },
+      {
+        "team": "Bastia",
+        "position": 18,
+        "points": 7,
+        "played": null
+      }
+    ]
+  },
+  "league:EL": {
+    "timestamp": 1763293376.6842036,
+    "data": [
+      {
+        "team": "Midtjylland",
+        "position": 1,
+        "points": 12,
+        "played": null
+      },
+      {
+        "team": "SC Freiburg",
+        "position": 2,
+        "points": 10,
+        "played": null
+      },
+      {
+        "team": "Ferencvaros",
+        "position": 3,
+        "points": 10,
+        "played": null
+      },
+      {
+        "team": "Celta Vigo",
+        "position": 4,
+        "points": 9,
+        "played": null
+      },
+      {
+        "team": "Braga",
+        "position": 5,
+        "points": 9,
+        "played": null
+      },
+      {
+        "team": "Aston Villa",
+        "position": 6,
+        "points": 9,
+        "played": null
+      },
+      {
+        "team": "Lyon",
+        "position": 7,
+        "points": 9,
+        "played": null
+      },
+      {
+        "team": "Viktoria Plzen",
+        "position": 8,
+        "points": 8,
+        "played": null
+      },
+      {
+        "team": "Real Betis",
+        "position": 9,
+        "points": 8,
+        "played": null
+      },
+      {
+        "team": "PAOK",
+        "position": 10,
+        "points": 7,
+        "played": null
+      },
+      {
+        "team": "Brann",
+        "position": 11,
+        "points": 7,
+        "played": null
+      },
+      {
+        "team": "Dinamo Zagreb",
+        "position": 12,
+        "points": 7,
+        "played": null
+      },
+      {
+        "team": "Genk",
+        "position": 13,
+        "points": 7,
+        "played": null
+      },
+      {
+        "team": "Porto",
+        "position": 14,
+        "points": 7,
+        "played": null
+      },
+      {
+        "team": "Fenerbahce",
+        "position": 15,
+        "points": 7,
+        "played": null
+      },
+      {
+        "team": "Panathinaikos",
+        "position": 16,
+        "points": 6,
+        "played": null
+      },
+      {
+        "team": "FC Basel",
+        "position": 17,
+        "points": 6,
+        "played": null
+      },
+      {
+        "team": "AS Roma",
+        "position": 18,
+        "points": 6,
+        "played": null
+      },
+      {
+        "team": "Lille",
+        "position": 19,
+        "points": 6,
+        "played": null
+      },
+      {
+        "team": "VfB Stuttgart",
+        "position": 20,
+        "points": 6,
+        "played": null
+      },
+      {
+        "team": "Go Ahead Eagles",
+        "position": 21,
+        "points": 6,
+        "played": null
+      },
+      {
+        "team": "Young Boys",
+        "position": 22,
+        "points": 6,
+        "played": null
+      },
+      {
+        "team": "Nottingham Forest",
+        "position": 23,
+        "points": 5,
+        "played": null
+      },
+      {
+        "team": "Bologna",
+        "position": 24,
+        "points": 5,
+        "played": null
+      },
+      {
+        "team": "Sturm Graz",
+        "position": 25,
+        "points": 4,
+        "played": null
+      },
+      {
+        "team": "Red Star Belgrade",
+        "position": 26,
+        "points": 4,
+        "played": null
+      },
+      {
+        "team": "Celtic Glasgow",
+        "position": 27,
+        "points": 4,
+        "played": null
+      },
+      {
+        "team": "RB Salzburg",
+        "position": 28,
+        "points": 3,
+        "played": null
+      },
+      {
+        "team": "Feyenoord",
+        "position": 29,
+        "points": 3,
+        "played": null
+      },
+      {
+        "team": "Ludogorets",
+        "position": 30,
+        "points": 3,
+        "played": null
+      },
+      {
+        "team": "FCSB",
+        "position": 31,
+        "points": 3,
+        "played": null
+      },
+      {
+        "team": "FC Utrecht",
+        "position": 32,
+        "points": 1,
+        "played": null
+      },
+      {
+        "team": "Malmo FF",
+        "position": 33,
+        "points": 1,
+        "played": null
+      },
+      {
+        "team": "Maccabi Tel Aviv",
+        "position": 34,
+        "points": 1,
+        "played": null
+      },
+      {
+        "team": "Nice",
+        "position": 35,
+        "points": 0,
+        "played": null
+      },
+      {
+        "team": "Rangers Glasgow",
+        "position": 36,
+        "points": 0,
+        "played": null
+      }
+    ]
   }
 }
