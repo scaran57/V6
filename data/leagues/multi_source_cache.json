@@ -1683,5 +1683,54 @@
         "against": 14
       }
     ]
+  },
+  "league:WC": {
+    "timestamp": 1763251581.8662493,
+    "data": [
+      {
+        "team": null,
+        "position": 1,
+        "points": 0,
+        "played": 0,
+        "won": 0,
+        "draw": 0,
+        "lost": 0,
+        "for": 0,
+        "against": 0
+      },
+      {
+        "team": null,
+        "position": 1,
+        "points": 0,
+        "played": 0,
+        "won": 0,
+        "draw": 0,
+        "lost": 0,
+        "for": 0,
+        "against": 0
+      },
+      {
+        "team": null,
+        "position": 1,
+        "points": 0,
+        "played": 0,
+        "won": 0,
+        "draw": 0,
+        "lost": 0,
+        "for": 0,
+        "against": 0
+      },
+      {
+        "team": "Mexico",
+        "position": 1,
+        "points": 0,
+        "played": 0,
+        "won": 0,
+        "draw": 0,
+        "lost": 0,
+        "for": 0,
+        "against": 0
+      }
+    ]
   }
 }
