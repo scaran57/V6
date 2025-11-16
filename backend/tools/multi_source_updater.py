@@ -161,18 +161,19 @@ def get_standings_football_data(league_code: str) -> Optional[List[Dict[str, Any
                         "for": r.get("goalsFor"),
                         "against": r.get("goalsAgainst")
                     })
-                return result
-            elif resp.status_code == 429:
-                # rate limit, backoff
-                logging.warning("Football-Data rate limit reached, backing off")
+                    return result
+                elif resp.status_code == 429:
+                    # rate limit, try next key
+                    logging.warning(f"Football-Data rate limit reached on key {key_idx+1}, trying next...")
+                    break  # Sortir de la boucle retry, essayer la clé suivante
+                else:
+                    logging.warning(f"Football-Data HTTP {resp.status_code}")
+                    break  # Sortir et essayer la clé suivante
+            except Exception as e:
+                logging.warning(f"Football-Data exception with key {key_idx+1}: {e}")
                 time.sleep(RETRY_BACKOFF * (attempt + 1))
-            else:
-                logging.warning(f"Football-Data HTTP {resp.status_code}")
-                return None
-        except Exception as e:
-            logging.warning(f"Football-Data exception: {e}")
-            time.sleep(RETRY_BACKOFF * (attempt + 1))
-        attempt += 1
+            attempt += 1
+    
     return None
 
 # -----------------------
