@@ -572,7 +572,7 @@ class UnifiedUpdater:
 
     def update_league(self, league_api_code: str, league_soccerdata_slug: str, season: str = "2425"):
         """
-        Try Football-Data -> SoccerData -> DBfoot -> cache
+        Try Football-Data -> SoccerData -> Custom Scrapers -> DBfoot -> cache
         Returns dict with source & data
         """
         key = f"league:{league_api_code}"
@@ -608,7 +608,35 @@ class UnifiedUpdater:
         except Exception as e:
             logging.warning(f"SoccerData failed for {league_api_code}: {e}")
 
-        # 4) DBfoot fallback - user must supply appropriate DBfoot URL map externally
+        # 4) Custom scrapers fallback (Ligue 2 et Europa League)
+        custom_scraper_data = None
+        if league_api_code == "FL2":  # Ligue 2
+            try:
+                self.increment_request()
+                custom_scraper_data = get_standings_ligue2()
+                if custom_scraper_data:
+                    self.store_cache(key, custom_scraper_data)
+                    if self.use_mongo:
+                        self.db.standings.update_one({"league": league_api_code}, {"$set": {"updated": datetime.utcnow(), "data": custom_scraper_data}}, upsert=True)
+                    logging.info(f"{league_api_code}: Ligue2 custom scraper OK")
+                    return {"source": "ligue2_scraper", "data": custom_scraper_data}
+            except Exception as e:
+                logging.warning(f"Ligue 2 scraper failed: {e}")
+        
+        elif league_api_code == "EL":  # Europa League
+            try:
+                self.increment_request()
+                custom_scraper_data = get_standings_europa_league()
+                if custom_scraper_data:
+                    self.store_cache(key, custom_scraper_data)
+                    if self.use_mongo:
+                        self.db.standings.update_one({"league": league_api_code}, {"$set": {"updated": datetime.utcnow(), "data": custom_scraper_data}}, upsert=True)
+                    logging.info(f"{league_api_code}: Europa League custom scraper OK")
+                    return {"source": "europa_scraper", "data": custom_scraper_data}
+            except Exception as e:
+                logging.warning(f"Europa League scraper failed: {e}")
+
+        # 5) DBfoot fallback - user must supply appropriate DBfoot URL map externally
         dbfoot_url = None  # placeholder - caller may extend to provide URLs map
         if dbfoot_url:
             try:
@@ -623,7 +651,7 @@ class UnifiedUpdater:
             except Exception as e:
                 logging.warning(f"DBfoot failed for {league_api_code}: {e}")
 
-        # 5) last resort cache (stale)
+        # 6) last resort cache (stale)
         if key in self.cache:
             logging.info(f"{league_api_code}: returning stale cache")
             return {"source": "cache_stale", "data": self.cache[key]["data"]}
