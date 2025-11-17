@@ -1979,6 +1979,393 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# ============================================================================
+# NOUVEAUX ENDPOINTS - SYSTÈME AVANCÉ
+# ============================================================================
+
+# Initialisation de la DB et du scheduler
+@app.on_event("startup")
+async def startup_event():
+    """Initialisation au démarrage de l'application"""
+    try:
+        # Initialiser la base de données SQLite
+        import sys
+        sys.path.insert(0, '/app')
+        from core.models import init_db
+        init_db()
+        logger.info("✅ Base de données SQLite initialisée")
+        
+        # Démarrer le scheduler
+        from core.scheduler_service import start_scheduler
+        start_scheduler()
+        logger.info("✅ Scheduler démarré")
+        
+    except Exception as e:
+        logger.error(f"❌ Erreur initialisation: {e}")
+
+@api_router.post("/upload-image-advanced")
+async def upload_image_advanced(
+    file: UploadFile = File(...),
+    league: str = Form(None),
+    home_team: str = Form(None),
+    away_team: str = Form(None),
+    bookmaker: str = Form(None),
+    prefer_gpt_vision: bool = Form(True)
+):
+    """
+    Upload et analyse d'une image avec pipeline OCR avancé
+    Sauvegarde l'image et l'analyse en base de données
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.ocr_pipeline import process_image
+        from core.models import SessionLocal, UploadedImage, AnalysisResult
+        from datetime import datetime
+        
+        # Sauvegarder le fichier
+        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        filename = f"{timestamp}_{file.filename}"
+        filepath = Path("/app/data/uploads") / filename
+        filepath.parent.mkdir(parents=True, exist_ok=True)
+        
+        with filepath.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        logger.info(f"📁 Image sauvegardée: {filename}")
+        
+        # Créer l'entrée DB pour l'image
+        db = SessionLocal()
+        uploaded_img = UploadedImage(
+            filename=str(filepath),
+            original_filename=file.filename,
+            league=league,
+            home_team=home_team,
+            away_team=away_team,
+            bookmaker=bookmaker
+        )
+        db.add(uploaded_img)
+        db.commit()
+        db.refresh(uploaded_img)
+        
+        # Traiter l'image avec OCR
+        logger.info(f"🔍 Traitement OCR (prefer_gpt_vision={prefer_gpt_vision})...")
+        ocr_result = process_image(str(filepath), prefer_gpt_vision=prefer_gpt_vision)
+        
+        # TODO: Calculer les probabilités avec score_predictor
+        # Pour l'instant, on sauvegarde juste les scores extraits
+        
+        # Créer l'entrée DB pour l'analyse
+        analysis = AnalysisResult(
+            parsed_scores=ocr_result.get("parsed_scores"),
+            extracted_count=len(ocr_result.get("parsed_scores", [])),
+            ocr_engine=ocr_result.get("ocr_engine"),
+            ocr_confidence=ocr_result.get("confidence"),
+            ocr_raw_text=ocr_result.get("raw_text", ""),
+            league_used=league
+        )
+        db.add(analysis)
+        db.commit()
+        db.refresh(analysis)
+        
+        # Lier l'image à l'analyse
+        uploaded_img.analysis_id = analysis.id
+        uploaded_img.processed = True
+        db.commit()
+        
+        db.close()
+        
+        logger.info(f"✅ Analyse complétée: {len(ocr_result.get('parsed_scores', []))} scores extraits")
+        
+        return {
+            "success": True,
+            "uploaded_id": uploaded_img.id,
+            "analysis_id": analysis.id,
+            "ocr_engine": ocr_result.get("ocr_engine"),
+            "scores_count": len(ocr_result.get("parsed_scores", [])),
+            "parsed_scores": ocr_result.get("parsed_scores", [])[:10]  # Max 10 pour la réponse
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ Erreur upload-image-advanced: {e}", exc_info=True)
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@api_router.get("/scheduler-status")
+async def scheduler_status():
+    """Récupère le statut du scheduler"""
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.scheduler_service import get_scheduler_status, get_scheduler_info
+        
+        file_status = get_scheduler_status()
+        runtime_info = get_scheduler_info()
+        
+        return {
+            "file_status": file_status,
+            "runtime_info": runtime_info
+        }
+    except Exception as e:
+        logger.error(f"❌ Erreur scheduler-status: {e}")
+        return {"error": str(e)}
+
+@api_router.post("/trigger-update-manual")
+async def trigger_update_manual():
+    """Déclenche manuellement une mise à jour des ligues"""
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.scheduler_service import manual_trigger_update
+        
+        logger.info("🔄 Mise à jour manuelle déclenchée via API")
+        report = manual_trigger_update()
+        
+        return {
+            "success": True,
+            "message": "Mise à jour déclenchée",
+            "report": report
+        }
+    except Exception as e:
+        logger.error(f"❌ Erreur trigger-update-manual: {e}", exc_info=True)
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@api_router.post("/set-league-param")
+async def set_league_param(
+    league: str = Form(...),
+    key: str = Form(...),
+    value: str = Form(...)
+):
+    """Met à jour un paramètre spécifique d'une ligue"""
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.config import update_league_param
+        
+        # Convertir la valeur en float si possible
+        try:
+            v = float(value)
+        except:
+            v = value
+        
+        update_league_param(league, key, v)
+        
+        logger.info(f"✅ Paramètre mis à jour: {league}.{key} = {v}")
+        
+        return {
+            "success": True,
+            "league": league,
+            "key": key,
+            "value": v
+        }
+    except Exception as e:
+        logger.error(f"❌ Erreur set-league-param: {e}")
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@api_router.get("/get-league-params")
+async def get_league_params_endpoint(league: str = Query(...)):
+    """Récupère tous les paramètres d'une ligue"""
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.config import get_league_params
+        
+        params = get_league_params(league)
+        
+        return {
+            "success": True,
+            "league": league,
+            "params": params
+        }
+    except Exception as e:
+        logger.error(f"❌ Erreur get-league-params: {e}")
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@api_router.get("/all-leagues-params")
+async def all_leagues_params():
+    """Récupère les paramètres de toutes les ligues"""
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.config import get_all_params
+        
+        params = get_all_params()
+        
+        return {
+            "success": True,
+            "params": params
+        }
+    except Exception as e:
+        logger.error(f"❌ Erreur all-leagues-params: {e}")
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@api_router.get("/last-uploads")
+async def last_uploads(limit: int = Query(20, ge=1, le=100)):
+    """Récupère les dernières images uploadées"""
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.models import SessionLocal, UploadedImage
+        
+        db = SessionLocal()
+        items = db.query(UploadedImage)\
+            .order_by(UploadedImage.upload_time.desc())\
+            .limit(limit)\
+            .all()
+        
+        result = []
+        for item in items:
+            result.append({
+                "id": item.id,
+                "filename": Path(item.filename).name if item.filename else None,
+                "original_filename": item.original_filename,
+                "league": item.league,
+                "home_team": item.home_team,
+                "away_team": item.away_team,
+                "bookmaker": item.bookmaker,
+                "processed": item.processed,
+                "analysis_id": item.analysis_id,
+                "upload_time": item.upload_time.isoformat() if item.upload_time else None
+            })
+        
+        db.close()
+        
+        return {
+            "success": True,
+            "count": len(result),
+            "uploads": result
+        }
+    except Exception as e:
+        logger.error(f"❌ Erreur last-uploads: {e}")
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@api_router.get("/last-analyses")
+async def last_analyses(limit: int = Query(20, ge=1, le=100)):
+    """Récupère les dernières analyses"""
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.models import SessionLocal, AnalysisResult
+        
+        db = SessionLocal()
+        items = db.query(AnalysisResult)\
+            .order_by(AnalysisResult.created_at.desc())\
+            .limit(limit)\
+            .all()
+        
+        result = []
+        for item in items:
+            result.append({
+                "id": item.id,
+                "most_probable_score": item.most_probable_score,
+                "confidence": item.confidence,
+                "ocr_engine": item.ocr_engine,
+                "extracted_count": item.extracted_count,
+                "league_used": item.league_used,
+                "real_score": item.real_score,
+                "real_score_confirmed": item.real_score_confirmed,
+                "created_at": item.created_at.isoformat() if item.created_at else None
+            })
+        
+        db.close()
+        
+        return {
+            "success": True,
+            "count": len(result),
+            "analyses": result
+        }
+    except Exception as e:
+        logger.error(f"❌ Erreur last-analyses: {e}")
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@api_router.post("/api/set-prefer-ocr")
+async def set_prefer_ocr(request: dict):
+    """Configure la préférence OCR (GPT-Vision vs Tesseract)"""
+    try:
+        prefer_gpt_vision = request.get("prefer_gpt_vision", True)
+        
+        # Sauvegarder la préférence
+        pref_file = Path("/app/state/ocr_preference.json")
+        pref_file.parent.mkdir(parents=True, exist_ok=True)
+        pref_file.write_text(json.dumps({"prefer_gpt_vision": prefer_gpt_vision}))
+        
+        logger.info(f"✅ Préférence OCR mise à jour: prefer_gpt_vision={prefer_gpt_vision}")
+        
+        return {
+            "success": True,
+            "prefer_gpt_vision": prefer_gpt_vision
+        }
+    except Exception as e:
+        logger.error(f"❌ Erreur set-prefer-ocr: {e}")
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@api_router.post("/learn-from-match")
+async def learn_from_match_endpoint(
+    league: str = Form(...),
+    predicted_score: str = Form(...),
+    real_score: str = Form(...),
+    home_team: str = Form(None),
+    away_team: str = Form(None),
+    analysis_id: int = Form(None)
+):
+    """Apprend d'un match et ajuste diffExpected pour la ligue"""
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.learning import learn_from_match
+        
+        result = learn_from_match(
+            league=league,
+            predicted_score=predicted_score,
+            real_score=real_score,
+            home_team=home_team,
+            away_team=away_team,
+            analysis_id=analysis_id,
+            source="manual"
+        )
+        
+        return result
+    except Exception as e:
+        logger.error(f"❌ Erreur learn-from-match: {e}", exc_info=True)
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@api_router.get("/learning-stats")
+async def learning_stats(league: str = Query(None), days: int = Query(30)):
+    """Récupère les statistiques d'apprentissage"""
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.learning import get_learning_stats
+        
+        stats = get_learning_stats(league=league, days=days)
+        
+        return {
+            "success": True,
+            "stats": stats
+        }
+    except Exception as e:
+        logger.error(f"❌ Erreur learning-stats: {e}")
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@api_router.post("/auto-learning-update")
+async def auto_learning_update(days_back: int = Form(7)):
+    """Lance la mise à jour automatique de l'apprentissage"""
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.learning import update_learning_from_confirmed_matches
+        
+        logger.info(f"🎓 Lancement auto-learning ({days_back} jours)")
+        result = update_learning_from_confirmed_matches(days_back=days_back)
+        
+        return result
+    except Exception as e:
+        logger.error(f"❌ Erreur auto-learning-update: {e}", exc_info=True)
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+# ============================================================================
+# FIN NOUVEAUX ENDPOINTS
+# ============================================================================
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
