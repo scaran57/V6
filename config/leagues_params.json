@@ -1,72 +1,72 @@
 {
   "LaLiga": {
-    "diffExpected": 2.1380,
+    "diffExpected": 2.138,
     "base_expected": 1.4,
     "coeff_min": 0.85,
-    "coeff_max": 1.30,
+    "coeff_max": 1.3,
     "coeff_home": 1.0,
     "coeff_away": 1.0,
     "teams": 20
   },
   "PremierLeague": {
-    "diffExpected": 2.05,
+    "diffExpected": 2.15,
     "base_expected": 1.45,
     "coeff_min": 0.85,
-    "coeff_max": 1.30,
+    "coeff_max": 1.3,
     "coeff_home": 1.02,
     "coeff_away": 0.98,
     "teams": 20
   },
   "SerieA": {
-    "diffExpected": 2.1380,
+    "diffExpected": 2.138,
     "base_expected": 1.38,
     "coeff_min": 0.85,
-    "coeff_max": 1.30,
+    "coeff_max": 1.3,
     "coeff_home": 1.01,
     "coeff_away": 0.99,
     "teams": 20
   },
   "Bundesliga": {
-    "diffExpected": 2.1380,
+    "diffExpected": 2.138,
     "base_expected": 1.42,
     "coeff_min": 0.85,
-    "coeff_max": 1.30,
+    "coeff_max": 1.3,
     "coeff_home": 1.0,
     "coeff_away": 1.0,
     "teams": 18
   },
   "Ligue1": {
-    "diffExpected": 2.1380,
+    "diffExpected": 2.138,
     "base_expected": 1.35,
     "coeff_min": 0.85,
-    "coeff_max": 1.30,
+    "coeff_max": 1.3,
     "coeff_home": 1.0,
     "coeff_away": 1.0,
     "teams": 18
   },
   "PrimeiraLiga": {
-    "diffExpected": 2.1380,
+    "diffExpected": 2.138,
     "base_expected": 1.38,
     "coeff_min": 0.85,
-    "coeff_max": 1.30,
+    "coeff_max": 1.3,
     "coeff_home": 1.0,
     "coeff_away": 1.0,
     "teams": 18
   },
   "Ligue2": {
-    "diffExpected": 2.1380,
+    "diffExpected": 2.138,
     "base_expected": 1.32,
     "coeff_min": 0.85,
-    "coeff_max": 1.30,
+    "coeff_max": 1.3,
     "coeff_home": 1.0,
     "coeff_away": 1.0,
     "teams": 18
   },
   "ChampionsLeague": {
-    "diffExpected": 2.1380,
+    "diffExpected": 2.138,
     "base_expected": 1.45,
     "coeff_min": 0.85,
-    "coeff_max": 1.30,
+    "coeff_max": 1.3,
     "coeff_home": 1.0,
     "coeff_away": 1.0,
     "teams": 36,
@@ -74,10 +74,10 @@
     "european_fallback": 1.05
   },
   "EuropaLeague": {
-    "diffExpected": 2.1380,
-    "base_expected": 1.40,
+    "diffExpected": 2.138,
+    "base_expected": 1.4,
     "coeff_min": 0.85,
-    "coeff_max": 1.30,
+    "coeff_max": 1.3,
     "coeff_home": 1.0,
     "coeff_away": 1.0,
     "teams": 36,
@@ -85,19 +85,19 @@
     "european_fallback": 1.05
   },
   "WorldCup": {
-    "diffExpected": 2.1380,
+    "diffExpected": 2.138,
     "base_expected": 1.42,
     "coeff_min": 0.85,
-    "coeff_max": 1.30,
+    "coeff_max": 1.3,
     "coeff_home": 1.0,
     "coeff_away": 1.0,
     "teams": 32
   },
   "CopaLibertadores": {
-    "diffExpected": 2.1380,
+    "diffExpected": 2.138,
     "base_expected": 1.48,
     "coeff_min": 0.85,
-    "coeff_max": 1.30,
+    "coeff_max": 1.3,
     "coeff_home": 1.0,
     "coeff_away": 1.0,
     "teams": 32
