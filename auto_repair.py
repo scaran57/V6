@@ -129,15 +129,22 @@ def repair_api_env():
         log("✔ .env exists.")
 
 ###############################################
-# 7️⃣ BASIC TEST IMAGE GENERATION
+# 7️⃣ GENERATE TEST IMAGE FOR OCR
 ###############################################
 def add_test_image():
-    test_img = "/app/test_images/sample_test.txt"
+    test_img = "/app/test_images/ocr_test_premierleague.jpg"
 
     if not os.path.exists(test_img):
-        with open(test_img, "w") as f:
-            f.write("This is a placeholder for OCR test.")
-        log("✔ Test image placeholder created.")
+        try:
+            # Générer l'image test
+            subprocess.run(["python3", "/app/generate_test_image.py"], check=True)
+            log("✔ Test image generated for OCR testing.")
+        except Exception as e:
+            log(f"⚠ Could not generate test image: {e}")
+            # Fallback: créer un fichier placeholder
+            with open("/app/test_images/sample_test.txt", "w") as f:
+                f.write("This is a placeholder for OCR test.")
+            log("✔ Placeholder created instead.")
     else:
         log("✔ Test image already exists.")
 
