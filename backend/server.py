@@ -2362,6 +2362,30 @@ async def auto_learning_update(days_back: int = Form(7)):
         logger.error(f"❌ Erreur auto-learning-update: {e}", exc_info=True)
         return JSONResponse({"error": str(e)}, status_code=500)
 
+@api_router.get("/diagnostic")
+async def run_diagnostic():
+    """
+    Exécute un diagnostic complet du système
+    Teste: OCR, Ligues, Cache, Scheduler, DB, Config, API
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from diagnostic import full_diagnostic
+        
+        logger.info("🔍 Lancement du diagnostic système...")
+        result = await full_diagnostic()
+        
+        logger.info(f"✅ Diagnostic terminé: {result['summary']['passed']}/{result['summary']['total_tests']} tests réussis")
+        
+        return result
+    except Exception as e:
+        logger.error(f"❌ Erreur diagnostic: {e}", exc_info=True)
+        return JSONResponse({
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }, status_code=500)
+
 # ============================================================================
 # FIN NOUVEAUX ENDPOINTS
 # ============================================================================
