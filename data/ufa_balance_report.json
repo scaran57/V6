@@ -1,39 +1,45 @@
 {
-  "timestamp": "2025-11-12T16:46:57.920330",
-  "total_matches": 216,
-  "unknown_ratio": 0.39814814814814814,
+  "timestamp": "2025-11-18T04:53:54.421309",
+  "total_matches": 353,
+  "unknown_ratio": 0.24645892351274787,
   "top_score": {
     "score": "1-0",
-    "frequency": 0.28703703703703703
+    "frequency": 0.40226628895184136
   },
   "results_distribution": {
-    "home": 123,
-    "draw": 59,
-    "away": 34
+    "home": 224,
+    "draw": 89,
+    "away": 40
   },
   "league_stats": {
+    "WorldCupQualification": {
+      "avg_goals": 5.56,
+      "std_dev": 6.359397415154282,
+      "matches": 125,
+      "status": "⚠️"
+    },
     "Unknown": {
-      "avg_goals": 2.988372093023256,
-      "std_dev": 3.284524089607509,
-      "matches": 86,
+      "avg_goals": 2.9655172413793105,
+      "std_dev": 3.2723232478856312,
+      "matches": 87,
       "status": "✅"
     },
     "Ligue1": {
-      "avg_goals": 6.743589743589744,
-      "std_dev": 6.730597645778993,
-      "matches": 39,
+      "avg_goals": 6.911111111111111,
+      "std_dev": 6.269776791090813,
+      "matches": 45,
+      "status": "⚠️"
+    },
+    "Eredivisie": {
+      "avg_goals": 6.95,
+      "std_dev": 6.85546267009402,
+      "matches": 20,
       "status": "⚠️"
     },
     "LaLiga": {
       "avg_goals": 1.894736842105263,
       "std_dev": 1.5236920380774406,
       "matches": 19,
-      "status": "⚠️"
-    },
-    "Eredivisie": {
-      "avg_goals": 3.933333333333333,
-      "std_dev": 4.97804704487135,
-      "matches": 15,
       "status": "⚠️"
     },
     "Championship": {
@@ -110,7 +116,6 @@
     }
   },
   "alerts": [
-    "Ratio Unknown trop élevé: 39.8%",
-    "Score 1-0 trop fréquent: 28.7%"
+    "Score 1-0 trop fréquent: 40.2%"
   ]
 }
