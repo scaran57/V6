@@ -173,8 +173,12 @@ async def test_upload_system():
 
 async def test_football_data_api():
     """Test l'API Football-Data.org"""
-    KEY = os.environ.get("FOOTBALL_DATA_KEY", None)
-    KEY2 = os.environ.get("FOOTBALL_DATA_KEY_2", None)
+    # Charger depuis .env
+    from dotenv import load_dotenv
+    load_dotenv('/app/backend/.env')
+    
+    KEY = os.environ.get("FOOTBALL_DATA_API_KEY") or os.environ.get("FOOTBALL_DATA_KEY")
+    KEY2 = os.environ.get("FOOTBALL_DATA_API_KEY_2") or os.environ.get("FOOTBALL_DATA_KEY_2")
     
     if not KEY and not KEY2:
         return False, "Aucune clé API configurée"
