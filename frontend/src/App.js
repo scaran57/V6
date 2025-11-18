@@ -1,25 +1,7 @@
-import { useState } from "react";
 import "@/App.css";
-import axios from "axios";
-import { Upload, Brain, TrendingUp, BarChart3 } from "lucide-react";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import DashboardPage from "./pages/DashboardPage";
 
 function App() {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
-  
-  // Pour l'apprentissage
-  const [showLearning, setShowLearning] = useState(false);
-  const [predictedScore, setPredictedScore] = useState("");
-  const [realScore, setRealScore] = useState("");
-  
-  // Pour la saisie manuelle du nom du match
-  const [manualMatchName, setManualMatchName] = useState("");
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
