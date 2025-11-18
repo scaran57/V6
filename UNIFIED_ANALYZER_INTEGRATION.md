@@ -295,13 +295,13 @@ export default UnifiedAnalyzer;
 
 ```bash
 # Test avec une image
-curl -X POST "https://football-predictor-28.preview.emergentagent.com/api/unified/analyze" \
+curl -X POST "https://predict-match-4.preview.emergentagent.com/api/unified/analyze" \
   -F "file=@/path/to/your/image.jpg" \
   -F "persist_cache=true" \
   | jq '.'
 
 # Test avec overrides manuels
-curl -X POST "https://football-predictor-28.preview.emergentagent.com/api/unified/analyze" \
+curl -X POST "https://predict-match-4.preview.emergentagent.com/api/unified/analyze" \
   -F "file=@/path/to/your/image.jpg" \
   -F "manual_home=PSG" \
   -F "manual_away=Marseille" \
@@ -329,7 +329,7 @@ cat /app/data/analysis_cache.jsonl | jq -r '.league' | sort | uniq -c
 ### Test 3 : Health Check
 
 ```bash
-curl "https://football-predictor-28.preview.emergentagent.com/api/unified/health" | jq '.'
+curl "https://predict-match-4.preview.emergentagent.com/api/unified/health" | jq '.'
 ```
 
 ## 📂 Fichiers et Stockage
@@ -418,7 +418,7 @@ L'ancien endpoint `/api/analyze` reste fonctionnel pour compatibilité ascendant
 ### Pour les Utilisateurs
 
 ```
-1. Ouvrir https://football-predictor-28.preview.emergentagent.com/
+1. Ouvrir https://predict-match-4.preview.emergentagent.com/
 2. Cliquer sur "Analyser & Sauvegarder (UFA)" (nouveau bouton unifié)
 3. Uploader l'image du bookmaker
 4. ✅ Résultat avec coefficients appliqués automatiquement

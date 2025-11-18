@@ -1,81 +1,79 @@
 <analysis>
-The trajectory documents the complex process of enhancing a football score prediction application, primarily focusing on improving its accuracy for international matches. The initial task was to implement a fuzzy-matching OCR corrector based on user specifications, including multi-source architecture and enriched logging. However, user feedback quickly pivoted the work towards supporting World Cup Qualification matches, which were being misidentified.
+The trajectory chronicles the evolution of a football prediction application from a simple script to a robust, full-stack system. The development, driven by a user communicating in French, proceeded in several distinct phases.
 
-This led to a multi-stage implementation and debugging effort. First, league and team recognition logic was updated. When predictions remained poor, the user provided FIFA ranking data, prompting the creation of a new system to apply FIFA-based strength coefficients to predictions. The core of the work was a deep and challenging debugging cycle where the AI engineer uncovered and fixed a cascade of interacting bugs:
-1.  A false positive in league detection logic (az in Azerbaijan matching AZ Alkmaar).
-2.  A critical logic error where the newly implemented FIFA coefficients were calculated but never actually applied to the score probabilities.
-3.  A catastrophic OCR error where a new, advanced image preprocessor caused the OCR to misread a bookmaker's odd of 100 as 2.0, completely skewing the results.
+Initially, the work focused on correcting inaccurate league data by manually processing user-provided screenshots. This highlighted the need for automation, leading to the integration of user-supplied scrapers for Ligue 2 and Europa League. When these scrapers proved unreliable due to anti-bot measures, they were repurposed as fallbacks within a resilient  module. This module uses the  API (with key rotation), scrapers, and a local JSON cache to ensure data availability.
 
-After fixing these issues, the conversation shifted to addressing the root problem of unreliable OCR, with the AI proposing modern alternatives like Vision AI. The final actions involved demonstrating the corrected prediction model's soundness by running calculations for club matches without using the faulty OCR pipeline.
+A significant portion of the work involved implementing a learning feature. The user provided predicted scores and real scores, which were used to train a  coefficient via an  endpoint, improving prediction accuracy.
+
+The most substantial phase was a major architectural refactoring. This introduced a per-league configuration system (), a SQLite database with SQLAlchemy for persistent storage of image uploads and analyses, a sophisticated OCR pipeline prioritizing GPT-Vision over Tesseract, and a more reliable APScheduler implementation. To ensure system stability, comprehensive diagnostic and auto-repair scripts were created.
+
+The final phase involved building and integrating a complete React-based dashboard, providing a user interface for uploading images, viewing analysis history, and monitoring the system's status. The last user interaction was a request for the application's URL after the new dashboard was deployed.
+
+The user's language is French. The next agent must respond in French.
 </analysis>
-
 <product_requirements>
-The application's primary function is to predict football match scores by performing OCR on images of bookmaker odds. The user's goal is to improve the accuracy and robustness of these predictions.
+The primary goal is to build and maintain a football match score prediction application. The system's accuracy is critically dependent on up-to-date league standings, which are used to calculate team strength coefficients.
 
-The development work covered in this trajectory focused on three main requirements:
-1.  **Fuzzy-Matching OCR Correction:** Implement a system to automatically correct garbled team and league names extracted by OCR. This system was designed to be extensible, use intelligent caching, and provide detailed logging and dashboard statistics.
-2.  **Support for International Matches:** The system needed to correctly identify and process international matches, specifically World Cup Qualification games, which were initially being misclassified as club league games (e.g., Eredivisie).
-3.  **FIFA Coefficient Integration:** To improve prediction accuracy for often lopsided international games, a system was required to adjust score probabilities based on the relative strength of the national teams. This was implemented using coefficients derived from FIFA rankings, which were manually extracted from images provided by the user.
+The initial requirement was to fix incorrect league data. This evolved into a need for a reliable, automated daily data-sourcing mechanism. The implementation uses a multi-layered approach: a primary API (), custom web scrapers as a secondary source, and a local JSON cache as a final fallback, all managed by a daily scheduler.
 
-The overarching goal was to make the predictions for international matches more realistic, which involved extensive debugging to ensure the league detection and new coefficient logic functioned correctly.
+A key feature request was a machine learning component. The system now includes an endpoint () that takes predicted and real match scores to adjust a global  parameter, progressively improving prediction accuracy.
+
+Most recently, the user requested a significant architectural overhaul to make the system more robust and configurable. This led to the implementation of per-league parameters, a persistent database for uploads and analyses (SQLite/SQLAlchemy), and an advanced OCR pipeline. The final piece was a user-facing React dashboard to upload betting slips, view history, and monitor system health, centralizing user interaction.
 </product_requirements>
-
 <key_technical_concepts>
-- **Backend:** FastAPI, Python.
-- **Prediction Model:** A custom model using Poisson distribution, with probabilities adjusted by team/league strength coefficients.
-- **OCR:** A combination of PyTesseract and custom OpenCV preprocessing. The trajectory shows a failed attempt at advanced preprocessing and a reversion to a simpler method.
-- **Data & APIs:**  for market odds (for clubs), manually-sourced  for international team strength.
-- **Debugging:** Extensive use of backend logs (),  for API testing, and iterative Python test scripts.
+- **Backend**: Python (FastAPI)
+- **Frontend**: React, Tailwind CSS
+- **Data Fetching**:  REST API, Web Scraping ().
+- **Data Persistence**: SQLite database with SQLAlchemy ORM, JSON files for caching and configuration.
+- **Scheduling**: APScheduler () for daily jobs.
+- **OCR**: Dual-engine pipeline using GPT-Vision (primary) and Tesseract (fallback).
+- **Asynchronous Operations**:  for API calls.
 </key_technical_concepts>
-
 <code_architecture>
-The application is a full-stack system with a Python/FastAPI backend and a React frontend. The backend handles OCR, prediction logic, and data management.
+The application has a full-stack architecture with a React frontend and a heavily modified FastAPI backend. The backend has been refactored into a more modular structure with a clear separation of concerns.
+
+**Directory Structure:**
 
 
+- ****:
+    - **Importance**: The main entry point for the FastAPI application. It was heavily modified to integrate the new modular architecture.
+    - **Changes**: New endpoints were added for the React dashboard (, , , ). It now initializes the SQLAlchemy database () and the new APScheduler () on startup.
 
--   ****
-    -   **Importance:** This file is crucial for identifying the league and team names from the raw OCR text.
-    -   **Changes:** It was heavily modified to support World Cup Qualification by adding new keywords and national team mappings. A critical bug was fixed by changing the logic to prioritize league detection based on national team names over ambiguous text found by OCR. The problematic  mapping was removed to prevent false positives.
+- ** (New Directory)**:
+    - **Importance**: This new directory centralizes the core logic, reflecting a major architectural refactoring.
+    - ****: Defines the SQLAlchemy models (, ) for the new SQLite database, enabling persistent storage.
+    - ****: Manages per-league parameters (e.g., , ) stored in , allowing fine-tuning for each league.
+    - ****: Implements the dual OCR engine, prioritizing a placeholder for  and using  as a fallback.
+    - ****: Contains the robust APScheduler logic for daily updates, which writes its status to a file for the dashboard to read.
 
--   ****
-    -   **Importance:** This is the core module that calculates the final score probabilities, applying various weights and coefficients.
-    -   **Changes:** A major bug was fixed here. The code was modified to import  and calculate FIFA coefficients, but the final application of these coefficients was gated by a flag () that was never set for international matches. The fix involved ensuring this flag was correctly set when FIFA coefficients were used, finally enabling the feature.
+- ****:
+    - **Importance**: The React frontend source code, providing the main user interface.
+    - **Changes**: The  file was completely rewritten to implement a new dashboard. New components (, , , ) were created to allow users to upload images, view analysis history, and monitor system status, replacing the previous, more basic interface.
 
--   ****
-    -   **Importance:** A new module created to handle the FIFA ranking data.
-    -   **Changes:** This new file reads , provides functions to get a team's rank, and calculates a strength coefficient based on that rank. This encapsulates the logic for the new international match feature.
+- ** & **:
+    - **Importance**: These scripts provide system health monitoring and self-healing capabilities.
+    - **Changes**: Created from scratch to test all critical components (API keys, DB connection, OCR, file permissions) and automatically fix common issues like missing folders, dependencies, or configuration files.
 
--   ****
-    -   **Importance:** A new data file that acts as the source of truth for national team strength.
-    -   **Changes:** Created and populated by manually transcribing data from images of the FIFA rankings provided by the user. It contains a list of teams with their rank and points.
-
--   ****
-    -   **Importance:** This file handles the image-to-text conversion using Tesseract and OpenCV.
-    -   **Changes:** An advanced preprocessing function () was added to improve OCR on screenshots but was later found to be the cause of a critical OCR error (reading 100 as 2.0). The call to this function was commented out to disable it and resolve the issue.
-
--   ****
-    -   **Importance:** The main FastAPI file that defines all API endpoints.
-    -   **Changes:** Was modified to add several test endpoints (, ) to aid in the complex debugging process.
+- ****:
+    - **Importance**: A new configuration file that allows for different prediction parameters for each league.
+    - **Changes**: Created to externalize and manage league-specific settings, making the prediction algorithm more flexible and tunable.
 </code_architecture>
-
 <pending_tasks>
-- The primary pending task is to **replace the unreliable OCR system**. The current Tesseract-based implementation was identified as the root cause of incorrect predictions (e.g., reading a 100 odd as 2.0). The user and AI discussed several alternatives, with the strongest recommendation being the integration of a **Vision AI model (like GPT-4 Vision)** to provide much more accurate and context-aware text extraction from the bookmaker images.
+There are no outstanding development tasks explicitly requested by the user that have not been implemented. The last major request was the architectural refactor and dashboard creation, which has been completed.
 </pending_tasks>
-
 <current_work>
-The work immediately preceding this summary was a diagnostic exercise to prove the soundness of the core prediction model, independent of the faulty OCR system. The user was frustrated that predictions for international matches were still incorrect, even after multiple bug fixes.
+The most recent work involved a complete overhaul of the user interface by building and integrating a multi-page React dashboard. This provides a centralized and user-friendly way to interact with the application's core features.
 
-The AI engineer determined that the final remaining issue was the quality of the data being fed into the model by the OCR. To demonstrate this, the AI bypassed the OCR entirely and performed calculations for a list of 5 international matches and 7 club matches provided by the user.
+The AI engineer created four main page components:
+1.  ****: For uploading new bookmaker ticket images for analysis.
+2.  ****: To display a list of previously uploaded images and their analysis status.
+3.  ****: To monitor the scheduler's status and trigger manual updates or diagnostics.
+4.  ****: A main container that provides navigation between the other pages.
 
-For these calculations, the AI used:
-1.  **A pure Poisson distribution model.**
-2.  The appropriate strength coefficients:
-    -   **FIFA Coefficients** for the international matches (from ).
-    -   **League Coefficients** for the club matches (from ).
+The main application file, , was completely replaced to render this new dashboard. The backend  was updated with corresponding API endpoints (, , ) to serve data to the new UI.
 
-The results showed realistic and expected outcomes (e.g., strong teams favored over weak ones), confirming that the underlying mathematical model and both coefficient systems were working correctly. This successfully isolated the problem to the OCR data-input stage, setting the stage for replacing the OCR as the next logical step. The last action was presenting the results of these calculations for the club matches.
+After integrating these files, the frontend service was successfully restarted. The last action from the user was a direct question: Donne moi mon URL (Give me my URL), indicating a desire to access and test the newly deployed dashboard. The system is in a fully functional state, awaiting user testing of the new interface.
 </current_work>
-
 <optional_next_step>
-Begin implementing a **Vision AI-based OCR system** (e.g., using GPT-4 Vision) to replace the current, unreliable Tesseract implementation. This directly addresses the root cause of the incorrect predictions identified in the most recent debugging session.
+Provide the user with the application's public URL so they can access the new dashboard.
 </optional_next_step>
