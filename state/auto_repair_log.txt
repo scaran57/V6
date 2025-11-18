@@ -1,0 +1,17 @@
+2025-11-18T07:17:06.415451 | ====================================
+2025-11-18T07:17:06.415517 | 🔧 STARTING AUTO-REPAIR SYSTEM
+2025-11-18T07:17:06.415541 | ====================================
+2025-11-18T07:17:06.415679 | ❗ Installing SQLAlchemy + AioSQLite...
+2025-11-18T07:17:09.396926 | ✔ Dependencies installed.
+2025-11-18T07:17:09.397091 | ✔ All required folders created.
+2025-11-18T07:17:09.402395 | ✔ Permissions fixed (chmod 777 /app/data).
+2025-11-18T07:17:09.402485 | ✔ Created missing database file.
+2025-11-18T07:17:09.672734 | ✔ Database structure repaired and tables created.
+2025-11-18T07:17:09.672872 | ✔ OCR preference set to GPT-Vision by default.
+2025-11-18T07:17:09.672930 | ❗ API key missing → placeholder created in /app/.env
+2025-11-18T07:17:09.672979 | ✔ Test image placeholder created.
+2025-11-18T07:17:09.673034 | ✔ Scheduler status file created.
+2025-11-18T07:17:09.673063 | ✔ League cache already present.
+2025-11-18T07:17:09.673083 | ====================================
+2025-11-18T07:17:09.673102 | ✅ AUTO-REPAIR COMPLETE
+2025-11-18T07:17:09.673122 | ====================================
