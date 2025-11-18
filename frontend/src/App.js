@@ -2,6 +2,14 @@ import "@/App.css";
 import DashboardPage from "./pages/DashboardPage";
 
 function App() {
+  return <DashboardPage />;
+}
+
+export default App;
+
+/*
+// ANCIENNE VERSION - Conservée pour référence
+function OldApp() {
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
