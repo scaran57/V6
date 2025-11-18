@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 import shutil
 import subprocess
 import hashlib
+import traceback
 
 # Import des modules de prédiction de score
 from ocr_engine import extract_odds, extract_match_info as extract_match_info_legacy
