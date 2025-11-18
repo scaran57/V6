@@ -2387,6 +2387,105 @@ async def run_diagnostic():
             "traceback": traceback.format_exc()
         }, status_code=500)
 
+@api_router.get("/ocr-test")
+async def ocr_test(prefer_gpt_vision: bool = Query(True)):
+    """
+    Test l'OCR sur une image test
+    
+    Args:
+        prefer_gpt_vision: Si True, utilise GPT-Vision en priorité
+    
+    Returns:
+        Résultats de l'extraction OCR
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.ocr_pipeline import process_image
+        
+        test_file = "/app/test_images/ocr_test_premierleague.jpg"
+        
+        if not os.path.exists(test_file):
+            return JSONResponse({
+                "status": "error",
+                "message": "Image test manquante. Générez-la avec: python /app/generate_test_image.py"
+            }, status_code=404)
+        
+        logger.info(f"🔍 Test OCR avec prefer_gpt_vision={prefer_gpt_vision}")
+        
+        result = process_image(test_file, prefer_gpt_vision=prefer_gpt_vision)
+        
+        return {
+            "status": "ok",
+            "file_used": test_file,
+            "ocr_engine": result.get("ocr_engine"),
+            "success": result.get("success"),
+            "confidence": result.get("confidence"),
+            "scores_count": len(result.get("parsed_scores", [])),
+            "parsed_scores": result.get("parsed_scores", [])[:10],  # Max 10
+            "raw_text_preview": result.get("raw_text", "")[:200] if result.get("raw_text") else None
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ Erreur OCR test: {e}", exc_info=True)
+        return JSONResponse({
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }, status_code=500)
+
+@api_router.post("/ocr-test-custom")
+async def ocr_test_custom(
+    file: UploadFile = File(...),
+    prefer_gpt_vision: bool = Form(True)
+):
+    """
+    Test l'OCR sur une image uploadée par l'utilisateur
+    
+    Args:
+        file: Image à analyser
+        prefer_gpt_vision: Si True, utilise GPT-Vision en priorité
+    
+    Returns:
+        Résultats de l'extraction OCR
+    """
+    try:
+        import sys
+        sys.path.insert(0, '/app')
+        from core.ocr_pipeline import process_image
+        from datetime import datetime
+        
+        # Sauvegarder temporairement l'image
+        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        temp_path = Path(f"/tmp/ocr_test_{timestamp}_{file.filename}")
+        
+        with temp_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        logger.info(f"🔍 Test OCR sur image uploadée: {file.filename}")
+        
+        result = process_image(str(temp_path), prefer_gpt_vision=prefer_gpt_vision)
+        
+        # Nettoyer
+        temp_path.unlink()
+        
+        return {
+            "status": "ok",
+            "filename": file.filename,
+            "ocr_engine": result.get("ocr_engine"),
+            "success": result.get("success"),
+            "confidence": result.get("confidence"),
+            "scores_count": len(result.get("parsed_scores", [])),
+            "parsed_scores": result.get("parsed_scores", []),
+            "raw_text_preview": result.get("raw_text", "")[:500] if result.get("raw_text") else None
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ Erreur OCR test custom: {e}", exc_info=True)
+        return JSONResponse({
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }, status_code=500)
+
 # ============================================================================
 # FIN NOUVEAUX ENDPOINTS
 # ============================================================================
