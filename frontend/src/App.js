@@ -470,5 +470,4 @@ function OldApp() {
     </div>
   );
 }
-
-export default App;
+*/
