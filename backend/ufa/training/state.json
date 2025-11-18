@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-11-18T04:53:54.401511",
-  "matches_processed": 353,
+  "timestamp": "2025-11-18T09:16:07.341566",
+  "matches_processed": 355,
   "avg_loss": {
     "LaLiga": 3.9647329609775794,
     "PremierLeague": 4.550829162402364,
@@ -9,7 +9,7 @@
     "ChampionsLeague": 4.472591358510306,
     "Unknown": 5.444552299399849,
     "Ligue1": 8.064030172553357,
-    "Campeonato Brasileiro Série A": 6.930837449284402,
+    "Campeonato Brasileiro Série A": 5.597485198753425,
     "Bundesliga": 5.594744984032287,
     "Ligue 1": 2.2072749131897207,
     "Serie A": 2.8526717286454972,
@@ -20,10 +20,10 @@
     "PrimeiraLiga": 2.1202635362000914,
     "WorldCupQualification": 6.424114440209308
   },
-  "global_avg_loss": 6.057980556918659,
+  "global_avg_loss": 6.03660660771025,
   "priors": {
     "draw_prior": 0.35,
-    "avg_goals": 1.7626579491436403,
+    "avg_goals": 1.6584848643492511,
     "home_advantage": 1.05,
     "high_score_penalty": 0.75
   },
@@ -64,8 +64,8 @@
       "accuracy": 2.2222222222222223
     },
     "Campeonato Brasileiro Série A": {
-      "avg_loss": 6.930837449284402,
-      "matches": 5,
+      "avg_loss": 5.597485198753425,
+      "matches": 7,
       "accuracy": 0.0
     },
     "Bundesliga": {

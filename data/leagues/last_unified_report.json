@@ -1,29 +1,29 @@
 {
-  "timestamp": "2025-11-18T04:53:07.560738",
+  "timestamp": "2025-11-18T09:15:12.688900",
   "results": {
     "PL": {
       "status": "ok",
-      "source": "football-data"
+      "source": "cache"
     },
     "PD": {
       "status": "ok",
-      "source": "football-data"
+      "source": "cache"
     },
     "SA": {
       "status": "ok",
-      "source": "football-data"
+      "source": "cache"
     },
     "BL1": {
       "status": "ok",
-      "source": "football-data"
+      "source": "cache"
     },
     "FL1": {
       "status": "ok",
-      "source": "football-data"
+      "source": "cache"
     },
     "PPL": {
       "status": "ok",
-      "source": "football-data"
+      "source": "cache"
     },
     "FL2": {
       "status": "ok",
@@ -31,7 +31,7 @@
     },
     "CL": {
       "status": "ok",
-      "source": "football-data"
+      "source": "cache"
     },
     "EL": {
       "status": "ok",
@@ -39,11 +39,11 @@
     },
     "WC": {
       "status": "ok",
-      "source": "football-data"
+      "source": "cache"
     },
     "CLI": {
       "status": "ok",
-      "source": "football-data"
+      "source": "cache"
     }
   }
 }

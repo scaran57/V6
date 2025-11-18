@@ -1,13 +1,13 @@
 {
-  "timestamp": "2025-11-18T04:53:54.421309",
-  "total_matches": 353,
-  "unknown_ratio": 0.24645892351274787,
+  "timestamp": "2025-11-18T09:16:07.357990",
+  "total_matches": 355,
+  "unknown_ratio": 0.24507042253521127,
   "top_score": {
     "score": "1-0",
-    "frequency": 0.40226628895184136
+    "frequency": 0.4028169014084507
   },
   "results_distribution": {
-    "home": 224,
+    "home": 226,
     "draw": 89,
     "away": 40
   },
@@ -54,6 +54,12 @@
       "matches": 10,
       "status": "✅"
     },
+    "Campeonato Brasileiro Série A": {
+      "avg_goals": 2.857142857142857,
+      "std_dev": 1.864454471471609,
+      "matches": 7,
+      "status": "✅"
+    },
     "PrimeiraLiga": {
       "avg_goals": 1,
       "std_dev": 0.0,
@@ -71,12 +77,6 @@
       "std_dev": 0.8944271909999159,
       "matches": 5,
       "status": "✅"
-    },
-    "Campeonato Brasileiro Série A": {
-      "avg_goals": 3.4,
-      "std_dev": 1.949358868961793,
-      "matches": 5,
-      "status": "⚠️"
     },
     "Primeira Liga": {
       "avg_goals": 3.25,
@@ -116,6 +116,6 @@
     }
   },
   "alerts": [
-    "Score 1-0 trop fréquent: 40.2%"
+    "Score 1-0 trop fréquent: 40.3%"
   ]
 }
